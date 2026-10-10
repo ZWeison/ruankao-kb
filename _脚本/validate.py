@@ -249,6 +249,9 @@ def main() -> int:
 
     if EXAM_DIR.exists():
         for path in sorted(EXAM_DIR.rglob("*.md")):
+            # README 等说明文件不是真题正文，跳过
+            if path.name.lower() in ("readme.md", "index.md") or path.name.startswith("00-"):
+                continue
             check_exam_file(path, valid_tags, seen)
             exam_count += 1
     else:

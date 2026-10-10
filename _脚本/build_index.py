@@ -79,6 +79,8 @@ def collect_exams() -> list[dict]:
     if not EXAM_DIR.exists():
         return records
     for path in sorted(EXAM_DIR.rglob("*.md")):
+        if path.name.lower() in ("readme.md", "index.md") or path.name.startswith("00-"):
+            continue
         m = EXAM_FILE_RE.match(path.name)
         if not m:
             print(f"  [跳过] 文件名不符规范：{path.relative_to(ROOT)}")

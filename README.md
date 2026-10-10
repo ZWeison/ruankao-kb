@@ -54,9 +54,33 @@ D:\软考知识库\
 ├─ 99-待校对\              ← 存疑/来源不明的隔离区
 ├─ _脚本\
 │   ├─ validate.py           校验所有文件头部是否合规
-│   └─ build_index.py        生成索引与 exams.json
+│   ├─ build_index.py        生成索引与 exams.json
+│   └─ search.py             全文检索（终端 / AI 用）
 └─ README.md               本文件
 ```
+
+---
+
+## 三个脚本（在 `D:\软考知识库` 下运行）
+
+```powershell
+# 1. 校验：所有文件的 YAML 头部是否合规、文件名与内容是否一致
+python _脚本\validate.py
+
+# 2. 生成索引：重算 02-按题型索引\ 与 00-元数据\exams.json
+python _脚本\build_index.py
+
+# 3. 全文检索
+python _脚本\search.py ATAM                    # 关键词
+python _脚本\search.py --tag 架构评估           # 按考点标签
+python _脚本\search.py --kind 回忆版 --year 2023-2025
+python _脚本\search.py --only 范文 微服务       # 只搜范文
+python _脚本\search.py --tags                  # 标签统计
+python _脚本\search.py --stats                 # 整体统计
+python _脚本\search.py --dubious               # 存疑题清单（考前重点核对）
+```
+
+**每次新增或修改文件后，按 `validate → build_index` 顺序跑一遍。**
 
 ---
 
