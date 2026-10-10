@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-11",
+  "generator": "_脚本/build_index.py",
+  "note": "本题库为个人学习资料，真题均为非官方回忆版；详见 00-元数据/来源清单.md",
+  "stats": {
+    "examFiles": 0,
+    "essayFiles": 0
+  },
+  "exams": [],
+  "essays": []
+}

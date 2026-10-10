@@ -1,0 +1,27 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    { "query": "path:\"01-真题-按年份\"", "color": { "a": 1, "rgb": 14701138 } },
+    { "query": "path:\"03-论文范文\"", "color": { "a": 1, "rgb": 5431472 } },
+    { "query": "path:\"00-元数据\"", "color": { "a": 1, "rgb": 8421504 } },
+    { "query": "path:\"90-我的复习\"", "color": { "a": 1, "rgb": 16744192 } }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 1,
+  "lineSizeMultiplier": 1,
+  "collapse-forces": true,
+  "centerStrength": 0.4,
+  "repelStrength": 10,
+  "linkStrength": 1,
+  "linkDistance": 250,
+  "scale": 1,
+  "close": false
+}

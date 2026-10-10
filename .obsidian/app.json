@@ -1,0 +1,16 @@
+{
+  "attachmentFolderPath": "04-原始资料",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "90-我的复习",
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": false,
+  "showUnsupportedFiles": true,
+  "readableLineLength": true,
+  "strictLineBreaks": false,
+  "showFrontmatter": true,
+  "defaultViewMode": "preview",
+  "livePreview": true,
+  "promptDelete": false,
+  "trashOption": "local",
+  "propertiesInDocument": "visible"
+}

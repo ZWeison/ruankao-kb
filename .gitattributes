@@ -1,0 +1,9 @@
+# 仓库内全部为中文 Markdown，统一 UTF-8，不自动改行尾
+* text=auto eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.pdf -text
+*.png -text
+*.jpg -text
+*.mp4 -text
