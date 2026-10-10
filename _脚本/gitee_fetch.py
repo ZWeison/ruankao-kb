@@ -68,15 +68,20 @@ def encode_url(url: str) -> str:
     return urllib.parse.urlunsplit((parts.scheme, parts.netloc, path, query, parts.fragment))
 
 
-def download(path: str) -> bool:
-    """下载单个文件到 _staging/gitee/<path>。"""
+def download(path: str, delay: float = 0.0) -> bool:
+    """下载单个文件到 _staging/gitee/<path>。已存在则跳过（可断点续传）。"""
+    dest = STAGE / path
+    if dest.exists() and dest.stat().st_size > 1024:
+        say(f"    · 已存在，跳过 {path.split('/')[-1][:36]}")
+        return True
     url = f"{API.format(owner=OWNER, repo=REPO)}/{urllib.parse.quote(path)}"
     meta = get(url)
     if not meta or "download_url" not in meta:
         return False
-    dest = STAGE / path
     dest.parent.mkdir(parents=True, exist_ok=True)
     raw = encode_url(meta["download_url"])
+    if delay:
+        time.sleep(delay)
     for i in range(3):
         try:
             req = urllib.request.Request(raw, headers=UA)
@@ -91,7 +96,7 @@ def download(path: str) -> bool:
             if i == 2:
                 say(f"    ! 下载失败 {path[-40:]} -> {e}")
                 return False
-            time.sleep(2 * (i + 1))
+            time.sleep(3 * (i + 1))
     return False
 
 
@@ -139,8 +144,11 @@ if __name__ == "__main__":
             print(f"  [跳过] {e[2]}")
         print()
         ok = 0
+        delay = float(os.environ.get("GITEE_DELAY", "0"))
+        if delay:
+            print(f"请求间隔 {delay}s（防限流）\n")
         for i, (_, _, name, p, size) in enumerate(files, 1):
-            if download(p):
+            if download(p, delay=delay):
                 ok += 1
-                print(f"  [{i}/{len(files)}] OK  {name}", flush=True)
-        print(f"\n完成：{ok}/{len(files)}")
+                say(f"  [{i}/{len(files)}] OK  {name}")
+        say(f"\n完成：{ok}/{len(files)}")
