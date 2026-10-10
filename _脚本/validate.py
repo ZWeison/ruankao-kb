@@ -200,11 +200,13 @@ def check_exam_file(path: Path, valid_tags: set[str], seen: dict) -> None:
     elif "考点标签" in data:
         err(f"{rel}｜考点标签 必须是 [a, b, c] 格式")
 
-    # 重复期次
-    key = (f_year, f_session, f_subject)
+    # 重复期次（同一 年份+考期+科目+版本标记 只能一个文件）
+    # 版本后缀（-回忆版A / -回忆版B）是合法区分：机考后同一次考试存在多套
+    # 题序、题量都不同的回忆版，禁止合并，必须各自成文件。
+    key = (f_year, f_session, f_subject, m.group(4) or "")
     if key in seen:
-        err(f"{rel}｜与 {seen[key]} 重复（同一 年份+考期+科目 只能一个文件）"
-            f"；若是独立回忆版，请在文件名加 -回忆版A/-回忆版B 且分别核查")
+        err(f"{rel}｜与 {seen[key]} 重复"
+            f"（同一 年份+考期+科目+版本 只能一个文件）")
     else:
         seen[key] = str(rel)
 
