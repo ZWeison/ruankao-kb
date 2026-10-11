@@ -4,10 +4,36 @@
   "generator": "_脚本/build_index.py",
   "note": "本题库为个人学习资料，真题均为非官方回忆版；详见 00-元数据/来源清单.md",
   "stats": {
-    "examFiles": 38,
+    "examFiles": 40,
     "essayFiles": 28
   },
   "exams": [
+    {
+      "year": 2026,
+      "session": "上半年",
+      "subject": "案例分析",
+      "itemType": "案例题",
+      "variant": "",
+      "itemCount": 5,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": true,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "架构风格",
+        "质量属性",
+        "数据库",
+        "架构评估",
+        "边缘计算"
+      ],
+      "origin": "CSDN 编程指南针（bcznz）",
+      "url": "https://bcznz.blog.csdn.net/article/details/166334425",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2026-上半年/2026-上半年-案例分析.md",
+      "charCount": 8106
+    },
     {
       "year": 2026,
       "session": "上半年",
@@ -33,6 +59,31 @@
       "proofread": "待校对",
       "path": "01-真题-按年份/2026-上半年/2026-上半年-综合知识.md",
       "charCount": 13618
+    },
+    {
+      "year": 2026,
+      "session": "上半年",
+      "subject": "论文",
+      "itemType": "论文题",
+      "variant": "",
+      "itemCount": 4,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": false,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "NoSQL",
+        "云原生",
+        "软件测试",
+        "架构设计"
+      ],
+      "origin": "CSDN 方才coding（qq_36095679）",
+      "url": "https://blog.csdn.net/qq_36095679/article/details/161349611",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2026-上半年/2026-上半年-论文.md",
+      "charCount": 4542
     },
     {
       "year": 2025,
