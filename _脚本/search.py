@@ -49,6 +49,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 EXAM_DIR = ROOT / "01-真题-按年份"
 ESSAY_DIR = ROOT / "03-论文范文"
+CHAPTER_DIR = ROOT / "05-按章节真题"
 
 EXAM_FILE_RE = re.compile(
     r"^(\d{4})-(上半年|下半年)-(综合知识|案例分析|论文)(?:-(.+))?\.md$"
@@ -116,7 +117,7 @@ class Doc:
 
 def load_docs() -> list[Doc]:
     docs: list[Doc] = []
-    for base, scope in ((EXAM_DIR, "真题"), (ESSAY_DIR, "范文")):
+    for base, scope in ((EXAM_DIR, "真题"), (ESSAY_DIR, "范文"), (CHAPTER_DIR, "章节")):
         if not base.exists():
             continue
         for p in sorted(base.rglob("*.md")):
@@ -154,7 +155,8 @@ def cmd_tags(docs: list[Doc]) -> None:
 def cmd_stats(docs: list[Doc]) -> None:
     exams = [d for d in docs if d.scope == "真题"]
     essays = [d for d in docs if d.scope == "范文"]
-    print(f"收录：真题 {len(exams)} 卷，范文 {len(essays)} 篇\n")
+    chapters = [d for d in docs if d.scope == "章节"]
+    print(f"收录：真题 {len(exams)} 卷，范文 {len(essays)} 篇，章节真题 {len(chapters)} 册\n")
     if exams:
         years = sorted({d.year for d in exams if d.year})
         print(f"真题年份跨度：{years[0]} — {years[-1]}")
@@ -249,7 +251,7 @@ def main() -> int:
     ap.add_argument("--kind", help="来源类型：真题 / 回忆版 / 模拟题")
     ap.add_argument("--year", help="年份或范围，如 2023 或 2023-2025")
     ap.add_argument("--subject", help="科目：综合知识 / 案例分析 / 论文")
-    ap.add_argument("--only", default="全部", choices=["真题", "范文", "全部"],
+    ap.add_argument("--only", default="全部", choices=["真题", "范文", "章节", "全部"],
                     help="搜索范围")
     ap.add_argument("--tags", action="store_true", help="列出标签统计")
     ap.add_argument("--stats", action="store_true", help="列出整体统计")

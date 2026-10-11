@@ -47,6 +47,12 @@ REQUIRED_ESSAY = [
     "是否考场原文", "出处", "URL", "抓取日期", "校对状态",
 ]
 
+# 05-按章节真题：按考点组织的复习视图（非按考期归档的正本）
+REQUIRED_CHAPTER = [
+    "材料类型", "章节", "题量", "来源类型", "是否官方", "含答案",
+    "答案可信度", "含解析", "出处", "URL", "抓取日期", "校对状态",
+]
+
 ESSAY_KINDS = ("范文", "模板", "提纲")
 
 # 真实开考情况（与 00-元数据/考试期次总表.md 保持一致）
@@ -56,6 +62,7 @@ BOTH_SESSIONS = {2024, 2025, 2026}
 
 EXAM_DIR = ROOT / "01-真题-按年份"
 ESSAY_DIR = ROOT / "03-论文范文"
+CHAPTER_DIR = ROOT / "05-按章节真题"
 
 # 年份-考期目录名
 EXAM_DIR_RE = re.compile(r"^(\d{4})-(上半年|下半年)$")
@@ -235,6 +242,28 @@ def check_essay_file(path: Path, valid_tags: set[str]) -> None:
         err(f"{rel}｜正文为空")
 
 
+def check_chapter_file(path: Path) -> None:
+    """校验 05-按章节真题 下的文件头部。"""
+    rel = path.relative_to(ROOT)
+    data, body = split_front_matter(path.read_text(encoding="utf-8", errors="replace"))
+    if not data:
+        err(f"{rel}｜缺少 YAML 头部（front matter）")
+        return
+    missing = [k for k in REQUIRED_CHAPTER if k not in data]
+    if missing:
+        err(f"{rel}｜缺少字段：{'、'.join(missing)}")
+    for key, allowed in (("来源类型", SOURCE_KINDS),
+                         ("答案可信度", CREDIBILITY),
+                         ("校对状态", PROOFREAD)):
+        if key in data and data[key] not in allowed:
+            err(f"{rel}｜{key} = 「{data[key]}」不在允许取值 {allowed}")
+    for key in ("是否官方", "含答案", "含解析"):
+        if key in data and not isinstance(data[key], bool):
+            err(f"{rel}｜{key} 必须是 true/false")
+    if not body.strip():
+        err(f"{rel}｜正文为空")
+
+
 def main() -> int:
     print("=" * 72)
     print("系统架构设计师知识库 —— 元数据校验")
@@ -269,7 +298,16 @@ def main() -> int:
             check_essay_file(path, valid_tags)
             essay_count += 1
 
-    print(f"扫描：真题 {exam_count} 个文件，范文 {essay_count} 个文件\n")
+    chapter_count = 0
+    if CHAPTER_DIR.exists():
+        for path in sorted(CHAPTER_DIR.rglob("*.md")):
+            if path.name.lower() in ("readme.md", "index.md"):
+                continue
+            check_chapter_file(path)
+            chapter_count += 1
+
+    print(f"扫描：真题 {exam_count} 个文件，范文 {essay_count} 个文件，"
+          f"章节真题 {chapter_count} 个文件\n")
 
     if warnings:
         print(f"--- 警告（{len(warnings)}）---")
