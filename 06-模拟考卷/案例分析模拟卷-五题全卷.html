@@ -6,8 +6,8 @@
 <title>系统架构设计师 · 案例分析模拟卷（五题全卷）</title>
 <style>
 :root{
-  --page-w: 15.6cm;
-  --fs-body: 15px;
+  --page-w: 1080px;
+  --fs-body: 16px;
   --lh: 1.85;
   --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
   --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
@@ -29,10 +29,10 @@ html{scroll-behavior:smooth}
 body{
   font-family:var(--ff-body);font-size:var(--fs-body);line-height:var(--lh);
   color:var(--c-text);background:#F3F4F6;
-  padding:24px 16px 80px;
+  padding:26px 20px 80px;
 }
-.wrap{max-width:var(--page-w);margin:0 auto;background:var(--c-bg);
-  padding:44px 46px 60px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+.wrap{width:100%;max-width:var(--page-w);margin:0 auto;background:var(--c-bg);
+  padding:46px 54px 64px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
 h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.35;font-weight:700;color:var(--c-text)}
 h1{font-size:23px;text-align:center;margin-bottom:6px}
 h2{font-size:18px;margin:40px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--c-primary)}
@@ -112,8 +112,8 @@ pre{font-family:var(--ff-mono);font-size:12.5px;line-height:1.7;background:var(-
 .answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);
   padding:7px 12px;font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
 .answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
-.answer textarea{display:block;width:100%;min-height:130px;border:0;outline:0;resize:vertical;
-  padding:12px 14px;font-family:var(--ff-body);font-size:14px;line-height:1.75;color:var(--c-text);background:#fff}
+.answer textarea{display:block;width:100%;min-height:140px;border:0;outline:0;resize:vertical;
+  padding:13px 16px;font-family:var(--ff-body);font-size:15px;line-height:1.8;color:var(--c-text);background:#fff}
 .answer textarea:focus{background:#FBFDFF}
 .answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
   background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head)}
@@ -157,10 +157,21 @@ pre{font-family:var(--ff-mono);font-size:12.5px;line-height:1.7;background:var(-
   .qblock{break-inside:auto}
   h2{break-after:avoid}
 }
+/* 中等屏：收窄内边距，避免正文过窄 */
+@media (max-width:1160px){
+  .wrap{padding:40px 34px 56px}
+}
+@media (max-width:860px){
+  .wrap{padding:32px 22px 48px;border-radius:6px}
+  .toolbar{gap:6px}
+  .btn{padding:5px 10px;font-size:12px}
+}
 @media (max-width:720px){
-  .wrap{padding:26px 18px 40px}
+  body{padding:12px 8px 60px}
+  .wrap{padding:22px 15px 36px}
   .cover-title{font-size:21px}
   h2{font-size:16px}
+  .answer textarea{font-size:15px}
 }
 </style>
 </head>
