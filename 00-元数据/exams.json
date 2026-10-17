@@ -5,7 +5,7 @@
   "note": "本题库为个人学习资料，真题均为非官方回忆版；详见 00-元数据/来源清单.md",
   "stats": {
     "examFiles": 5,
-    "essayFiles": 39
+    "essayFiles": 45
   },
   "exams": [
     {
@@ -252,6 +252,20 @@
       "charCount": 5309
     },
     {
+      "topic": "论模型驱动架构设计方法及其应用",
+      "kind": "范文",
+      "year": "2024",
+      "session": "上半年",
+      "theme": "架构设计",
+      "wordCount": 4000,
+      "isReal": false,
+      "origin": "AtomGit开源社区 / CSDN（阿狸猿）",
+      "url": "https://gitcode.csdn.net/6a25379a10ee7a33f278fdfe.html",
+      "proofread": "待校对",
+      "path": "03-论文范文/01-架构设计/009-论模型驱动架构设计方法及其应用.md",
+      "charCount": 5012
+    },
+    {
       "topic": "论改进Web服务器性能的有关技术",
       "kind": "范文",
       "year": "未知",
@@ -462,6 +476,34 @@
       "charCount": 3243
     },
     {
+      "topic": "论大数据 Lambda 架构",
+      "kind": "范文",
+      "year": "2024",
+      "session": "上半年",
+      "theme": "大数据与NoSQL",
+      "wordCount": 3600,
+      "isReal": false,
+      "origin": "技术栈 jishuzhan.net（小佳1%）",
+      "url": "https://jishuzhan.net/article/1827140151785033729",
+      "proofread": "待校对",
+      "path": "03-论文范文/06-大数据与NoSQL/005-论大数据Lambda架构.md",
+      "charCount": 4845
+    },
+    {
+      "topic": "论分布式事务及其解决方案",
+      "kind": "范文",
+      "year": "2024",
+      "session": "下半年",
+      "theme": "数据库",
+      "wordCount": 2600,
+      "isReal": false,
+      "origin": "优路教育（培训机构自产范文）",
+      "url": "https://www.youlu.com/rkgj/article/CA20241119030000000084",
+      "proofread": "待校对",
+      "path": "03-论文范文/06-大数据与NoSQL/006-论分布式事务及其解决方案.md",
+      "charCount": 2232
+    },
+    {
       "topic": "论SOA在企业信息化中的应用",
       "kind": "范文",
       "year": "未知",
@@ -516,6 +558,20 @@
       "proofread": "待校对",
       "path": "03-论文范文/07-SOA与架构演化/004-论软件三层架构设计.md",
       "charCount": 3757
+    },
+    {
+      "topic": "论面向服务的架构设计",
+      "kind": "范文",
+      "year": "2024",
+      "session": "下半年",
+      "theme": "SOA与架构演化",
+      "wordCount": 1500,
+      "isReal": false,
+      "origin": "优路教育（培训机构自产范文）",
+      "url": "https://www.youlu.com/rkgj/article/CA20241119000000000091",
+      "proofread": "待校对",
+      "path": "03-论文范文/07-SOA与架构演化/005-论面向服务的架构设计.md",
+      "charCount": 2386
     },
     {
       "topic": "论基于构件的软件开发",
@@ -644,6 +700,20 @@
       "charCount": 3517
     },
     {
+      "topic": "论单元测试方法及应用",
+      "kind": "范文",
+      "year": "2024",
+      "session": "上半年",
+      "theme": "测试与质量",
+      "wordCount": 3600,
+      "isReal": false,
+      "origin": "技术栈 jishuzhan.net（阿狸猿）",
+      "url": "https://jishuzhan.net/article/2063810180487393282",
+      "proofread": "待校对",
+      "path": "03-论文范文/12-测试与质量/004-论单元测试方法及应用.md",
+      "charCount": 4229
+    },
+    {
       "topic": "论无服务器架构",
       "kind": "范文",
       "year": "2025",
@@ -656,6 +726,20 @@
       "proofread": "待校对",
       "path": "03-论文范文/13-DevOps与Serverless/001-论无服务器架构.md",
       "charCount": 3275
+    },
+    {
+      "topic": "论云上自动化运维及其应用",
+      "kind": "范文",
+      "year": "2024",
+      "session": "上半年",
+      "theme": "DevOps与Serverless",
+      "wordCount": 4200,
+      "isReal": false,
+      "origin": "技术栈 jishuzhan.net（阿狸猿）",
+      "url": "https://jishuzhan.net/article/2063805275936731138",
+      "proofread": "待校对",
+      "path": "03-论文范文/13-DevOps与Serverless/002-论云上自动化运维及其应用.md",
+      "charCount": 4746
     },
     {
       "topic": "论UP（统一过程方法）的应用",
