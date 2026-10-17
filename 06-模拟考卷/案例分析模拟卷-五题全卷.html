@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统架构设计师 · 案例分析模拟卷（五题全卷）</title>
+<style>
+:root{
+  --page-w: 15.6cm;
+  --fs-body: 15px;
+  --lh: 1.85;
+  --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
+  --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
+  --ff-mono: "JetBrains Mono",Consolas,monospace;
+  --c-primary:#2563EB;
+  --c-text:#111827;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-bg:#FFFFFF;
+  --c-soft:#EEF2FF;
+  --c-code:#F9FAFB;
+  --c-warn:#B45309;
+  --c-warn-bg:#FFFBEB;
+  --c-ok:#047857;
+  --c-ok-bg:#ECFDF5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body);font-size:var(--fs-body);line-height:var(--lh);
+  color:var(--c-text);background:#F3F4F6;
+  padding:24px 16px 80px;
+}
+.wrap{max-width:var(--page-w);margin:0 auto;background:var(--c-bg);
+  padding:44px 46px 60px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.35;font-weight:700;color:var(--c-text)}
+h1{font-size:23px;text-align:center;margin-bottom:6px}
+h2{font-size:18px;margin:40px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--c-primary)}
+h3{font-size:15.5px;margin:22px 0 8px}
+h4{font-size:14.5px;margin:16px 0 6px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 1.6em}
+li{margin:4px 0}
+a{color:var(--c-primary)}
+
+/* ---------- 封面 ---------- */
+.cover{text-align:center;padding:16px 0 30px;border-bottom:1px solid var(--c-border);margin-bottom:26px}
+.cover-eyebrow{font-family:var(--ff-head);font-size:12px;letter-spacing:.18em;color:var(--c-primary);margin-bottom:16px}
+.cover-title{font-size:27px;font-weight:700;font-family:var(--ff-head);line-height:1.3;margin-bottom:10px}
+.cover-sub{font-size:13.5px;color:var(--c-muted);margin-bottom:22px}
+.cover-info{font-size:13px;color:var(--c-text);line-height:2}
+.cover-info b{color:var(--c-primary)}
+.cover-date{font-size:12px;color:var(--c-muted);margin-top:18px}
+
+/* ---------- 工具条 ---------- */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(6px);
+  border:1px solid var(--c-border);border-radius:8px;padding:10px 12px;margin-bottom:22px}
+.btn{font-family:var(--ff-head);font-size:12.5px;padding:6px 13px;border-radius:6px;border:1px solid var(--c-border);
+  background:#fff;color:var(--c-text);cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn.primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.danger:hover{border-color:#DC2626;color:#DC2626}
+.spacer{flex:1}
+.timer{font-family:var(--ff-mono);font-size:14px;font-weight:600;padding:5px 11px;border-radius:6px;
+  background:var(--c-soft);color:var(--c-primary);min-width:82px;text-align:center}
+.timer.warn{background:#FEF2F2;color:#DC2626}
+.progress-txt{font-size:12.5px;color:var(--c-muted);font-family:var(--ff-head)}
+
+/* ---------- 目录 ---------- */
+.toc{background:var(--c-code);border:1px solid var(--c-border);border-radius:8px;padding:16px 20px;margin-bottom:8px}
+.toc-title{font-family:var(--ff-head);font-size:13px;font-weight:700;color:var(--c-muted);margin-bottom:8px;letter-spacing:.08em}
+.toc ol{margin-left:1.4em;font-size:13.5px}
+.toc li{margin:3px 0}
+.toc a{text-decoration:none}
+.toc a:hover{text-decoration:underline}
+
+/* ---------- 题块 ---------- */
+.qblock{margin:34px 0}
+.qhead{font-family:var(--ff-head);font-size:17px;font-weight:700;color:var(--c-text);
+  background:var(--c-soft);border-left:4px solid var(--c-primary);padding:9px 14px;border-radius:0 6px 6px 0;margin-bottom:6px}
+.qintro{font-size:13.5px;color:var(--c-muted);margin:6px 0 14px}
+.tag{display:inline-block;font-family:var(--ff-head);font-size:11px;padding:2px 8px;border-radius:4px;
+  background:var(--c-soft);color:var(--c-primary);margin-right:6px;vertical-align:middle}
+.tag.gray{background:#F3F4F6;color:var(--c-muted)}
+
+.note{background:var(--c-code);border-left:3px solid var(--c-border);padding:10px 14px;margin:12px 0;font-size:14px}
+.scene{background:#FCFCFD;border:1px solid var(--c-border);border-radius:6px;padding:14px 16px;margin:12px 0}
+.scene ol,.scene ul{margin-left:1.5em}
+.scene li{margin:6px 0}
+
+/* 问题 */
+.q{margin:24px 0 0;padding-top:6px}
+.q-title{font-family:var(--ff-head);font-size:14.5px;font-weight:700;margin-bottom:4px}
+.q-title .score{color:var(--c-primary);font-weight:600}
+.q-body{font-size:14.5px}
+.q-body p{margin:8px 0}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{border:1px solid var(--c-border);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--c-code);font-family:var(--ff-head);font-weight:600}
+caption{caption-side:top;font-size:12.5px;color:var(--c-muted);text-align:left;padding-bottom:6px}
+td.fill{background:#FFFBEB;font-family:var(--ff-mono);text-align:center;color:var(--c-warn)}
+
+pre{font-family:var(--ff-mono);font-size:12.5px;line-height:1.7;background:var(--c-code);
+  border:1px solid var(--c-border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:12px 0}
+
+/* ---------- 答题框 ---------- */
+.answer{margin:14px 0 4px;border:1px solid #C7D2FE;border-radius:8px;overflow:hidden;background:#fff}
+.answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);
+  padding:7px 12px;font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
+.answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
+.answer textarea{display:block;width:100%;min-height:130px;border:0;outline:0;resize:vertical;
+  padding:12px 14px;font-family:var(--ff-body);font-size:14px;line-height:1.75;color:var(--c-text);background:#fff}
+.answer textarea:focus{background:#FBFDFF}
+.answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
+  background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head)}
+.selfscore{margin-left:auto;display:flex;align-items:center;gap:5px}
+.selfscore input{width:46px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;
+  font-family:var(--ff-mono);font-size:12px;text-align:center}
+.saved{color:var(--c-ok);opacity:0;transition:.4s}
+.saved.show{opacity:1}
+
+/* ---------- 参考答案 ---------- */
+.refwrap{margin-top:44px;padding-top:8px}
+.ref{display:none;background:var(--c-ok-bg);border:1px solid #A7F3D0;border-radius:8px;padding:16px 18px;margin:14px 0}
+.ref.open{display:block}
+.ref h4{margin-top:12px;color:var(--c-ok)}
+.ref h4:first-child{margin-top:0}
+.ref ul,.ref ol{margin-left:1.5em}
+.ref li{margin:5px 0}
+.ref table{background:#fff}
+.ref .kk{background:#D1FAE5;padding:1px 5px;border-radius:3px;font-family:var(--ff-head);font-size:12px;color:#065F46}
+.ref-toggle{display:inline-block;font-family:var(--ff-head);font-size:12.5px;color:var(--c-ok);
+  border:1px solid #A7F3D0;background:var(--c-ok-bg);padding:5px 12px;border-radius:6px;cursor:pointer;margin:6px 0}
+
+/* ---------- 考点覆盖 ---------- */
+.cover-note{margin-top:36px;border:1px dashed var(--c-border);border-radius:8px;padding:16px 18px;font-size:13.5px}
+.cover-note h3{margin-top:0}
+
+/* 提示条 */
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#111827;color:#fff;
+  font-family:var(--ff-head);font-size:13px;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 打印 */
+@media print{
+  body{background:#fff;padding:0}
+  .wrap{box-shadow:none;padding:0;max-width:none}
+  .toolbar,.ref-toggle,.toast{display:none!important}
+  .answer{break-inside:avoid}
+  .answer textarea{min-height:auto;height:auto;field-sizing:content}
+  .ref{display:block!important;break-inside:avoid}
+  .qblock{break-inside:auto}
+  h2{break-after:avoid}
+}
+@media (max-width:720px){
+  .wrap{padding:26px 18px 40px}
+  .cover-title{font-size:21px}
+  h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 封面 ================= -->
+<header class="cover">
+  <div class="cover-eyebrow">软考 · 系统架构设计师 · 案例分析 · 模拟卷</div>
+  <div class="cover-title">系统架构设计师<br>案例分析综合模拟试卷</div>
+  <div class="cover-sub">质量属性 · 架构评估 · 架构风格 · 数据库 · 可靠性容灾 · 微服务与缓存</div>
+  <div class="cover-info">
+    试卷满分：<b>125 分</b>（5 大题 × 25 分）　｜　全卷小题：<b>16 道</b><br>
+    建议用时：<b>150 分钟</b>　｜　题目难度：中偏难<br>
+    <span style="color:#6B7280;font-size:12.5px">实战作答规则：第 1 题必答，其余 4 题选 2 题，合计 75 分</span>
+  </div>
+  <div class="cover-date">2026 年 10 月　·　依据本库 2024—2026 真题与 26 道案例模拟题考点自编</div>
+</header>
+
+<!-- ================= 工具条 ================= -->
+<div class="toolbar">
+  <span class="timer" id="timer">150:00</span>
+  <button class="btn primary" id="btnTimer">开始计时</button>
+  <button class="btn" id="btnResetTimer">重置</button>
+  <button class="btn" id="btnToggleAll">显示全部参考答案</button>
+  <span class="spacer"></span>
+  <span class="progress-txt" id="progress">已作答 0/16　｜　自评 0/125</span>
+  <button class="btn danger" id="btnClear">清空答卷</button>
+  <button class="btn" id="btnPrint">打印 / 导出 PDF</button>
+</div>
+
+<!-- ================= 目录 ================= -->
+<nav class="toc">
+  <div class="toc-title">目 录</div>
+  <ol>
+    <li><a href="#q1">试题一（25分）省级医保结算平台 —— 质量属性与 ATAM 架构评估</a></li>
+    <li><a href="#q2">试题二（25分）工业物联网设备管理平台 —— 架构风格对比与选型</a></li>
+    <li><a href="#q3">试题三（25分）连锁零售交易中台 —— 数据库设计与优化</a></li>
+    <li><a href="#q4">试题四（25分）第三方支付清结算系统 —— 可靠性与容灾设计</a></li>
+    <li><a href="#q5">试题五（25分）生鲜电商大促交易系统 —— 微服务拆分与缓存高并发</a></li>
+    <li><a href="#ref">参考答案与采分点</a></li>
+    <li><a href="#scope">附：考点覆盖与使用说明</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================
+     试题一
+     ============================================================ -->
+<section class="qblock" id="q1">
+  <div class="qhead">试题一（25分）省级医保结算平台</div>
+  <div class="qintro">本大题围绕质量属性识别、效用树构建与 ATAM 敏感点/权衡点分析展开，共 3 个小题。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某省医保局拟建设"省级医保结算平台"，整合参保登记、门诊结算、住院结算、异地就医、基金监管五大业务域，覆盖全省 <b>1.2 亿参保人</b>、<b>4.3 万家定点医药机构</b>，日均结算 <b>900 万笔</b>，月末结算高峰 QPS 达 <b>1.2 万</b>。平台需与 11 个地市子系统、6 家银行、国家医保信息平台对接。</p>
+    <p>需求分析阶段梳理出的关键质量属性场景如下：</p>
+    <ol type="a">
+      <li>门诊结算单笔交易响应时间不超过 <b>300ms</b>，月末高峰期不超过 <b>800ms</b>；</li>
+      <li>参保人结算数据保存不少于 <b>30 年</b>，任何修改须留痕且可追溯到操作人与时间；</li>
+      <li>核心数据库主节点故障时，<b>30 秒内</b>自动切换，已提交结算数据零丢失；</li>
+      <li>新增"DRG/DIP 付费"结算规则时，不改动现有门诊/住院结算代码，<b>2 周内</b>上线；</li>
+      <li>结算请求须经国密算法加密传输，并对定点机构做双向身份认证；</li>
+      <li>平台遭受勒索病毒攻击时，保障<b>门诊结算与住院结算</b>功能持续可用；</li>
+      <li>支持全省并发在线 <b>8 万个</b>经办终端，单终端平均登录响应 <b>2 秒内</b>；</li>
+      <li>异地就医结算模块须在 <b>1 个月内</b>完成信创服务器（鲲鹏 + 麒麟）适配。</li>
+    </ol>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（8 分）</span>质量属性归类</div>
+    <div class="q-body">
+      <p>请将上述场景 (a)~(h) 分别归类到对应的质量属性，完成表 1。要求每个质量属性至少包含一个场景，同一场景可归入多个质量属性。</p>
+      <table>
+        <caption>表 1　质量属性归类</caption>
+        <tr><th style="width:32%">质量属性</th><th>场景序号</th></tr>
+        <tr><td>性能</td><td class="fill">(1)</td></tr>
+        <tr><td>安全性</td><td class="fill">(2)</td></tr>
+        <tr><td>可用性</td><td class="fill">(3)</td></tr>
+        <tr><td>可修改性</td><td class="fill">(4)</td></tr>
+      </table>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a1">0 字</span></div>
+      <textarea id="a1" data-qid="a1" placeholder="按「质量属性：场景序号」逐行作答，例如：&#10;性能：(1) …&#10;安全性：(2) …"></textarea>
+      <div class="answer-foot">建议 120—200 字<span class="saved" data-for="a1">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a1"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（9 分）</span>质量属性效用树</div>
+    <div class="q-body">
+      <p>质量属性效用树是识别质量属性并对其排序的重要工具。请给出合适的质量属性填入图 1 的 (1)、(2) 空白处，并从场景 (a)~(h) 中选择恰当的序号填入 (3)~(6) 空白处，完成该平台的效用树。</p>
+<pre>质量效用
+├── (1)
+│   ├── (a)
+│   └── (c)
+├── 安全性
+│   ├── (b)
+│   └── (3)
+├── (2)
+│   ├── (4)
+│   └── (g)
+└── 可修改性
+    ├── (5)
+    └── (6)</pre>
+      <p style="font-size:13px;color:#6B7280">图 1　省级医保结算平台效用树</p>
+      <p><b>备选答案：</b>性能、可用性、f、d、e、h</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a2">0 字</span></div>
+      <textarea id="a2" data-qid="a2" placeholder="写出 (1)~(6) 六个空的答案，并简要说明 (1)(2) 的选择依据"></textarea>
+      <div class="answer-foot">建议 100—180 字<span class="saved" data-for="a2">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a2"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>敏感点与权衡点</div>
+    <div class="q-body">
+      <p>架构组在评估会上提出如下架构决策：</p>
+      <div class="scene">
+        <p>"结算核心采用<b>两地三中心 + 同步复制</b>方案：生产中心与同城灾备中心同时对外提供服务，结算数据同步写入两地，保证任一中心故障时数据零丢失。但同步复制使单笔结算平均写入延迟由 <b>45ms 增加到 130ms</b>；同时为满足 30 年留痕要求，所有结算表开启<b>全量审计日志</b>，进一步使写入 TPS 下降约 <b>18%</b>。"</p>
+      </div>
+      <p>请分别指出上述决策中的<b>敏感点</b>、<b>权衡点</b>，并说明各自理由；再指出该方案可能存在的 1 个<b>风险点</b>。</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a3">0 字</span></div>
+      <textarea id="a3" data-qid="a3" placeholder="敏感点：…… 理由：……&#10;权衡点：…… 理由：……&#10;风险点：……"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="a3">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a3"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r1">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r1">
+    <h4>问题 1（8 分）质量属性归类</h4>
+    <ul>
+      <li><b>性能 (1)：</b>a、g</li>
+      <li><b>安全性 (2)：</b>b、e、f</li>
+      <li><b>可用性 (3)：</b>c、f</li>
+      <li><b>可修改性 (4)：</b>d、h</li>
+    </ul>
+    <p><b>采分点：</b>每个质量属性答全得 2 分，答对但不全得 1 分。<b>易错：</b>(b) 数据保存 30 年 + 修改留痕，属<b>安全性</b>（含数据完整性与可审计性），不是"可靠性"；(f) 勒索病毒下保核心功能，同时体现<b>可用性</b>与<b>安全性</b>，只答一个最多得 1 分。</p>
+
+    <h4>问题 2（9 分）质量属性效用树</h4>
+    <ul>
+      <li><b>(1) 性能</b>（下挂 a、c 两个性能场景）</li>
+      <li><b>(2) 可用性</b>（下挂 (4) 与 g）</li>
+      <li><b>(3) f</b>（安全性分支下的"攻击时保核心可用"场景）</li>
+      <li><b>(4) c</b>（可用性分支下的"主节点故障 30 秒切换"场景）</li>
+      <li><b>(5) d</b>、<b>(6) h</b>（可修改性分支）</li>
+    </ul>
+    <p><b>采分点：</b>(1)(2) 各 1.5 分，四个场景空各 1.5 分。<b>易错：</b>把 g（登录并发响应 2 秒）误归入可用性——它本质是<b>性能</b>；(3) 处填 c 不填 f，因为 f 是"攻击下保可用"，放安全性分支更贴切。</p>
+
+    <h4>问题 3（8 分）敏感点与权衡点</h4>
+    <ul>
+      <li><b>敏感点：</b>"两地三中心 + 同步复制"这一决策。<br>
+        <b>理由：</b>它显著影响<b>可用性</b>（任一中心故障数据零丢失）与<b>性能</b>（写入延迟 45ms→130ms），是实现某质量属性的关键架构决策。</li>
+      <li><b>权衡点：</b>同一决策同时影响<b>多个</b>质量属性且方向相反——提升<b>可用性/可靠性</b>（零丢失、快速切换），但降低<b>性能</b>（延迟增至近 3 倍、TPS 降 18%）。<br>
+        <b>理由：</b>权衡点的本质是"提升 X 但降低 Y"，此处 X=可用性，Y=性能。</li>
+      <li><b>风险点（任答 1 个即可）：</b>
+        <ol>
+          <li>同步复制受跨中心网络时延制约，若两地链路抖动可能导致<b>主中心写入被阻塞</b>，反而放大可用性风险；</li>
+          <li>全量审计日志在高并发下可能撑爆<b>存储与 IO</b>，且 30 年留痕的数据归档、检索方案尚未验证；</li>
+          <li>同步复制 + 审计日志双重放大写入压力，月末高峰 QPS 1.2 万时可能出现<b>写队列积压</b>。</li>
+        </ol>
+      </li>
+    </ul>
+    <p><b>采分点：</b>敏感点 2 分、权衡点 2 分、理由各 1.5 分、风险点 1 分。<b>关键区分：</b>敏感点只需指出"影响某个质量属性的关键决策"；权衡点必须体现"<b>同时影响多个质量属性且有正有负</b>"。只写"这是敏感点也是权衡点"而不给理由不得分。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题二
+     ============================================================ -->
+<section class="qblock" id="q2">
+  <div class="qhead">试题二（25分）工业物联网设备管理平台</div>
+  <div class="qintro">本大题围绕架构风格对比、选型论证与构件设计展开，共 3 个小题。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某装备制造企业拟建设"工业物联网设备管理平台"，接入 <b>12 万台</b>数控机床与传感器，提供设备状态监控、故障预警、能耗分析、远程运维四大能力。平台数据流大致为：<b>设备采集 → 协议解析 → 数据清洗 → 特征提取 → 规则/模型判断 → 告警与存储</b>。</p>
+    <p>两类业务需求差异明显：</p>
+    <ul>
+      <li><b>实时监控类</b>：设备振动、温度、电流持续上报（合计约 <b>40 万点/秒</b>），要求<b>端到端延迟 ≤ 500ms</b>，超阈值立刻告警；</li>
+      <li><b>离线分析类</b>：每晚对全量历史数据做能耗统计与设备健康度建模，单次处理 <b>TB 级</b>数据，允许小时级延迟。</li>
+    </ul>
+    <p>架构组给出了两个候选方案：</p>
+    <ul>
+      <li><b>方案 A（批处理风格）</b>：数据先全量落盘，定时调度批作业统一处理，处理完再输出结果；</li>
+      <li><b>方案 B（管道-过滤器风格）</b>：各处理环节封装为过滤器，数据流经管道逐段处理，边到边输出。</li>
+    </ul>
+    <p>此外，现场协议极其混杂：Modbus、OPC UA、Profinet、MQTT、自定义串口协议共存；且企业要求未来新增协议时<b>不影响已有解析逻辑</b>。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（8 分）</span>两种架构风格对比</div>
+    <div class="q-body">
+      <p>请从<b>数据处理时序、时延特性、可扩展性、适用场景</b>四个维度，对比批处理风格与管道-过滤器风格的差异，完成表 2。</p>
+      <table>
+        <caption>表 2　批处理 vs 管道-过滤器</caption>
+        <tr><th style="width:20%">维度</th><th style="width:40%">批处理风格</th><th style="width:40%">管道-过滤器风格</th></tr>
+        <tr><td>数据处理时序</td><td class="fill">(1)</td><td class="fill">(2)</td></tr>
+        <tr><td>时延特性</td><td class="fill">(3)</td><td class="fill">(4)</td></tr>
+        <tr><td>可扩展性</td><td class="fill">(5)</td><td class="fill">(6)</td></tr>
+        <tr><td>适用场景</td><td class="fill">(7)</td><td class="fill">(8)</td></tr>
+      </table>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a4">0 字</span></div>
+      <textarea id="a4" data-qid="a4" placeholder="按 (1)~(8) 逐项填空，每项 10—25 字"></textarea>
+      <div class="answer-foot">建议 150—250 字<span class="saved" data-for="a4">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a4"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（9 分）</span>选型论证</div>
+    <div class="q-body">
+      <p>该平台<b>同时存在</b>实时监控与离线分析两类业务。请回答：</p>
+      <ol>
+        <li>针对<b>实时监控类</b>业务应选用哪种架构风格？请结合题干数字说明理由（至少 3 点）。</li>
+        <li>针对<b>离线分析类</b>业务应选用哪种架构风格？说明理由。</li>
+        <li>平台整体应如何组织这两种风格？请给出你的架构结论。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a5">0 字</span></div>
+      <textarea id="a5" data-qid="a5" placeholder="1) 实时监控选……，理由①②③&#10;2) 离线分析选……&#10;3) 整体采用……"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="a5">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a5"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>构件设计</div>
+    <div class="q-body">
+      <p>基于你在问题 2 中的选型结论，完成下列任务：</p>
+      <ol>
+        <li>列出该平台在<b>实时链路</b>上应设计的关键构件（至少 5 个），并说明每个构件的职责；</li>
+        <li>针对"<b>协议混杂、新增协议不影响已有解析逻辑</b>"这一需求，说明应如何利用该架构风格实现，并指出用到的设计模式。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a6">0 字</span></div>
+      <textarea id="a6" data-qid="a6" placeholder="1) 构件清单：&#10;① 采集过滤器——&#10;② ……&#10;2) 协议扩展方式：…… 设计模式：……"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="a6">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a6"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r2">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r2">
+    <h4>问题 1（8 分）两种架构风格对比</h4>
+    <table>
+      <tr><th style="width:18%">维度</th><th style="width:41%">批处理风格</th><th style="width:41%">管道-过滤器风格</th></tr>
+      <tr><td>数据处理时序</td><td>(1) 必须等全部数据输入就绪后才启动处理，上一阶段整批处理完才交付下一阶段</td><td>(2) 数据无需全部就绪，到达即逐条/逐段流式处理，多阶段可流水推进</td></tr>
+      <tr><td>时延特性</td><td>(3) 高延迟，结果需等整批完成后一次性输出，通常分钟至小时级</td><td>(4) 低延迟，数据流经即出结果，可做到毫秒至秒级</td></tr>
+      <tr><td>可扩展性</td><td>(5) 横向扩展粒度粗，一般整体扩调度器/计算集群；处理逻辑耦合在作业内</td><td>(6) 过滤器松耦合、可独立部署替换，可对热点过滤器单独水平扩展，新增环节只需插入管道</td></tr>
+      <tr><td>适用场景</td><td>(7) 离线海量数据汇总、月度/日终批量统计、日志归档、历史数据挖掘</td><td>(8) 实时流式处理、连续数据采集与监控、ETL 流水线、告警检测</td></tr>
+    </table>
+    <p><b>采分点：</b>每空 1 分，共 8 分。答出"是否需要全量就绪""延迟量级""松耦合/可独立扩展""适用业务类型"即可得分，不要求用词完全一致。</p>
+
+    <h4>问题 2（9 分）选型论证</h4>
+    <p><b>(1) 实时监控类 → 管道-过滤器风格（3 分）</b>，理由（每点 1 分，答 3 点得 3 分）：</p>
+    <ul>
+      <li><b>时延匹配：</b>要求端到端 ≤ 500ms，管道-过滤器流式处理天然满足；批处理必须等整批就绪，无法满足秒级要求。</li>
+      <li><b>持续输入：</b>40 万点/秒持续上报，数据永无"全部就绪"的时刻，批处理前提不成立。</li>
+      <li><b>及时告警：</b>超阈值须立刻告警，流式处理可在"规则判断"过滤器即时触发，无需等待整批。</li>
+      <li><b>热路径可扩展：</b>数据清洗、特征提取是算力热点，可对单个过滤器独立扩容。</li>
+    </ul>
+    <p><b>(2) 离线分析类 → 批处理风格（2 分）</b>，理由：</p>
+    <ul>
+      <li>TB 级历史数据、允许小时级延迟，批处理可做全量扫描与全局聚合，统计口径更准确；</li>
+      <li>批处理对资源占用可安排在夜间低谷，成本更优。</li>
+    </ul>
+    <p><b>(3) 整体结论（1 分）：采用"管道-过滤器（实时链路）+ 批处理（离线链路）"并存的双链路架构</b>，</p>
+    <ul>
+      <li>实时链路：设备 → 协议解析 → 清洗 → 特征提取 → 规则判断 → 告警（毫秒级）；</li>
+      <li>离线链路：原始数据落数据湖 → 夜间批作业做能耗统计与健康度建模；</li>
+      <li>两链路通过<b>统一数据落地层</b>（消息队列 + 对象存储/数据湖）解耦，实时链路把原始数据旁路写入，离线链路只读。</li>
+    </ul>
+    <p><b>易错点：</b>① 只答一种风格而忽略第二类业务，最多得 4 分；② 选批处理做实时监控直接判错；③ 不引用题干数字（500ms、40 万点/秒、TB 级）视为空泛论述，扣 1—2 分。</p>
+
+    <h4>问题 3（8 分）构件设计</h4>
+    <p><b>(1) 实时链路关键构件（5 分，每个 1 分，职责说清即可）：</b></p>
+    <ol>
+      <li><b>设备接入/采集构件</b>：建立与机床、传感器的连接，持续拉取或接收上报数据；</li>
+      <li><b>协议解析过滤器</b>：将 Modbus / OPC UA / Profinet / MQTT / 串口等原始报文解析为统一内部数据模型；</li>
+      <li><b>数据清洗过滤器</b>：处理缺失值、异常值、时间戳对齐、去重；</li>
+      <li><b>特征提取过滤器</b>：计算滑动窗口统计量（均值、方差、峰值、频域特征）；</li>
+      <li><b>规则/模型判断过滤器</b>：与阈值或模型比对，判定是否异常；</li>
+      <li><b>告警生成与通知过滤器</b>：生成告警事件并推送短信/企业微信/工单系统；</li>
+      <li><b>数据输出过滤器</b>：分流写入时序库（实时指标）与数据湖（原始数据，供离线链路）。</li>
+    </ol>
+    <p><b>(2) 协议扩展方式（3 分）：</b></p>
+    <ul>
+      <li>管道-过滤器的本质是<b>过滤器接口统一、可插拔</b>。为每种协议实现一个独立的<b>协议解析过滤器</b>，统一实现同一输入输出契约（原始报文 → 内部数据模型）；</li>
+      <li>新增协议时只需<b>新增一个过滤器实现并注册到管道</b>，通过配置或路由把该协议的数据导向对应过滤器，<b>已有过滤器代码零改动</b>——这正是"新增协议不影响已有解析逻辑"的落点；</li>
+      <li><b>用到的设计模式：</b>策略模式（不同协议解析算法可互换）、工厂模式（按协议类型创建解析器）、适配器模式（把异构协议适配为统一模型）；若答<b>责任链模式</b>（过滤器串联）亦可。</li>
+    </ul>
+    <p><b>采分点：</b>构件 5 分 + 扩展方式 2 分 + 设计模式 1 分。<b>易错：</b>只列构件名不说职责，每个扣 0.5；设计模式乱答（如答"单例模式"）不得分。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题三
+     ============================================================ -->
+<section class="qblock" id="q3">
+  <div class="qhead">试题三（25分）连锁零售交易中台</div>
+  <div class="qintro">本大题围绕关系模式规范化判定、反规范化与缓存一致性设计、NoSQL 选型展开，共 3 个小题。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某连锁零售企业建设"交易中台"，支撑全国 <b>2600 家门店</b>、线上商城与自提业务，日均交易 <b>350 万单</b>，峰值 <b>1.8 万 TPS</b>。中台需同时处理：门店 POS 交易、线上下单、会员积分、商品主数据、门店库存快照、用户行为埋点。</p>
+    <p>设计初期给出如下两个关系模式（均已满足 1NF）：</p>
+<pre>R1(订单号, 门店编号, 门店名称, 门店地址, 收银员编号, 收银员姓名,
+   商品编号, 商品名称, 单价, 数量, 金额, 会员编号, 会员等级, 下单时间)
+
+R2(门店编号, 商品编号, 库存数量, 安全库存, 补货周期)
+
+已知函数依赖：
+R1：订单号 → 门店编号, 收银员编号, 会员编号, 下单时间
+    门店编号 → 门店名称, 门店地址
+    收银员编号 → 收银员姓名
+    商品编号 → 商品名称, 单价
+    (订单号, 商品编号) → 数量, 金额
+    会员编号 → 会员等级
+R2：(门店编号, 商品编号) → 库存数量, 安全库存, 补货周期</pre>
+    <p>另有两类典型访问：</p>
+    <ul>
+      <li><b>高并发读</b>：门店收银与商城详情页需在 <b>50ms 内</b>返回商品价格与库存，单商品 QPS 峰值可达 <b>8000</b>；</li>
+      <li><b>行为埋点写入</b>：用户点击、浏览、加购埋点日均 <b>12 亿条</b>，字段不固定且持续新增，几乎不更新、只追加。</li>
+    </ul>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（8 分）</span>范式判定与分解</div>
+    <div class="q-body">
+      <ol>
+        <li>分别判断 R1、R2 最高满足第几范式，并说明理由（指出违反的函数依赖）；</li>
+        <li>将 R1 规范化为第三范式（3NF），写出分解后的关系模式，并标注每个模式的主键与外键。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a7">0 字</span></div>
+      <textarea id="a7" data-qid="a7" style="min-height:170px" placeholder="1) R1 最高满足第 X 范式，因为存在……；R2 ……&#10;2) 分解结果：&#10;  订单表(……) 主键……&#10;  门店表(……) 主键……"></textarea>
+      <div class="answer-foot">建议 250—400 字<span class="saved" data-for="a7">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a7"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（9 分）</span>反规范化与读写分离</div>
+    <div class="q-body">
+      <p>为满足"商品价格与库存 50ms 内返回、单商品 8000 QPS"，架构组计划：</p>
+      <ul>
+        <li>在商品详情与库存查询中<b>引入冗余字段</b>并配合缓存；</li>
+        <li>数据库采用"<b>一主多从 + 读写分离</b>"，查询走从库。</li>
+      </ul>
+      <p>请回答：</p>
+      <ol>
+        <li>说明 3NF 分解后为何<b>还要</b>做反规范化？请结合本题场景举 1 个具体反规范化设计，并指出引入的代价；</li>
+        <li>读写分离在本题场景下可能引发什么问题？请说明原因及 2 条应对措施；</li>
+        <li>针对"单商品 8000 QPS"，除缓存外还能采取哪些手段降低数据库压力的机制？（列出 2 条即可）</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a8">0 字</span></div>
+      <textarea id="a8" data-qid="a8" style="min-height:170px" placeholder="1) 因为……；例如把……冗余到……；代价是……&#10;2) 主从延迟导致……；措施①②&#10;3) ①…… ②……"></textarea>
+      <div class="answer-foot">建议 300—420 字<span class="saved" data-for="a8">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a8"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>NoSQL 选型</div>
+    <div class="q-body">
+      <p>针对"日均 12 亿条、字段不固定且持续新增、只追加不更新"的行为埋点数据，请回答：</p>
+      <ol>
+        <li>应选用哪一类 NoSQL 数据库？说明理由（至少 3 点）；</li>
+        <li>请给出 2 个具体的候选产品，并说明各自的适用点；</li>
+        <li>指出该选型的 1 个局限，给出应对办法。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a9">0 字</span></div>
+      <textarea id="a9" data-qid="a9" placeholder="1) 选 列式/文档型/键值……类，理由①②③&#10;2) 候选：A（适用点）、B（适用点）&#10;3) 局限：…… 应对：……"></textarea>
+      <div class="answer-foot">建议 200—320 字<span class="saved" data-for="a9">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a9"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r3">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r3">
+    <h4>问题 1（8 分）范式判定与分解</h4>
+    <p><b>(1) 判定（3 分）：</b></p>
+    <ul>
+      <li><b>R1 最高满足 1NF（2 分）</b>。理由：主键为 (订单号, 商品编号)，但存在<b>部分函数依赖</b>——订单号 → 门店编号/收银员编号/会员编号，商品编号 → 商品名称/单价，都只依赖主键的一部分；此外门店编号 → 门店名称/地址、收银员编号 → 收银员姓名、会员编号 → 会员等级为<b>传递依赖</b>。</li>
+      <li><b>R2 满足 3NF（1 分）</b>。理由：主键 (门店编号, 商品编号)，库存数量/安全库存/补货周期完全函数依赖于整个主键，且不存在传递依赖。</li>
+    </ul>
+    <p><b>(2) R1 规范化为 3NF（5 分，每个正确模式 1 分）：</b></p>
+<pre>门店(门店编号 PK, 门店名称, 门店地址)
+收银员(收银员编号 PK, 收银员姓名)
+会员(会员编号 PK, 会员等级)
+商品(商品编号 PK, 商品名称, 单价)
+订单(订单号 PK, 门店编号 FK, 收银员编号 FK, 会员编号 FK, 下单时间)
+订单明细(订单号 PK+FK, 商品编号 PK+FK, 数量, 金额)</pre>
+    <p><b>采分点：</b>判定 3 分 + 分解 5 分。<b>易错：</b>① 把 R1 判成 2NF（部分依赖存在，连 2NF 都不是）；② 分解后忘记标主键/外键；③ 把"金额"留在订单表（金额依赖的是订单+商品，必须放在明细表）。</p>
+
+    <h4>问题 2（9 分）反规范化与读写分离</h4>
+    <p><b>(1) 为何还要反规范化（4 分）：</b></p>
+    <ul>
+      <li>3NF 消除冗余带来<b>更多的表和连接（JOIN）</b>，一次商品详情查询可能涉及商品、库存、门店、促销 4—5 张表；在 8000 QPS 下，多表 JOIN 无法满足 <b>50ms</b> 响应要求。（1 分）</li>
+      <li><b>具体反规范化设计（2 分，任答 1 个）：</b>
+        <ol>
+          <li>在"商品"表中冗余"当前库存数量""门店名称"字段，把详情页查询从多表 JOIN 降为单表查询；</li>
+          <li>在"订单明细"中冗余"商品名称""单价快照"（下单时价格固化），既避免关联商品表，也保证历史单据价格不随商品调价而变；</li>
+          <li>建宽表/物化视图，把商品+库存+促销预拼成一张查询表，由异步任务刷新。</li>
+        </ol>
+      </li>
+      <li><b>代价（1 分）：</b>引入<b>数据冗余与不一致风险</b>——同一数据多处存储，更新需同步多处；若用异步刷新，会存在<b>短暂数据窗口不一致</b>（如库存显示滞后）。</li>
+    </ul>
+    <p><b>(2) 读写分离的问题（3 分）：</b></p>
+    <ul>
+      <li><b>主从复制延迟（1 分）：</b>写主库后立即查从库，可能读到旧数据（如"下单成功但订单列表查不到"），即<b>读己之写</b>一致性被破坏。</li>
+      <li><b>应对措施（2 分，每条 1 分，答 2 条）：</b>
+        <ol>
+          <li><b>强制走主库</b>：对实时性要求高的读写（如支付后立即查订单、库存扣减后校验）标记为走主库；</li>
+          <li><b>半同步复制</b>：保证至少一个从库确认收到 binlog 后才返回写成功，压缩延迟窗口；</li>
+          <li><b>延迟感知路由</b>：监控从库延迟，超过阈值（如 200ms）自动把该查询切到主库；</li>
+          <li><b>会话粘滞</b>：同一会话内写后的读固定路由到主库一小段时间。</li>
+        </ol>
+      </li>
+    </ul>
+    <p><b>(3) 除缓存外降压手段（2 分，每条 1 分）：</b></p>
+    <ul>
+      <li><b>限流与排队</b>：网关层对单商品维度限流，超阈值排队或返回兜底；</li>
+      <li><b>静态化/预计算</b>：商品详情页静态化或预生成，甚至用 CDN 承载；</li>
+      <li><b>读写分离 + 从库横向扩容</b>，把读压力分摊到多从库；</li>
+      <li><b>连接池与 SQL 优化</b>：合理连接池大小、覆盖索引避免回表；</li>
+      <li><b>本地缓存 + 多级缓存</b>：JVM 本地缓存扛住热点单品（如 Caffeine）。</li>
+    </ul>
+    <p><b>采分点：</b>(1) 4 分 (2) 3 分 (3) 2 分。<b>易错：</b>说"反规范化就是加索引"——加索引不是反规范化；说"读写分离能解决延迟"而不说主从延迟问题，属答偏。</p>
+
+    <h4>问题 3（8 分）NoSQL 选型</h4>
+    <p><b>(1) 类型选择与理由（4 分）：</b></p>
+    <p>应选<b>列式（宽列）数据库</b>或<b>文档型数据库</b>为主的 NoSQL。理由（每点 1 分，答 3 点）：</p>
+    <ul>
+      <li><b>Schema 灵活：</b>字段不固定且持续新增，关系库改表代价高，NoSQL 天然 schema-less；</li>
+      <li><b>写多读少、只追加：</b>日均 12 亿条写入，列式/文档库的追加写吞吐远高于关系库；</li>
+      <li><b>水平扩展：</b>数据量持续增长，NoSQL 可线性增加节点（分区/分片）；</li>
+      <li><b>稀疏列存储高效：</b>埋点字段大量空缺，列式存储可只存非空列，压缩率高。</li>
+    </ul>
+    <p><b>(2) 候选产品（2 分，每个 1 分）：</b></p>
+    <ul>
+      <li><b>HBase</b>：基于 HDFS、强一致、适合海量稀疏数据的随机读写，与大数据生态（Spark/Flink）天然集成，适合后续离线分析；</li>
+      <li><b>MongoDB</b>：文档模型、schema 灵活、开发友好，适合结构多变的埋点与快速迭代；</li>
+      <li><b>ClickHouse</b>（补充）：列式 + 极高压缩与聚合性能，适合埋点的实时多维分析（偏 OLAP）。</li>
+    </ul>
+    <p><b>(3) 局限与应对（2 分）：</b></p>
+    <ul>
+      <li><b>局限：</b>NoSQL 通常不支持复杂 JOIN 与跨行事务，且不擅长大范围聚合分析（HBase/MongoDB 尤其）；</li>
+      <li><b>应对：</b>把埋点数据同时写入<b>数据湖/OLAP 引擎</b>（如 ClickHouse、Hive/Doris）承载分析场景，形成"线上查询用 NoSQL、分析用 OLAP"的双写或异步同步；对需要关联的维度（商品、门店）在写入时<b>打宽/预关联</b>，避免运行时 JOIN。</li>
+    </ul>
+    <p><b>采分点：</b>类型+理由 4 分 + 产品 2 分 + 局限与应对 2 分。<b>易错：</b>答"Redis"——Redis 是缓存/键值存储，不适合存 12 亿条需要持久化与分析的埋点；只写产品名不写适用点扣分。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题四
+     ============================================================ -->
+<section class="qblock" id="q4">
+  <div class="qhead">试题四（25分）第三方支付清结算系统</div>
+  <div class="qintro">本大题围绕可靠性指标计算、容灾等级与 RTO/RPO 设计、限流熔断降级策略展开，共 3 个小题。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某第三方支付机构建设"清结算系统"，负责交易对账、资金清分、商户结算与出款。系统必须满足：</p>
+    <ul>
+      <li>年可用性不低于 <b>99.99%</b>；</li>
+      <li>发生灾难时 <b>资金数据零丢失</b>，支付业务恢复时间 ≤ <b>30 分钟</b>；</li>
+      <li>单日交易 <b>6000 万笔</b>，日终批量清分窗口 <b>4 小时</b>内必须完成。</li>
+    </ul>
+    <p>系统核心链路由三个串联子系统组成，各自的可用性指标如下：</p>
+    <table>
+      <caption>表 3　核心链路子系统可用性</caption>
+      <tr><th>子系统</th><th>说明</th><th>可用性</th></tr>
+      <tr><td>交易接入</td><td>单套部署</td><td>99.95%</td></tr>
+      <tr><td>清分引擎</td><td>单套部署</td><td>99.90%</td></tr>
+      <tr><td>出款网关</td><td>单套部署</td><td>99.98%</td></tr>
+    </table>
+    <p>此外，日终批处理采用<b>主备两台清分服务器</b>：主服务器平均无故障时间 MTBF = <b>2000 小时</b>，平均修复时间 MTTR = <b>4 小时</b>；备用服务器配置相同，仅在主服务器故障时接管。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（8 分）</span>可靠性指标计算</div>
+    <div class="q-body">
+      <ol>
+        <li>计算表 3 所示<b>三个子系统串联</b>后的整体可用性（保留 4 位小数百分比，写出计算过程），并判断是否满足 99.99% 的要求；</li>
+        <li>计算单台清分服务器的<b>可用性</b>（用 MTBF 与 MTTR 表示并算出数值）；</li>
+        <li>若主备为<b>并联（冗余）</b>结构且备机可完全接管，计算该主备系统的整体可用性，并说明与单机相比提升幅度。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a10">0 字</span></div>
+      <textarea id="a10" data-qid="a10" style="min-height:170px" placeholder="1) A = A1×A2×A3 = …… 结论：&#10;2) A = MTBF/(MTBF+MTTR) = ……&#10;3) A并联 = 1-(1-A)² = ……"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="a10">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a10"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（9 分）</span>容灾等级与 RTO/RPO 设计</div>
+    <div class="q-body">
+      <p>已知系统要求"资金数据零丢失、恢复时间 ≤ 30 分钟"。请回答：</p>
+      <ol>
+        <li>写出该系统的 <b>RTO</b> 与 <b>RPO</b> 目标值，并解释这两个指标的含义与区别；</li>
+        <li>按照国家标准的数据容灾能力等级划分，说明要达到"RPO = 0"至少需要哪一级容灾，并说明理由；</li>
+        <li>给出满足该要求的具体容灾方案设计（含数据中心布局与数据复制方式），并说明该方案在成本上的主要代价。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a11">0 字</span></div>
+      <textarea id="a11" data-qid="a11" style="min-height:170px" placeholder="1) RTO=…… RPO=…… 含义：…… 区别：……&#10;2) 至少第 X 级，理由：……&#10;3) 方案：…… 代价：……"></textarea>
+      <div class="answer-foot">建议 300—420 字<span class="saved" data-for="a11">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a11"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>限流、熔断与降级</div>
+    <div class="q-body">
+      <p>大促期间出款网关出现依赖的下游银行接口超时，导致线程堆积、请求雪崩。请回答：</p>
+      <ol>
+        <li>分别说明<b>限流、熔断、降级</b>三者的作用与区别（各举 1 个本题场景的实例）；</li>
+        <li>请给出该出款网关的<b>熔断器</b>设计要点（至少 3 点，如触发条件、状态、恢复策略）；</li>
+        <li>系统要求"资金数据零丢失"，降级时对<b>出款类</b>业务应如何处理？请说明理由。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a12">0 字</span></div>
+      <textarea id="a12" data-qid="a12" style="min-height:170px" placeholder="1) 限流：…… 实例：……&#10;   熔断：…… 实例：……&#10;   降级：…… 实例：……&#10;2) ①触发条件 ②状态机 ③恢复策略&#10;3) 出款业务降级方式：…… 理由：……"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="a12">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a12"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r4">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r4">
+    <h4>问题 1（8 分）可靠性指标计算</h4>
+    <p><b>(1) 串联可用性（3 分）：</b></p>
+<pre>A_串 = 0.9995 × 0.9990 × 0.9998
+     = 0.9995 × 0.9990 = 0.9985005
+     × 0.9998 ≈ 0.99830080
+即 ≈ 99.8301%</pre>
+    <p><b>结论：不满足 99.99% 要求</b>，差距约 0.16 个百分点（约合每年多停机 14 小时）。</p>
+    <p><b>(2) 单机可用性（2 分）：</b></p>
+<pre>A = MTBF / (MTBF + MTTR) = 2000 / (2000 + 4) = 2000/2004 ≈ 0.998004 ≈ 99.8004%</pre>
+    <p><b>(3) 主备并联可用性（3 分）：</b></p>
+<pre>A_并 = 1 − (1 − A)² = 1 − (1 − 0.998004)²
+     = 1 − (0.001996)² ≈ 1 − 0.000003984
+     ≈ 0.99999602 ≈ 99.9996%</pre>
+    <p><b>提升幅度：</b>单机 99.8004% → 主备并联 99.9996%，不可用时间从约 <b>17.5 小时/年</b>降至约 <b>1.3 分钟/年</b>，提升约 <b>800 倍</b>。</p>
+    <p><b>采分点：</b>(1) 计算式 1 分 + 结果 1 分 + 结论 1 分；(2) 公式 1 分 + 结果 1 分；(3) 公式 1 分 + 结果 1 分 + 提升说明 1 分。<b>易错：</b>并联公式写成 A₁+A₂（应为 1−(1−A₁)(1−A₂)）；只写公式不算数值，最多得一半分。</p>
+
+    <h4>问题 2（9 分）容灾等级与 RTO/RPO 设计</h4>
+    <p><b>(1) RTO 与 RPO（3 分）：</b></p>
+    <ul>
+      <li><b>RTO（恢复时间目标）= ≤ 30 分钟</b>：灾难发生后，业务从中断到恢复可用的最长可接受时间；</li>
+      <li><b>RPO（恢复点目标）= 0（零丢失）</b>：灾难发生时，允许丢失的数据时间跨度；RPO=0 表示任何已提交数据都不允许丢失；</li>
+      <li><b>区别（1 分）：</b>RTO 衡量"恢复多快"（时间维度，关注业务中断时长），RPO 衡量"丢多少数据"（数据维度，关注数据完整性）。</li>
+    </ul>
+    <p><b>(2) 容灾等级（3 分）：</b></p>
+    <ul>
+      <li>要达到 <b>RPO = 0</b>，至少需要达到<b>数据级容灾中的最高等级——第 6 级（数据零丢失）</b>，即<b>远程数据同步复制 + 自动切换</b>的容灾能力；</li>
+      <li><b>理由：</b>只有<b>同步复制</b>（写主中心成功前必须确认灾备中心已收到并落盘）才能保证 RPO=0；异步复制必然存在复制延迟，灾难瞬间会丢失延迟窗口内的数据，RPO&gt;0。同时 RTO ≤ 30 分钟要求具备<b>自动/半自动切换</b>能力，人工切换通常无法在 30 分钟内完成。</li>
+      <li>（若按"两地三中心"等级体系作答，答"同城双活 + 异地灾备/同步复制"亦可给分。）</li>
+    </ul>
+    <p><b>(3) 方案设计与代价（3 分）：</b></p>
+    <ul>
+      <li><b>布局：两地三中心</b>——同城双中心（生产中心 A + 同城灾备中心 B，光纤直连、时延 &lt;2ms）+ 异地灾备中心 C（跨城，约 1000km）；</li>
+      <li><b>复制方式：</b>同城 A↔B 采用<b>同步复制</b>（保证 RPO=0），异地 C 采用<b>异步复制</b>（规避长距离同步导致的写阻塞）；</li>
+      <li><b>切换：</b>同城故障由负载均衡 + 数据库自动主备切换（RTO 秒级至分钟级）；同城整体灾难时切换至异地 C，通过 DNS/GSLB 引流（RTO 控制在 30 分钟内）；</li>
+      <li><b>成本代价（1 点即可）：</b>① 资源成本约为单中心的 <b>3 倍</b>（三套机房 + 带宽）；② 同步复制使写延迟增加（同城约 +5—20ms）；③ 跨中心数据一致性校验、灾备演练与运维复杂度显著上升。</li>
+    </ul>
+    <p><b>采分点：</b>(1) 3 分 (2) 3 分 (3) 3 分。<b>易错：</b>把 RTO 与 RPO 说反；认为"异步复制也能做到 RPO=0"（这是典型错误）；只说"上云/多活"而不给复制方式与切换手段。</p>
+
+    <h4>问题 3（8 分）限流、熔断与降级</h4>
+    <p><b>(1) 三者区别与实例（3 分，每项 1 分）：</b></p>
+    <table>
+      <tr><th style="width:12%">手段</th><th style="width:34%">作用</th><th style="width:54%">本题实例</th></tr>
+      <tr><td><b>限流</b></td><td>主动限制<b>入口</b>流量速率，防止超出系统处理能力</td><td>在出款网关入口按商户维度做令牌桶限流，如单商户 500 TPS，超出返回"请稍后重试"</td></tr>
+      <tr><td><b>熔断</b></td><td>当<b>下游依赖</b>失败率/超时率超阈值时，快速失败并中断调用，避免线程堆积</td><td>某银行接口连续 20 秒超时率 &gt;50%，熔断该银行通道，请求快速失败而非继续等待</td></tr>
+      <tr><td><b>降级</b></td><td>牺牲<b>非核心</b>功能或返回兜底结果，保住核心链路</td><td>关闭"出款结果实时查询"等非核心接口，仅保留出款提交；或返回"处理中"的兜底状态</td></tr>
+    </table>
+    <p><b>(2) 熔断器设计要点（3 分，每点 1 分）：</b></p>
+    <ul>
+      <li><b>触发条件：</b>基于统计窗口（如 10 秒）内的<b>失败率</b>（如 &gt;50%）、<b>超时率</b>或<b>慢调用比例</b>，并设置<b>最小请求数</b>（如 20 次）避免样本过小误熔断；</li>
+      <li><b>状态机：</b><b>CLOSED（正常放行）→ OPEN（直接拒绝）→ HALF_OPEN（放少量探测请求）→ 依结果回到 CLOSED 或再次 OPEN</b>；</li>
+      <li><b>恢复策略：</b>OPEN 持续一段时间后进入 HALF_OPEN，放行少量（如 5 个）探测请求；成功率达到阈值则闭合，否则重置计时继续熔断；</li>
+      <li><b>隔离配套：</b>按下游银行通道分别设置熔断器（舱壁隔离），单通道故障不影响其他通道。</li>
+    </ul>
+    <p><b>(3) 出款业务的降级处理（2 分）：</b></p>
+    <ul>
+      <li><b>处理方式：</b>出款属核心资金业务，<b>不能直接降级为"返回成功"或"丢弃"</b>。应采用<b>异步化 + 持久化排队</b>：请求先落库（或写入可靠消息队列）并返回"受理中"状态，等下游恢复后按顺序重试出款；对重复请求用<b>幂等键</b>去重；同时<b>暂停新出款受理</b>（入口限流/熔断），保护已有在途请求。</li>
+      <li><b>理由：</b>题目要求"资金数据零丢失"，若降级时丢弃或返回假成功，会造成<b>账实不符</b>与资金风险；只能通过"受理即持久化 + 幂等重试"保证不丢不重。</li>
+    </ul>
+    <p><b>采分点：</b>(1) 3 分 (2) 3 分 (3) 2 分。<b>易错：</b>把限流与熔断混为一谈（限流在入口、熔断对下游）；降级时对出款业务"返回成功"，属严重错误，本题不得分。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题五
+     ============================================================ -->
+<section class="qblock" id="q5">
+  <div class="qhead">试题五（25分）生鲜电商大促交易系统</div>
+  <div class="qintro">本大题围绕微服务拆分、缓存高并发问题与分布式事务方案展开，共 4 个小题。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某生鲜电商平台原为单体应用，面临以下问题：代码量 <b>120 万行</b>、发布一次需 <b>4 小时</b>、任一小功能故障即导致全站不可用、大促时数据库连接池被打满。</p>
+    <p>平台计划重构为微服务架构，业务域包括：用户、商品、购物车、订单、库存、支付、优惠券、物流、评价。核心矛盾如下：</p>
+    <ul>
+      <li>大促峰值 <b>15 万 QPS</b>，其中 <b>90%</b> 是商品详情与库存查询；</li>
+      <li>爆款商品（如飞天茅台）单 SKU 承受 <b>8 万 QPS</b> 的重复查询，库存仅 <b>2000 件</b>；</li>
+      <li>下单需同时完成"扣库存、扣优惠券、创建订单、发起支付"四个动作，跨 4 个服务；</li>
+      <li>曾出现：缓存与数据库库存不一致导致超卖 <b>37 单</b>；缓存雪崩导致数据库被击穿、全站 5 分钟不可用。</li>
+    </ul>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（7 分）</span>微服务拆分</div>
+    <div class="q-body">
+      <p>请回答：</p>
+      <ol>
+        <li>说明微服务拆分应遵循的主要原则（至少 3 条）;</li>
+        <li>结合 DDD（领域驱动设计），说明"限界上下文"与微服务边界的关系；</li>
+        <li>针对本平台，给出你的服务拆分结果，并指出至少 1 个<b>不宜拆分</b>或需<b>谨慎拆分</b>的地方及理由。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a13">0 字</span></div>
+      <textarea id="a13" data-qid="a13" style="min-height:160px" placeholder="1) 原则：①②③&#10;2) 限界上下文……，微服务边界……&#10;3) 拆分结果：……；不宜拆分的：…… 理由：……"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="a13">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a13"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（6 分）</span>缓存三大问题</div>
+    <div class="q-body">
+      <p>题干提到"缓存雪崩导致数据库被击穿"。请回答：</p>
+      <ol>
+        <li>分别说明<b>缓存穿透、缓存击穿、缓存雪崩</b>的含义与区别；</li>
+        <li>针对这三种问题，各给出 1—2 个具体解决方案（结合本题场景）；</li>
+        <li>针对"爆款 SKU 8 万 QPS 重复查询"，最适合用上述哪一种问题的手段解决？为什么？</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a14">0 字</span></div>
+      <textarea id="a14" data-qid="a14" style="min-height:160px" placeholder="1) 穿透：…… 击穿：…… 雪崩：…… 区别：……&#10;2) 解决方案……&#10;3) 属于……，因为……"></textarea>
+      <div class="answer-foot">建议 280—380 字<span class="saved" data-for="a14">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a14"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（6 分）</span>库存一致性</div>
+    <div class="q-body">
+      <p>题干提到"缓存与数据库库存不一致导致超卖 37 单"。请回答：</p>
+      <ol>
+        <li>说明"先更新数据库、再删除缓存"（Cache Aside）中仍可能出现不一致的典型情形；</li>
+        <li>给出 3 条防止<b>超卖</b>的具体技术手段，并比较其优缺点；</li>
+        <li>针对库存仅 2000 件、8 万 QPS 的爆款场景，你会选择哪种防超卖方案？说明理由。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a15">0 字</span></div>
+      <textarea id="a15" data-qid="a15" style="min-height:160px" placeholder="1) 不一致情形：……&#10;2) ①…… 优点/缺点&#10;   ②…… ③……&#10;3) 选择…… 理由：……"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="a15">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a15"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题4】<span class="score">（6 分）</span>分布式事务方案</div>
+    <div class="q-body">
+      <p>"下单"需跨订单、库存、优惠券、支付 4 个服务。请回答：</p>
+      <ol>
+        <li>说明 2PC、TCC、本地消息表（最终一致）三种方案的原理与适用差异；</li>
+        <li>针对本平台下单场景，你会选择哪种方案？说明理由；</li>
+        <li>若选择最终一致性方案，请说明如何保证"不重复扣减"与"失败后补偿"，并指出该方案的一个已知缺陷。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 4<span class="cnt" data-for="a16">0 字</span></div>
+      <textarea id="a16" data-qid="a16" style="min-height:160px" placeholder="1) 2PC：…… TCC：…… 本地消息表：……&#10;2) 选择…… 理由：……&#10;3) 幂等键…… 补偿…… 缺陷：……"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="a16">✓ 已保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a16"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r5">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r5">
+    <h4>问题 1（7 分）微服务拆分</h4>
+    <p><b>(1) 拆分原则（3 分，每条 1 分，答 3 条）：</b></p>
+    <ul>
+      <li><b>单一职责 / 业务能力单一：</b>一个服务只负责一个业务能力，对应一个可独立演进的业务域；</li>
+      <li><b>高内聚低耦合：</b>强相关的功能放同一服务，服务间通过明确定义的接口通信，减少跨服务调用链；</li>
+      <li><b>按业务能力/子域拆分（而非按技术分层）</b>：不拆成"controller 服务 / dao 服务"，而是按订单、库存等业务域拆；</li>
+      <li><b>数据私有：</b>每个服务独占自己的数据库/Schema，禁止跨服务直接读对方表；</li>
+      <li><b>与组织结构对齐（康威定律）</b>：服务边界尽量与团队边界一致；</li>
+      <li><b>可独立部署与演进：</b>服务应能被单独开发、测试、发布、扩缩容；</li>
+      <li><b>适度粒度：</b>避免"分布式单体"（拆得过细导致调用链过长）与"拆得过大"。</li>
+    </ul>
+    <p><b>(2) 限界上下文与微服务边界（2 分）：</b></p>
+    <ul>
+      <li><b>限界上下文（Bounded Context）</b>是 DDD 中对领域模型的边界划分，在同一上下文内，领域术语（如"商品"）有唯一、明确的含义；</li>
+      <li>限界上下文是<b>微服务边界的首要依据</b>——通常<b>一个限界上下文对应一个（或一组）微服务</b>，因为上下文内部模型高度内聚、上下文之间需通过明确的契约（上下文映射）通信；</li>
+      <li>注意：二者并非严格 1:1，一个上下文可能拆成多个服务（按伸缩特性），多个小上下文也可能合并为一个服务（避免过度拆分）。</li>
+    </ul>
+    <p><b>(3) 拆分结果与不宜拆分处（2 分）：</b></p>
+    <ul>
+      <li><b>拆分结果：</b>用户服务、商品服务、购物车服务、订单服务、库存服务、支付服务、优惠券服务、物流服务、评价服务；</li>
+      <li><b>需谨慎拆分（1 分，任答 1 个）：</b>
+        <ol>
+          <li><b>订单与订单明细</b>不应拆开——它们是同一限界上下文，强一致、同事务，拆开会导致跨服务事务；</li>
+          <li><b>库存与商品</b>可保持较近的边界或同库——库存扣减需与 SKU 强一致校验；</li>
+          <li><b>支付</b>不宜过度拆分为"支付单/支付流水/对账"多个服务——支付是资金强一致域，且需与外部渠道对接，过度拆分放大一致性风险；</li>
+          <li><b>评价/物流</b>虽可独立，但与主交易链路耦合低，应<b>异步解耦</b>而非同步调用。</li>
+        </ol>
+      </li>
+    </ul>
+    <p><b>采分点：</b>原则 3 分 + 限界上下文 2 分 + 拆分结果与理由 2 分。<b>易错：</b>按"controller/service/dao"技术分层拆分（判错方向）；只说"按业务拆"不解释限界上下文与边界关系。</p>
+
+    <h4>问题 2（6 分）缓存三大问题</h4>
+    <p><b>(1) 三者含义与区别（3 分，每项 1 分）：</b></p>
+    <table>
+      <tr><th style="width:16%">问题</th><th style="width:46%">含义</th><th style="width:38%">区别关键</th></tr>
+      <tr><td><b>缓存穿透</b></td><td>查询的 key <b>在缓存和数据库中都不存在</b>，请求每次都打到数据库</td><td>数据根本不存在</td></tr>
+      <tr><td><b>缓存击穿</b></td><td><b>某个热点 key 突然过期</b>，瞬间大量并发请求同时打到数据库</td><td>单个热点 key 失效</td></tr>
+      <tr><td><b>缓存雪崩</b></td><td><b>大量 key 在同一时刻集中过期</b>，或缓存集群整体宕机，导致请求全部涌向数据库</td><td>大量 key 同时失效 / 缓存层整体不可用</td></tr>
+    </table>
+    <p><b>(2) 解决方案（2 分，答出对应即可）：</b></p>
+    <ul>
+      <li><b>穿透：</b>① <b>布隆过滤器</b>前置拦截不存在的 key；② 对空结果也缓存（空值缓存，设短 TTL）；③ 接口层参数校验拦截非法 key。</li>
+      <li><b>击穿：</b>① 热点 key <b>逻辑过期</b>（不设物理 TTL，异步刷新）；② <b>互斥锁/分布式锁</b>保证只有一个线程回源重建缓存；③ 热点数据预热 + 永不过期。</li>
+      <li><b>雪崩：</b>① TTL 加<b>随机抖动</b>，避免集中过期；② 缓存<b>高可用集群</b>（哨兵/集群模式）+ 多级缓存；③ <b>熔断降级</b>限流保护数据库；④ 缓存预热。</li>
+    </ul>
+    <p><b>(3) 爆款 SKU 8 万 QPS 属于哪个问题（1 分）：</b></p>
+    <p>属于<b>缓存击穿</b>（热点 key 失效瞬间被打穿）。因为该 key 对应的数据<b>确实存在</b>（排除穿透），且是<b>单个热点 SKU</b>（排除雪崩的多 key 同时失效）。<br>
+      应对首选：<b>逻辑过期 + 互斥锁重建</b>，并配合热点数据预热、本地缓存（Caffeine）扛住热 key。</p>
+    <p><b>采分点：</b>三者辨析 3 分 + 方案 2 分 + 判断 1 分。<b>易错：</b>把击穿与雪崩混为一谈；把"爆款商品"判成雪崩。</p>
+
+    <h4>问题 3（6 分）库存一致性</h4>
+    <p><b>(1) Cache Aside 仍可能不一致的情形（2 分）：</b></p>
+    <ul>
+      <li><b>并发时序错乱：</b>线程 A 读缓存未命中 → 查库得旧值 → 此时线程 B 更新数据库并删除缓存 → A 再把<b>旧值写回缓存</b>，导致缓存长期是旧值（"先删后写回"的经典竞态）；</li>
+      <li><b>删除缓存失败：</b>更新 DB 成功后删缓存失败（网络/超时），缓存仍是旧值，直到 TTL 过期；</li>
+      <li><b>主从延迟：</b>写主库后立即删缓存，但读请求从从库读到旧值又写回缓存；</li>
+      <li><b>读写并发下的中间态：</b>扣减库存这类"读改写"操作，若不加原子控制，缓存与 DB 的中间状态会被并发读到。</li>
+    </ul>
+    <p><b>(2) 防超卖 3 种手段及优缺点（3 分，每种 1 分）：</b></p>
+    <table>
+      <tr><th style="width:24%">手段</th><th style="width:38%">优点</th><th style="width:38%">缺点</th></tr>
+      <tr><td><b>数据库行锁 / 悲观锁</b>（SELECT … FOR UPDATE）</td><td>强一致，实现简单</td><td>热点行锁竞争剧烈，吞吐低，易超时/死锁</td></tr>
+      <tr><td><b>乐观锁</b>（版本号 / CAS）</td><td>无阻塞，读多写少时性能好</td><td>高冲突下大量更新失败需重试，热点商品重试率高</td></tr>
+      <tr><td><b>Redis 原子扣减</b>（DECR / Lua 脚本）</td><td>原子、高并发性能极好，可挡在 DB 之前</td><td>需处理与 DB 的最终一致（异步落库、对账补偿）</td></tr>
+      <tr><td>（补充）<b>库存分段</b>、<b>消息队列串行化</b></td><td>分散热点 / 削峰</td><td>复杂度高，分段需聚合</td></tr>
+    </table>
+    <p><b>(3) 爆款场景选型（1 分）：</b></p>
+    <p>应选 <b>Redis 原子扣减（Lua 脚本）+ 库存分段 + 异步落库 + 对账补偿</b>。</p>
+    <p><b>理由：</b>8 万 QPS 打 2000 件库存，数据库行锁必然被打爆；Redis 单线程原子操作可承受高并发，Lua 脚本保证"查库存+扣减"原子执行；库存分段可进一步分散单 key 热点；扣减成功后再通过消息队列异步落库，并用定时对账兜底最终一致。</p>
+    <p><b>采分点：</b>(1) 2 分 (2) 3 分 (3) 1 分。<b>易错：</b>只说"加锁"不区分场景；在 8 万 QPS 场景选数据库悲观锁（实际不可行）。</p>
+
+    <h4>问题 4（6 分）分布式事务方案</h4>
+    <p><b>(1) 三种方案原理与差异（3 分，每种 1 分）：</b></p>
+    <table>
+      <tr><th style="width:18%">方案</th><th style="width:44%">原理</th><th style="width:38%">适用/特点</th></tr>
+      <tr><td><b>2PC</b></td><td>协调者先发 prepare，各参与者锁定资源并投票；全部同意后发 commit，否则 rollback</td><td>强一致、实现相对简单；但<b>同步阻塞</b>、协调者单点、性能差，不适合高并发长事务</td></tr>
+      <tr><td><b>TCC</b></td><td>每个服务实现 Try（预留资源）、Confirm（确认）、Cancel（释放）三接口，由业务补偿</td><td>最终一致、性能好、可跨长流程；但<b>业务侵入大</b>，需自行保证幂等与悬挂/空回滚</td></tr>
+      <tr><td><b>本地消息表</b></td><td>本地事务内写业务数据 + 消息表；异步投递 MQ，消费方幂等处理，失败重试</td><td>最终一致、可靠、无阻塞；但存在<b>延迟</b>，需消息表与对账兜底</td></tr>
+    </table>
+    <p><b>(2) 本平台选型（1 分）：</b></p>
+    <p>选<b>最终一致性方案</b>（本地消息表 / 可靠消息 + Saga/TCC 补偿），而非 2PC。</p>
+    <p><b>理由：</b>下单是<b>高并发短流程</b>（15 万 QPS），2PC 的同步阻塞与全局锁会在热点商品上直接打爆；且下单链路跨 4 个服务，要求"下单不阻塞、失败可补偿"，最终一致 + 幂等 + 对账更契合电商场景。对<b>资金相关的支付步骤</b>可局部采用 TCC 保证更严格的一致性。</p>
+    <p><b>(3) 幂等与补偿（2 分）+ 缺陷（见下）：</b></p>
+    <ul>
+      <li><b>不重复扣减：</b>为每次下单生成<b>全局唯一业务流水号（幂等键）</b>，库存与优惠券的扣减记录以该流水号为唯一索引；消费方处理前先查该流水号是否已处理（或插入唯一约束，冲突即视为重复并丢弃）；同时用 Redis 记录幂等状态防并发重复。</li>
+      <li><b>失败补偿：</b>扣减动作都记"预扣/冻结"状态，订单最终成功则确认，失败或超时则<b>释放（回滚）</b>；靠<b>定时任务 + 对账</b>扫描"悬而未决"的中间态（如库存已扣但订单未创建），按超时规则自动补偿，并保留人工干预入口。</li>
+      <li><b>已知缺陷：</b>① 存在<b>短暂的数据不一致窗口</b>（用户可能看到"已下单"但库存尚未最终落库）；② <b>补偿逻辑复杂</b>，若补偿本身失败会留下脏数据，必须依赖对账兜底；③ 消息重复投递需幂等严格保障，否则仍可能重复扣减。</li>
+    </ul>
+    <p><b>采分点：</b>(1) 3 分 (2) 1 分 (3) 2 分。<b>易错：</b>在高并发场景一味选 2PC；谈最终一致却不说幂等键与补偿对账，只答"用 MQ"不得分。</p>
+  </div>
+</section>
+
+<!-- ================= 考点覆盖 ================= -->
+<section id="scope" class="cover-note">
+  <h3>附：考点覆盖与使用说明</h3>
+  <table>
+    <tr><th style="width:14%">大题</th><th style="width:22%">核心考点</th><th style="width:32%">小题分布</th><th style="width:32%">对应本库高频内容</th></tr>
+    <tr><td>试题一</td><td>质量属性 / 架构评估 ATAM</td><td>质量属性归类 8 + 效用树 9 + 敏感点权衡点 8</td><td><code>05-案例专题/01-架构评估.md</code>（模拟题 3 道）</td></tr>
+    <tr><td>试题二</td><td>架构风格对比与选型</td><td>风格对比 8 + 选型论证 9 + 构件设计 8</td><td><code>05-案例专题/03-架构风格对比与选型.md</code></td></tr>
+    <tr><td>试题三</td><td>数据库设计 / NoSQL</td><td>范式分解 8 + 反规范化与读写分离 9 + NoSQL 选型 8</td><td><code>05-案例专题/02-数据库设计.md</code>（模拟题 5 道）</td></tr>
+    <tr><td>试题四</td><td>可靠性 / 容灾</td><td>可靠性计算 8 + RTO/RPO 容灾 9 + 限流熔断降级 8</td><td><code>05-案例专题/13-可靠性与容灾设计.md</code></td></tr>
+    <tr><td>试题五</td><td>微服务 / 缓存 / 分布式事务</td><td>拆分 7 + 缓存三问题 6 + 库存一致性 6 + 分布式事务 6</td><td><code>05-案例专题/05-微服务拆分与重构.md</code>、<code>06-消息中间件与缓存.md</code></td></tr>
+  </table>
+
+  <h4>使用方法</h4>
+  <ol>
+    <li><b>限时作答</b>：点工具栏「开始计时」，建议 150 分钟；实战按 5 选 3 只需 90 分钟（选 3 题）。</li>
+    <li><b>先答后看</b>：参考答案默认隐藏，答完再点每题下方的「显示参考答案」，避免边看边抄。</li>
+    <li><b>自评打分</b>：每个答题框右下角有「自评得分」输入框，按参考答案里的<b>采分点</b>给自己打分，工具栏会实时汇总（满分 125）。</li>
+    <li><b>自动保存</b>：输入内容实时写入浏览器本地存储（localStorage），关掉页面再打开不丢失；换设备或清缓存会丢失，重要内容请先「打印 / 导出 PDF」。</li>
+    <li><b>字数提示</b>：答题框右上角显示当前字数。案例题评分虽不硬性卡字数，但<b>每个小题建议写满给定区间</b>，过短一般拿不到高分。</li>
+    <li><b>打印</b>：点「打印 / 导出 PDF」会连带展开参考答案一起打印，可作为纸质练习卷。</li>
+  </ol>
+
+  <h4>⚠️ 声明</h4>
+  <p style="font-size:13px;color:#6B7280">
+    本卷为<b>根据本知识库已有真题与模拟题考点自主命制的练习题</b>，题干场景、系统名称、数据均为虚构，
+    不来自任何真实考试或企业。<b>不是真题</b>，仅用于考点串联与答题训练。
+    参考答案为编写者依据教材与考点整理的要点，<b>非官方评分标准</b>。
+  </p>
+</section>
+
+<!-- ================= 参考答案总区（用于全展开时定位） ================= -->
+<section id="ref" class="refwrap">
+  <h2 style="border:0;margin-bottom:4px">参考答案与采分点</h2>
+  <p style="font-size:13.5px;color:#6B7280">
+    参考答案已<b>分别放在每道大题下方</b>（点击各题下方的「显示参考答案」展开），
+    也可点工具栏的「显示全部参考答案」一次性展开全部 5 题。
+  </p>
+</section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORE = "ruankao_mock_case_v1";
+  var TOTAL_Q = 16, TOTAL_SCORE = 125;
+
+  /* ---------- 状态 ---------- */
+  var state = { answers:{}, scores:{}, seconds:150*60, running:false };
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORE);
+      if(raw){ var o = JSON.parse(raw); state.answers = o.answers||{}; state.scores = o.scores||{}; }
+    }catch(e){}
+  }
+  function save(){
+    try{ localStorage.setItem(STORE, JSON.stringify({answers:state.answers, scores:state.scores})); }catch(e){}
+  }
+
+  /* ---------- 元素 ---------- */
+  var tas = [].slice.call(document.querySelectorAll("textarea[data-qid]"));
+  var scoreIns = [].slice.call(document.querySelectorAll("input[data-score]"));
+  var timerEl = document.getElementById("timer");
+  var progressEl = document.getElementById("progress");
+
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  /* ---------- 恢复 + 绑定 ---------- */
+  tas.forEach(function(ta){
+    var id = ta.dataset.qid;
+    if(state.answers[id]) ta.value = state.answers[id];
+    updateCount(id);
+    var savedEl = document.querySelector('.saved[data-for="'+id+'"]');
+    var t = null;
+    ta.addEventListener("input", function(){
+      state.answers[id] = ta.value;
+      updateCount(id);
+      save();
+      if(savedEl){ savedEl.classList.add("show"); clearTimeout(t);
+        t = setTimeout(function(){ savedEl.classList.remove("show"); }, 1200); }
+      updateProgress();
+    });
+  });
+  scoreIns.forEach(function(inp){
+    var id = inp.dataset.score;
+    if(state.scores[id] != null) inp.value = state.scores[id];
+    inp.addEventListener("input", function(){
+      var v = parseFloat(inp.value);
+      state.scores[id] = isNaN(v) ? null : v;
+      save(); updateProgress();
+    });
+  });
+
+  function updateCount(id){
+    var ta = document.getElementById(id);
+    var el = document.querySelector('.cnt[data-for="'+id+'"]');
+    if(!ta || !el) return;
+    var n = ta.value.replace(/\s/g,"").length;
+    el.textContent = n + " 字";
+  }
+  function updateProgress(){
+    var done = tas.filter(function(t){ return t.value.replace(/\s/g,"").length >= 20; }).length;
+    var sum = scoreIns.reduce(function(a,i){ var v=parseFloat(i.value); return a + (isNaN(v)?0:v); }, 0);
+    sum = Math.round(sum*10)/10;
+    progressEl.textContent = "已作答 " + done + "/" + TOTAL_Q + "　｜　自评 " + sum + "/" + TOTAL_SCORE;
+  }
+
+  /* ---------- 计时器 ---------- */
+  function fmt(s){
+    s = Math.max(0,s);
+    var m = Math.floor(s/60), ss = s%60;
+    return (m<10?"0":"")+m + ":" + (ss<10?"0":"")+ss;
+  }
+  function renderTimer(){
+    timerEl.textContent = fmt(state.seconds);
+    timerEl.classList.toggle("warn", state.seconds <= 600);
+  }
+  var tick = null;
+  var btnTimer = document.getElementById("btnTimer");
+  btnTimer.addEventListener("click", function(){
+    state.running = !state.running;
+    if(state.running){
+      btnTimer.textContent = "暂停计时";
+      tick = setInterval(function(){
+        state.seconds--;
+        renderTimer();
+        if(state.seconds <= 0){ clearInterval(tick); state.running=false; btnTimer.textContent="开始计时"; toast("时间到！"); }
+      }, 1000);
+      toast("计时开始，建议 150 分钟");
+    }else{
+      clearInterval(tick); btnTimer.textContent = "继续计时";
+    }
+  });
+  document.getElementById("btnResetTimer").addEventListener("click", function(){
+    clearInterval(tick); state.running=false; state.seconds = 150*60;
+    btnTimer.textContent = "开始计时"; renderTimer();
+  });
+  renderTimer();
+
+  /* ---------- 参考答案 ---------- */
+  var refBtns = [].slice.call(document.querySelectorAll(".ref-toggle"));
+  refBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      var el = document.getElementById(b.dataset.ref);
+      var open = el.classList.toggle("open");
+      b.textContent = (open ? "▾ 隐藏本大题参考答案" : "▸ 显示本大题参考答案");
+    });
+  });
+  var allOpen = false;
+  document.getElementById("btnToggleAll").addEventListener("click", function(){
+    allOpen = !allOpen;
+    document.querySelectorAll(".ref").forEach(function(el){ el.classList.toggle("open", allOpen); });
+    refBtns.forEach(function(b){
+      b.textContent = (allOpen ? "▾ 隐藏本大题参考答案" : "▸ 显示本大题参考答案");
+    });
+    this.textContent = allOpen ? "隐藏全部参考答案" : "显示全部参考答案";
+  });
+
+  /* ---------- 清空 / 打印 ---------- */
+  document.getElementById("btnClear").addEventListener("click", function(){
+    if(!confirm("确定清空全部作答与自评？此操作不可撤销。")) return;
+    state.answers = {}; state.scores = {};
+    tas.forEach(function(t){ t.value=""; updateCount(t.dataset.qid); });
+    scoreIns.forEach(function(i){ i.value=""; });
+    save(); updateProgress(); toast("已清空答卷");
+  });
+  document.getElementById("btnPrint").addEventListener("click", function(){
+    document.querySelectorAll(".ref").forEach(function(el){ el.classList.add("open"); });
+    setTimeout(function(){ window.print(); }, 120);
+  });
+
+  load();
+  tas.forEach(function(t){
+    var id = t.dataset.qid;
+    if(state.answers[id]) t.value = state.answers[id];
+    updateCount(id);
+  });
+  updateProgress();
+
+  /* Enter+Ctrl 快捷保存提示 */
+  document.addEventListener("keydown", function(e){
+    if((e.ctrlKey||e.metaKey) && e.key === "s"){ e.preventDefault(); save(); toast("已保存到本地"); }
+  });
+})();
+</script>
+</body>
+</html>
