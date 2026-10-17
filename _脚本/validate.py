@@ -53,6 +53,13 @@ REQUIRED_CHAPTER = [
     "答案可信度", "含解析", "出处", "URL", "抓取日期", "校对状态",
 ]
 
+# 05-案例专题：按题型组织的案例专题（含自主命题模拟题 + 部分真题原文）
+REQUIRED_CASE_TOPIC = [
+    "文档类型", "题型", "主题", "含模拟题", "含真题", "来源类型",
+    "是否官方", "出处", "URL", "抓取日期", "校对状态",
+]
+CASE_TOPIC_KIND = "案例专题"
+
 ESSAY_KINDS = ("范文", "模板", "提纲")
 
 # 真实开考情况（与 00-元数据/考试期次总表.md 保持一致）
@@ -63,6 +70,7 @@ BOTH_SESSIONS = {2024, 2025, 2026}
 EXAM_DIR = ROOT / "01-真题-按年份"
 ESSAY_DIR = ROOT / "03-论文范文"
 CHAPTER_DIR = ROOT / "05-按章节真题"
+CASE_TOPIC_DIR = ROOT / "05-案例专题"
 
 # 年份-考期目录名
 EXAM_DIR_RE = re.compile(r"^(\d{4})-(上半年|下半年)$")
@@ -264,6 +272,31 @@ def check_chapter_file(path: Path) -> None:
         err(f"{rel}｜正文为空")
 
 
+def check_case_topic_file(path: Path, valid_tags: set[str]) -> None:
+    """05-案例专题：按题型组织的专题（含自主命题模拟题 + 部分真题原文）。"""
+    rel = path.relative_to(ROOT)
+    data, body = split_front_matter(path.read_text(encoding="utf-8", errors="replace"))
+    if not data:
+        err(f"{rel}｜缺少 YAML 头部（front matter）")
+        return
+    missing = [k for k in REQUIRED_CASE_TOPIC if k not in data]
+    if missing:
+        err(f"{rel}｜缺少字段：{'、'.join(missing)}")
+    if data.get("文档类型") != CASE_TOPIC_KIND:
+        err(f"{rel}｜文档类型应为「{CASE_TOPIC_KIND}」，实际「{data.get('文档类型')}」")
+    for key, allowed in (("来源类型", SOURCE_KINDS),
+                         ("校对状态", PROOFREAD)):
+        if key in data and data[key] not in allowed:
+            err(f"{rel}｜{key} = 「{data[key]}」不在允许取值 {allowed}")
+    if "是否官方" in data and not isinstance(data["是否官方"], bool):
+        err(f"{rel}｜是否官方 必须是 true/false")
+    for key in ("含模拟题", "含真题"):
+        if key in data and not isinstance(data[key], int):
+            err(f"{rel}｜{key} 必须是整数")
+    if not body.strip():
+        err(f"{rel}｜正文为空")
+
+
 def main() -> int:
     print("=" * 72)
     print("系统架构设计师知识库 —— 元数据校验")
@@ -306,8 +339,18 @@ def main() -> int:
             check_chapter_file(path)
             chapter_count += 1
 
+    case_topic_count = 0
+    if CASE_TOPIC_DIR.exists():
+        for path in sorted(CASE_TOPIC_DIR.rglob("*.md")):
+            if path.name.lower() in ("readme.md", "index.md"):
+                continue
+            if path.name.startswith("00-"):
+                continue
+            check_case_topic_file(path, valid_tags)
+            case_topic_count += 1
+
     print(f"扫描：真题 {exam_count} 个文件，范文 {essay_count} 个文件，"
-          f"章节真题 {chapter_count} 个文件\n")
+          f"章节真题 {chapter_count} 个文件，案例专题 {case_topic_count} 个文件\n")
 
     if warnings:
         print(f"--- 警告（{len(warnings)}）---")

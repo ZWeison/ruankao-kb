@@ -262,6 +262,47 @@ def write_essay_index(essays: list[dict]) -> None:
     (ESSAY_DIR / "00-选题索引.md").write_text("\n".join(lines), encoding="utf-8")
 
 
+CASE_TOPIC_DIR = ROOT / "05-案例专题"
+
+
+def write_case_topic_index() -> int:
+    """05-案例专题：按题型汇总模拟题/真题数量。"""
+    if not CASE_TOPIC_DIR.exists():
+        return 0
+    rows = []
+    total_sim = total_real = 0
+    for path in sorted(CASE_TOPIC_DIR.glob("*.md")):
+        if path.name.startswith("00-") or path.name.lower() == "readme.md":
+            continue
+        data, _ = split_front_matter(path.read_text(encoding="utf-8", errors="replace"))
+        if data.get("文档类型") != "案例专题":
+            continue
+        sim = data.get("含模拟题", 0)
+        real = data.get("含真题", 0)
+        total_sim += sim if isinstance(sim, int) else 0
+        total_real += real if isinstance(real, int) else 0
+        rows.append([
+            data.get("题型", path.stem),
+            data.get("主题", "—"),
+            sim, real,
+            data.get("来源类型", "—"),
+            data.get("校对状态", "—"),
+            f"[打开]({rel_link(path, CASE_TOPIC_DIR)})",
+        ])
+    lines = [f"# 案例专题索引\n\n{GENERATED_NOTE}\n",
+             f"专题：**{len(rows)}** 篇　模拟题：**{total_sim}** 道　"
+             f"含真题原文：**{total_real}** 道\n",
+             "\n> ⚠️ **模拟题是自主命题，不是真题**；`含真题` 列指专题内附带的真题原文数量。\n"]
+    if rows:
+        lines.append(table(rows, [
+            "题型", "主题", "模拟题", "含真题", "来源类型", "校对状态", "文件",
+        ]))
+    else:
+        lines.append("**尚未归档案例专题。**\n")
+    (CASE_TOPIC_DIR / "00-案例专题索引.md").write_text("\n".join(lines), encoding="utf-8")
+    return len(rows)
+
+
 def main() -> int:
     print("=" * 72)
     print("系统架构设计师知识库 —— 索引生成")
@@ -286,6 +327,9 @@ def main() -> int:
 
     write_essay_index(essays)
     print("  写入 03-论文范文/00-选题索引.md")
+
+    n_case = write_case_topic_index()
+    print(f"  写入 05-案例专题/00-案例专题索引.md（{n_case} 篇）")
 
     payload = {
         "schemaVersion": 1,

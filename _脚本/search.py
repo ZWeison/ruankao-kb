@@ -31,7 +31,7 @@
   --kind KIND      限定来源类型：真题 / 回忆版 / 模拟题
   --year RANGE     年份范围，如 2023 或 2023-2025
   --subject S      限定科目：综合知识 / 案例分析 / 论文
-  --only SCOPE     搜索范围：真题 / 范文 / 全部（默认全部）
+  --only SCOPE     搜索范围：真题 / 范文 / 专题 / 全部（默认全部）
   --tags           列出标签统计
   --dubious        列出答案可信度为「存疑」的文件
   --stats          列出知识库整体统计
@@ -50,6 +50,7 @@ ROOT = Path(__file__).resolve().parent.parent
 EXAM_DIR = ROOT / "01-真题-按年份"
 ESSAY_DIR = ROOT / "03-论文范文"
 CHAPTER_DIR = ROOT / "05-按章节真题"
+CASE_TOPIC_DIR = ROOT / "05-案例专题"
 
 EXAM_FILE_RE = re.compile(
     r"^(\d{4})-(上半年|下半年)-(综合知识|案例分析|论文)(?:-(.+))?\.md$"
@@ -112,12 +113,15 @@ class Doc:
     def label(self) -> str:
         if self.scope == "真题":
             return f"{self.meta.get('年份','?')}-{self.meta.get('考期','?')}-{self.meta.get('科目','?')}"
+        if self.scope == "专题":
+            return str(self.meta.get("题型", self.path.stem))
         return str(self.meta.get("论题", self.path.stem))
 
 
 def load_docs() -> list[Doc]:
     docs: list[Doc] = []
-    for base, scope in ((EXAM_DIR, "真题"), (ESSAY_DIR, "范文"), (CHAPTER_DIR, "章节")):
+    for base, scope in ((EXAM_DIR, "真题"), (ESSAY_DIR, "范文"),
+                        (CHAPTER_DIR, "章节"), (CASE_TOPIC_DIR, "专题")):
         if not base.exists():
             continue
         for p in sorted(base.rglob("*.md")):
@@ -156,7 +160,13 @@ def cmd_stats(docs: list[Doc]) -> None:
     exams = [d for d in docs if d.scope == "真题"]
     essays = [d for d in docs if d.scope == "范文"]
     chapters = [d for d in docs if d.scope == "章节"]
-    print(f"收录：真题 {len(exams)} 卷，范文 {len(essays)} 篇，章节真题 {len(chapters)} 册\n")
+    topics = [d for d in docs if d.scope == "专题"]
+    sim = sum(d.meta.get("含模拟题", 0) or 0 for d in topics
+              if isinstance(d.meta.get("含模拟题", 0), int))
+    real_in_topic = sum(d.meta.get("含真题", 0) or 0 for d in topics
+                        if isinstance(d.meta.get("含真题", 0), int))
+    print(f"收录：真题 {len(exams)} 卷，范文 {len(essays)} 篇，"
+          f"案例专题 {len(topics)} 篇（模拟题 {sim} 道 + 真题 {real_in_topic} 道）\n")
     if exams:
         years = sorted({d.year for d in exams if d.year})
         print(f"真题年份跨度：{years[0]} — {years[-1]}")
@@ -251,7 +261,7 @@ def main() -> int:
     ap.add_argument("--kind", help="来源类型：真题 / 回忆版 / 模拟题")
     ap.add_argument("--year", help="年份或范围，如 2023 或 2023-2025")
     ap.add_argument("--subject", help="科目：综合知识 / 案例分析 / 论文")
-    ap.add_argument("--only", default="全部", choices=["真题", "范文", "章节", "全部"],
+    ap.add_argument("--only", default="全部", choices=["真题", "范文", "章节", "专题", "全部"],
                     help="搜索范围")
     ap.add_argument("--tags", action="store_true", help="列出标签统计")
     ap.add_argument("--stats", action="store_true", help="列出整体统计")

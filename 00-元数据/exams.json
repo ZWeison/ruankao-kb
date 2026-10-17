@@ -4,10 +4,36 @@
   "generator": "_脚本/build_index.py",
   "note": "本题库为个人学习资料，真题均为非官方回忆版；详见 00-元数据/来源清单.md",
   "stats": {
-    "examFiles": 5,
+    "examFiles": 10,
     "essayFiles": 45
   },
   "exams": [
+    {
+      "year": 2026,
+      "session": "上半年",
+      "subject": "案例分析",
+      "itemType": "案例题",
+      "variant": "",
+      "itemCount": 5,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": true,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "架构风格",
+        "质量属性",
+        "数据库",
+        "架构评估",
+        "边缘计算"
+      ],
+      "origin": "CSDN 编程指南针（bcznz）",
+      "url": "https://bcznz.blog.csdn.net/article/details/166334425",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2026-上半年/2026-上半年-案例分析.md",
+      "charCount": 8106
+    },
     {
       "year": 2026,
       "session": "上半年",
@@ -32,6 +58,32 @@
       "proofread": "待校对",
       "path": "01-真题-按年份/2026-上半年/2026-上半年-论文.md",
       "charCount": 4542
+    },
+    {
+      "year": 2025,
+      "session": "上半年",
+      "subject": "案例分析",
+      "itemType": "案例题",
+      "variant": "",
+      "itemCount": 5,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": true,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "NoSQL",
+        "计算机系统",
+        "区块链",
+        "操作系统",
+        "知识图谱"
+      ],
+      "origin": "YoungHong1992/ruankao-senior-architecture-designer",
+      "url": "https://github.com/YoungHong1992/ruankao-senior-architecture-designer",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2025-上半年/2025-上半年-案例分析.md",
+      "charCount": 6858
     },
     {
       "year": 2025,
@@ -62,6 +114,32 @@
     {
       "year": 2025,
       "session": "下半年",
+      "subject": "案例分析",
+      "itemType": "案例题",
+      "variant": "",
+      "itemCount": 5,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": true,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "操作系统",
+        "NoSQL",
+        "质量属性",
+        "嵌入式",
+        "数据库"
+      ],
+      "origin": "YoungHong1992/ruankao-senior-architecture-designer",
+      "url": "https://github.com/YoungHong1992/ruankao-senior-architecture-designer",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2025-下半年/2025-下半年-案例分析.md",
+      "charCount": 6493
+    },
+    {
+      "year": 2025,
+      "session": "下半年",
       "subject": "论文",
       "itemType": "论文题",
       "variant": "",
@@ -88,6 +166,32 @@
     {
       "year": 2024,
       "session": "上半年",
+      "subject": "案例分析",
+      "itemType": "案例题",
+      "variant": "",
+      "itemCount": 5,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": true,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "UML",
+        "计算机网络",
+        "计算机系统",
+        "数据库",
+        "NoSQL"
+      ],
+      "origin": "YoungHong1992/ruankao-senior-architecture-designer",
+      "url": "https://github.com/YoungHong1992/ruankao-senior-architecture-designer",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2024-上半年/2024-上半年-案例分析.md",
+      "charCount": 5757
+    },
+    {
+      "year": 2024,
+      "session": "上半年",
       "subject": "论文",
       "itemType": "论文题",
       "variant": "",
@@ -110,6 +214,32 @@
       "proofread": "待校对",
       "path": "01-真题-按年份/2024-上半年/2024-上半年-论文.md",
       "charCount": 5278
+    },
+    {
+      "year": 2024,
+      "session": "下半年",
+      "subject": "案例分析",
+      "itemType": "案例题",
+      "variant": "",
+      "itemCount": 5,
+      "sourceKind": "回忆版",
+      "official": false,
+      "hasAnswer": true,
+      "answerCredibility": "中",
+      "hasAnalysis": true,
+      "tags": [
+        "质量属性",
+        "操作系统",
+        "计算机系统",
+        "数据库",
+        "软件测试"
+      ],
+      "origin": "YoungHong1992/ruankao-senior-architecture-designer",
+      "url": "https://github.com/YoungHong1992/ruankao-senior-architecture-designer",
+      "fetchedAt": "2026-10-11",
+      "proofread": "待校对",
+      "path": "01-真题-按年份/2024-下半年/2024-下半年-案例分析.md",
+      "charCount": 6935
     },
     {
       "year": 2024,
