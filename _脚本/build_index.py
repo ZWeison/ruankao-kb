@@ -177,18 +177,19 @@ def write_by_subject(subject: str, records: list[dict]) -> None:
             f"[{r['origin']}]({r['url']})" if r["url"].startswith("http") else r["origin"],
             f"[打开]({rel_link(r['path'], INDEX_DIR)})",
         ])
-    title = f"# {SUBJECT_TYPE[subject]}索引（{subject}）\n\n{GENERATED_NOTE}\n"
+    dest = INDEX_DIR / f"{SUBJECT_TYPE[subject]}-按考期.md"
+    # 该类目暂无内容时不留空文件，避免论文专库里挂着一堆「尚未归档」的空索引
     if not rows:
-        title += "**尚未归档任何一卷。**\n\n"
-        title += ("归档方法：把整理好的 Markdown 放到 "
-                  f"`01-真题-按年份/YYYY-考期/YYYY-考期-{subject}.md`，"
-                  "填好 YAML 头部后重新运行本脚本。\n")
-    else:
-        title += table(rows, [
-            "年份", "考期", "文件名", "题量", "来源类型",
-            "含答案", "答案可信度", "含解析", "校对状态", "出处", "文件",
-        ])
-    (INDEX_DIR / f"{SUBJECT_TYPE[subject]}-按考期.md").write_text(title, encoding="utf-8")
+        if dest.exists():
+            dest.unlink()
+        return False
+    title = f"# {SUBJECT_TYPE[subject]}索引（{subject}）\n\n{GENERATED_NOTE}\n"
+    title += table(rows, [
+        "年份", "考期", "文件名", "题量", "来源类型",
+        "含答案", "答案可信度", "含解析", "校对状态", "出处", "文件",
+    ])
+    dest.write_text(title, encoding="utf-8")
+    return True
 
 
 def write_tag_stats(records: list[dict]) -> None:
@@ -212,7 +213,9 @@ def write_tag_stats(records: list[dict]) -> None:
         lines.append(table(rows, ["考点标签", "出现卷数", "涉及年份"]))
         lines.append("\n## 年份 × 科目 覆盖矩阵\n")
         years = sorted({r["year"] for r in records}, reverse=True)
-        subjects = ["综合知识", "案例分析", "论文"]
+        # 只列出实际有卷的科目（论文专库就不该出现「综合知识 — 案例分析 —」的空列）
+        subjects = [s for s in ("综合知识", "案例分析", "论文")
+                    if any(r["subject"] == s for r in records)]
         grid = []
         for y in years:
             cells = []
@@ -273,8 +276,10 @@ def main() -> int:
     print(f"收录：真题 {len(exams)} 卷，范文 {len(essays)} 篇\n")
 
     for subject in SUBJECT_TYPE:
-        write_by_subject(subject, exams)
-        print(f"  写入 02-按题型索引/{SUBJECT_TYPE[subject]}-按考期.md")
+        if write_by_subject(subject, exams):
+            print(f"  写入 02-按题型索引/{SUBJECT_TYPE[subject]}-按考期.md")
+        else:
+            print(f"  跳过 02-按题型索引/{SUBJECT_TYPE[subject]}-按考期.md（该类目无内容）")
 
     write_tag_stats(exams)
     print("  写入 02-按题型索引/考点覆盖统计.md")
