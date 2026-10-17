@@ -1061,7 +1061,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/01-架构设计/001-论信息系统架构设计.md",
-      "charCount": 3260
+      "charCount": 3027
     },
     {
       "topic": "论信息系统的架构设计",
@@ -1075,7 +1075,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/01-架构设计/002-论信息系统的架构设计.md",
-      "charCount": 3119
+      "charCount": 2864
     },
     {
       "topic": "论基于UML的需求分析",
@@ -1089,7 +1089,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/01-架构设计/003-论基于UML的需求分析.md",
-      "charCount": 3196
+      "charCount": 2955
     },
     {
       "topic": "论软件架构的选择",
@@ -1103,7 +1103,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/01-架构设计/004-论软件架构的选择.md",
-      "charCount": 3521
+      "charCount": 3199
     },
     {
       "topic": "系统架构设计师论文（模板）",
@@ -1117,7 +1117,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/01-架构设计/005-系统架构设计师论文（模板）.md",
-      "charCount": 4122
+      "charCount": 3583
     },
     {
       "topic": "软考系统架构设计师考试论文应试技巧",
@@ -1131,7 +1131,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/01-架构设计/006-软考系统架构设计师考试论文应试技巧.md",
-      "charCount": 2891
+      "charCount": 2652
     },
     {
       "topic": "论事件驱动架构",
@@ -1173,7 +1173,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/03-软件可靠性/001-论改进Web服务器性能的有关技术.md",
-      "charCount": 3490
+      "charCount": 3154
     },
     {
       "topic": "论软件维护及软件可维护性",
@@ -1187,7 +1187,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/03-软件可靠性/002-论软件维护及软件可维护性.md",
-      "charCount": 3943
+      "charCount": 3609
     },
     {
       "topic": "论软件的可靠性设计",
@@ -1201,7 +1201,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/03-软件可靠性/003-论软件的可靠性设计.md",
-      "charCount": 5285
+      "charCount": 4781
     },
     {
       "topic": "论软件性能的优化设计",
@@ -1215,7 +1215,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/03-软件可靠性/004-论软件性能的优化设计.md",
-      "charCount": 3313
+      "charCount": 3059
     },
     {
       "topic": "论高并发系统设计",
@@ -1271,7 +1271,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/04-信息安全/001-论信息系统安全性设计.md",
-      "charCount": 3546
+      "charCount": 3297
     },
     {
       "topic": "论信息系统的安全性设计",
@@ -1285,7 +1285,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/04-信息安全/002-论信息系统的安全性设计.md",
-      "charCount": 3203
+      "charCount": 2965
     },
     {
       "topic": "论微服务架构及其应用",
@@ -1299,7 +1299,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/05-微服务与云原生/001-论微服务架构及其应用.md",
-      "charCount": 3711
+      "charCount": 3284
     },
     {
       "topic": "论基于云原生数据库的企业信息系统架构",
@@ -1313,7 +1313,7 @@
       "url": "https://blog.csdn.net/Rong_Toa/article/details/160774201",
       "proofread": "待校对",
       "path": "03-论文范文/05-微服务与云原生/002-论基于云原生数据库的企业信息系统架构.md",
-      "charCount": 5295
+      "charCount": 5276
     },
     {
       "topic": "论分布式数据库的设计与实现",
@@ -1327,7 +1327,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/06-大数据与NoSQL/001-论分布式数据库的设计与实现.md",
-      "charCount": 3361
+      "charCount": 3113
     },
     {
       "topic": "分布式数据库",
@@ -1339,9 +1339,9 @@
       "isReal": false,
       "origin": "Gitee CTO说/系统架构设计师（02范文（真题26篇+参考19篇+老版50篇））",
       "url": "https://gitee.com/zaonai/system_architect_old",
-      "proofread": "待校对",
+      "proofread": "存疑",
       "path": "03-论文范文/06-大数据与NoSQL/002-分布式数据库.md",
-      "charCount": 6335
+      "charCount": 5769
     },
     {
       "topic": "论向量数据库在项目中的应用",
@@ -1383,7 +1383,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/07-SOA与架构演化/001-论SOA在企业信息化中的应用.md",
-      "charCount": 3600
+      "charCount": 3344
     },
     {
       "topic": "论SOA技术的应用",
@@ -1397,7 +1397,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/07-SOA与架构演化/002-论SOA技术的应用.md",
-      "charCount": 3350
+      "charCount": 3113
     },
     {
       "topic": "论软件三层结构的设计",
@@ -1411,7 +1411,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/07-SOA与架构演化/003-论软件三层结构的设计.md",
-      "charCount": 3666
+      "charCount": 3428
     },
     {
       "topic": "论软件三层架构设计",
@@ -1425,7 +1425,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/07-SOA与架构演化/004-论软件三层架构设计.md",
-      "charCount": 4077
+      "charCount": 3757
     },
     {
       "topic": "论基于构件的软件开发",
@@ -1439,7 +1439,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/08-基于构件/001-论基于构件的软件开发.md",
-      "charCount": 3602
+      "charCount": 3358
     },
     {
       "topic": "论基于构件的软件开发",
@@ -1453,7 +1453,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/08-基于构件/002-论基于构件的软件开发.md",
-      "charCount": 4135
+      "charCount": 3799
     },
     {
       "topic": "论软件设计模式的应用",
@@ -1467,7 +1467,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/09-设计模式/001-论软件设计模式的应用.md",
-      "charCount": 3862
+      "charCount": 3519
     },
     {
       "topic": "设计模式",
@@ -1481,7 +1481,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/09-设计模式/002-设计模式.md",
-      "charCount": 2084
+      "charCount": 1863
     },
     {
       "topic": "论企业应用集成",
@@ -1495,7 +1495,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/10-企业应用集成/001-论企业应用集成.md",
-      "charCount": 3564
+      "charCount": 3295
     },
     {
       "topic": "论企业集成平台的技术与应用",
@@ -1509,7 +1509,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/10-企业应用集成/002-论企业集成平台的技术与应用.md",
-      "charCount": 4158
+      "charCount": 3713
     },
     {
       "topic": "论Web系统的测试技术及其应用",
@@ -1523,7 +1523,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/12-测试与质量/001-论Web系统的测试技术及其应用.md",
-      "charCount": 3586
+      "charCount": 3234
     },
     {
       "topic": "论软件测试方法及应用",
@@ -1579,7 +1579,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/14-软件工程与过程/001-论UP（统一过程方法）的应用.md",
-      "charCount": 3396
+      "charCount": 3147
     },
     {
       "topic": "论UP（统一过程方法）的应用",
@@ -1593,7 +1593,7 @@
       "url": "https://gitee.com/zaonai/system_architect_old",
       "proofread": "待校对",
       "path": "03-论文范文/14-软件工程与过程/002-论UP（统一过程方法）的应用.md",
-      "charCount": 3479
+      "charCount": 3135
     }
   ]
 }
