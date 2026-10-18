@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统架构设计师 · 案例分析高频考点模拟卷（2024—2026）</title>
+<style>
+:root{
+  --page-w: 1080px;
+  --fs-body: 16px;
+  --lh: 1.85;
+  --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
+  --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
+  --ff-mono: "JetBrains Mono",Consolas,monospace;
+  --c-primary:#2563EB;
+  --c-text:#111827;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-bg:#FFFFFF;
+  --c-soft:#EEF2FF;
+  --c-code:#F9FAFB;
+  --c-warn:#B45309;
+  --c-warn-bg:#FFFBEB;
+  --c-ok:#047857;
+  --c-ok-bg:#ECFDF5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body);font-size:var(--fs-body);line-height:var(--lh);
+  color:var(--c-text);background:#F3F4F6;
+  padding:26px 20px 80px;
+}
+.wrap{width:100%;max-width:var(--page-w);margin:0 auto;background:var(--c-bg);
+  padding:46px 54px 64px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.35;font-weight:700;color:var(--c-text)}
+h1{font-size:23px;text-align:center;margin-bottom:6px}
+h2{font-size:18px;margin:40px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--c-primary)}
+h3{font-size:15.5px;margin:22px 0 8px}
+h4{font-size:14.5px;margin:16px 0 6px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 1.6em}
+li{margin:4px 0}
+a{color:var(--c-primary)}
+
+/* ---------- 封面 ---------- */
+.cover{text-align:center;padding:16px 0 30px;border-bottom:1px solid var(--c-border);margin-bottom:26px}
+.cover-eyebrow{font-family:var(--ff-head);font-size:12px;letter-spacing:.18em;color:var(--c-primary);margin-bottom:16px}
+.cover-title{font-size:27px;font-weight:700;font-family:var(--ff-head);line-height:1.3;margin-bottom:10px}
+.cover-sub{font-size:13.5px;color:var(--c-muted);margin-bottom:22px}
+.cover-info{font-size:13px;color:var(--c-text);line-height:2}
+.cover-info b{color:var(--c-primary)}
+.cover-date{font-size:12px;color:var(--c-muted);margin-top:18px}
+
+/* ---------- 工具条 ---------- */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(6px);
+  border:1px solid var(--c-border);border-radius:8px;padding:10px 12px;margin-bottom:22px}
+.btn{font-family:var(--ff-head);font-size:12.5px;padding:6px 13px;border-radius:6px;border:1px solid var(--c-border);
+  background:#fff;color:var(--c-text);cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn.primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.danger:hover{border-color:#DC2626;color:#DC2626}
+.spacer{flex:1}
+.timer{font-family:var(--ff-mono);font-size:14px;font-weight:600;padding:5px 11px;border-radius:6px;
+  background:var(--c-soft);color:var(--c-primary);min-width:82px;text-align:center}
+.timer.warn{background:#FEF2F2;color:#DC2626}
+.progress-txt{font-size:12.5px;color:var(--c-muted);font-family:var(--ff-head)}
+
+/* ---------- 目录 ---------- */
+.toc{background:var(--c-code);border:1px solid var(--c-border);border-radius:8px;padding:16px 20px;margin-bottom:8px}
+.toc-title{font-family:var(--ff-head);font-size:13px;font-weight:700;color:var(--c-muted);margin-bottom:8px;letter-spacing:.08em}
+.toc ol{margin-left:1.4em;font-size:13.5px}
+.toc li{margin:3px 0}
+.toc a{text-decoration:none}
+.toc a:hover{text-decoration:underline}
+
+/* ---------- 题块 ---------- */
+.qblock{margin:34px 0}
+.qhead{font-family:var(--ff-head);font-size:17px;font-weight:700;color:var(--c-text);
+  background:var(--c-soft);border-left:4px solid var(--c-primary);padding:9px 14px;border-radius:0 6px 6px 0;margin-bottom:6px}
+.qintro{font-size:13.5px;color:var(--c-muted);margin:6px 0 14px}
+.tag{display:inline-block;font-family:var(--ff-head);font-size:11px;padding:2px 8px;border-radius:4px;
+  background:var(--c-soft);color:var(--c-primary);margin-right:6px;vertical-align:middle}
+.tag.gray{background:#F3F4F6;color:var(--c-muted)}
+
+.note{background:var(--c-code);border-left:3px solid var(--c-border);padding:10px 14px;margin:12px 0;font-size:14px}
+.scene{background:#FCFCFD;border:1px solid var(--c-border);border-radius:6px;padding:14px 16px;margin:12px 0}
+.scene ol,.scene ul{margin-left:1.5em}
+.scene li{margin:6px 0}
+
+/* 问题 */
+.q{margin:24px 0 0;padding-top:6px}
+.q-title{font-family:var(--ff-head);font-size:14.5px;font-weight:700;margin-bottom:4px}
+.q-title .score{color:var(--c-primary);font-weight:600}
+.q-body{font-size:14.5px}
+.q-body p{margin:8px 0}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{border:1px solid var(--c-border);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--c-code);font-family:var(--ff-head);font-weight:600}
+caption{caption-side:top;font-size:12.5px;color:var(--c-muted);text-align:left;padding-bottom:6px}
+td.fill{background:#FFFBEB;font-family:var(--ff-mono);text-align:center;color:var(--c-warn)}
+
+pre{font-family:var(--ff-mono);font-size:12.5px;line-height:1.7;background:var(--c-code);
+  border:1px solid var(--c-border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:12px 0}
+
+/* ---------- 答题框 ---------- */
+.answer{margin:14px 0 4px;border:1px solid #C7D2FE;border-radius:8px;overflow:hidden;background:#fff}
+.answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);
+  padding:7px 12px;font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
+.answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
+.answer textarea{display:block;width:100%;min-height:140px;border:0;outline:0;resize:vertical;
+  padding:13px 16px;font-family:var(--ff-body);font-size:15px;line-height:1.8;color:var(--c-text);background:#fff}
+.answer textarea:focus{background:#FBFDFF}
+.answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
+  background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head)}
+.selfscore{margin-left:auto;display:flex;align-items:center;gap:5px}
+.selfscore input{width:46px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;
+  font-family:var(--ff-mono);font-size:12px;text-align:center}
+.saved{color:var(--c-ok);opacity:0;transition:.4s}
+.saved.show{opacity:1}
+
+/* ---------- 参考答案 ---------- */
+.refwrap{margin-top:44px;padding-top:8px}
+.ref{display:none;background:var(--c-ok-bg);border:1px solid #A7F3D0;border-radius:8px;padding:16px 18px;margin:14px 0}
+.ref.open{display:block}
+.ref h4{margin-top:12px;color:var(--c-ok)}
+.ref h4:first-child{margin-top:0}
+.ref ul,.ref ol{margin-left:1.5em}
+.ref li{margin:5px 0}
+.ref table{background:#fff}
+.ref .kk{background:#D1FAE5;padding:1px 5px;border-radius:3px;font-family:var(--ff-head);font-size:12px;color:#065F46}
+.ref-toggle{display:inline-block;font-family:var(--ff-head);font-size:12.5px;color:var(--c-ok);
+  border:1px solid #A7F3D0;background:var(--c-ok-bg);padding:5px 12px;border-radius:6px;cursor:pointer;margin:6px 0}
+
+/* ---------- 考点覆盖 ---------- */
+.cover-note{margin-top:36px;border:1px dashed var(--c-border);border-radius:8px;padding:16px 18px;font-size:13.5px}
+.cover-note h3{margin-top:0}
+
+/* 提示条 */
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#111827;color:#fff;
+  font-family:var(--ff-head);font-size:13px;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 打印 */
+@media print{
+  body{background:#fff;padding:0}
+  .wrap{box-shadow:none;padding:0;max-width:none}
+  .toolbar,.ref-toggle,.toast{display:none!important}
+  .answer{break-inside:avoid}
+  .answer textarea{min-height:auto;height:auto;field-sizing:content}
+  .ref{display:block!important;break-inside:avoid}
+  .qblock{break-inside:auto}
+  h2{break-after:avoid}
+}
+@media (max-width:1160px){
+  .wrap{padding:40px 34px 56px}
+}
+@media (max-width:860px){
+  .wrap{padding:32px 22px 48px;border-radius:6px}
+  .toolbar{gap:6px}
+  .btn{padding:5px 10px;font-size:12px}
+}
+@media (max-width:720px){
+  body{padding:12px 8px 60px}
+  .wrap{padding:22px 15px 36px}
+  .cover-title{font-size:21px}
+  h2{font-size:16px}
+  .answer textarea{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 封面 ================= -->
+<header class="cover">
+  <div class="cover-eyebrow">软考 · 系统架构设计师 · 案例分析 · 模拟卷（高频考点卷）</div>
+  <div class="cover-title">案例分析高频考点模拟试卷<br>2024 — 2026 真题考点专项</div>
+  <div class="cover-sub">质量属性与架构评估 · 缓存与 Redis · 数据库与 NoSQL · 微服务与 DDD · 边缘计算与嵌入式</div>
+  <div class="cover-info">
+    试卷满分：<b>125 分</b>（5 大题 × 25 分）　｜　全卷小题：<b>19 道</b><br>
+    建议用时：<b>150 分钟</b>　｜　题目难度：中偏难<br>
+    <span style="color:#6B7280;font-size:12.5px">实战作答规则：第 1 题必答，其余 4 题选 2 题，合计 75 分、90 分钟</span>
+  </div>
+  <div class="cover-date">2026 年 10 月　·　依据本库 2024—2026 五套案例真题考点自主命制　·　非真题</div>
+</header>
+
+<!-- ================= 工具条 ================= -->
+<div class="toolbar">
+  <span class="timer" id="timer">150:00</span>
+  <button class="btn primary" id="btnTimer">开始计时</button>
+  <button class="btn" id="btnResetTimer">重置</button>
+  <button class="btn" id="btnToggleAll">显示全部参考答案</button>
+  <span class="spacer"></span>
+  <span class="progress-txt" id="progress">已作答 0/19　｜　自评 0/125</span>
+  <button class="btn danger" id="btnClear">清空答卷</button>
+  <button class="btn" id="btnPrint">打印 / 导出 PDF</button>
+</div>
+
+<!-- ================= 目录 ================= -->
+<nav class="toc">
+  <div class="toc-title">目 录</div>
+  <ol>
+    <li><a href="#q1">试题一（25分）区域医疗影像云平台 —— 质量属性识别与架构评估</a></li>
+    <li><a href="#q2">试题二（25分）城市轨道交通"一码通行"系统 —— 缓存与 Redis</a></li>
+    <li><a href="#q3">试题三（25分）全国冷链药品追溯平台 —— 数据库设计与存储选型</a></li>
+    <li><a href="#q4">试题四（25分）连锁药店 O2O 平台 —— DDD 与微服务</a></li>
+    <li><a href="#q5">试题五（25分）供水管网智能漏损监测 —— 边缘计算与嵌入式</a></li>
+    <li><a href="#ref">参考答案与采分点</a></li>
+    <li><a href="#scope">附：考点频次统计与使用说明</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================
+     试题一
+     ============================================================ -->
+<section class="qblock" id="q1">
+  <div class="qhead">试题一（25分）区域医疗影像云平台</div>
+  <div class="qintro">
+    考点：质量属性识别 · 质量属性场景六要素 · 效用树 · ATAM 敏感点/权衡点/风险点/非风险点
+    <span class="tag">2024上</span><span class="tag">2024下</span><span class="tag">2025上</span><span class="tag">2025下</span><span class="tag">2026上</span>
+    　共 4 个小题
+  </div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某省卫健委拟建设"<b>区域医疗影像云平台</b>"，连接全省 <b>312 家</b>二级以上医院与 <b>1800 家</b>基层医疗机构，提供影像上传、云端存储、AI 辅助诊断（肺结节、肋骨骨折）、远程会诊与报告签发。平台日均新增影像 <b>42 万幅</b>，单幅 CT 影像约 <b>500 MB</b>，影像在线调阅并发峰值 <b>8000</b>。</p>
+    <p>项目组梳理出以下 12 条质量需求：</p>
+    <ul>
+      <li><b>(a)</b> 平台年可用率不低于 99.9%，计划内维护须提前 72 小时通知所有接入机构。</li>
+      <li><b>(b)</b> 单幅 CT 影像上传完成后，医生在 60 秒内可完成在线调阅与窗宽窗位调整。</li>
+      <li><b>(c)</b> 新增一种 AI 辅助诊断算法的接入工作量不超过 5 人天，且不得修改平台核心服务代码。</li>
+      <li><b>(d)</b> 仅允许医生调阅其所属医联体内患者的影像，所有调阅行为须记录操作人、时间与影像范围并可追溯。</li>
+      <li><b>(e)</b> 平台须提供测试数据注入接口，可模拟影像上传失败、存储节点宕机等异常，用于验证故障处理逻辑。</li>
+      <li><b>(f)</b> 影像存储节点发生故障时，系统应在 30 秒内自动切换至备用节点，调阅服务不中断。</li>
+      <li><b>(g)</b> 影像调阅界面支持键盘快捷操作与高对比度显示，新入职医生无须培训即可完成常规调阅。</li>
+      <li><b>(h)</b> 患者影像在传输和存储时均须加密，加密密钥每年至少轮换一次。</li>
+      <li><b>(i)</b> AI 推理服务可独立横向扩容，扩容后单幅影像的 AI 推理结果须在 15 秒内返回。</li>
+      <li><b>(j)</b> 影像诊断报告的模板与审核规则可由医院管理员自行配置，配置后 2 小时内生效且无须停机。</li>
+      <li><b>(k)</b> 平台须提供隔离的回放环境，可导入生产流量复现调阅失败问题，用于版本上线前的回归验证。</li>
+      <li><b>(l)</b> 平台须支持语音录入与报告自动纠错，使医生书写一份常规报告的平均时间不超过 2 分钟。</li>
+    </ul>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（8 分）</span>质量属性归类</div>
+    <div class="q-body">
+      <p>请将需求 (a)~(l) 分别归入下表的 6 类质量属性，把需求编号填入对应空格。每条需求只归属一类。</p>
+      <table>
+        <tr><th style="width:70px">空号</th><th style="width:130px">质量属性</th><th>对应需求</th></tr>
+        <tr><td style="text-align:center">(1)</td><td>可用性</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(2)</td><td>性能</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(3)</td><td>可修改性</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(4)</td><td>安全性</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(5)</td><td>可测试性</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(6)</td><td>易用性</td><td class="fill">　</td></tr>
+      </table>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a1">0 字</span></div>
+      <textarea id="a1" data-qid="a1" placeholder="按「空号：需求编号」逐行作答，例如：&#10;(1) 可用性：x、y&#10;(2) 性能：x、y"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a1">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a1"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（6 分）</span>场景六要素</div>
+    <div class="q-body">
+      <p>1. 写出质量属性场景的六个组成要素。（2 分）</p>
+      <p>2. 用这六个要素描述需求 (f)。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a2">0 字</span></div>
+      <textarea id="a2" data-qid="a2" placeholder="1) 六要素：……&#10;2) 刺激源：……&#10;   刺激：……&#10;   环境：……&#10;   制品：……&#10;   响应：……&#10;   响应度量：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a2">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a2"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（5 分）</span>效用树填空</div>
+    <div class="q-body">
+      <p>项目组用效用树对质量需求排序，部分内容如下表。请完成 (1)~(5)。</p>
+      <table>
+        <tr><th style="width:100px">层级</th><th>节点内容</th><th style="width:80px">业务价值</th><th style="width:80px">技术难度</th></tr>
+        <tr><td>0 效用</td><td>区域影像云平台架构质量目标</td><td>—</td><td>—</td></tr>
+        <tr><td>1 质量属性</td><td class="fill">(1)</td><td>—</td><td>—</td></tr>
+        <tr><td>2 属性精化</td><td>故障恢复能力</td><td>—</td><td>—</td></tr>
+        <tr><td>3 场景</td><td class="fill">(2)</td><td>H</td><td>M</td></tr>
+        <tr><td>1 质量属性</td><td>性能</td><td>—</td><td>—</td></tr>
+        <tr><td>2 属性精化</td><td class="fill">(3)</td><td>—</td><td>—</td></tr>
+        <tr><td>3 场景</td><td class="fill">(4)</td><td>H</td><td>H</td></tr>
+        <tr><td>1 质量属性</td><td class="fill">(5)</td><td>—</td><td>—</td></tr>
+        <tr><td>2 属性精化</td><td>算法可扩展性</td><td>—</td><td>—</td></tr>
+        <tr><td>3 场景</td><td>(c) 新增 AI 算法 5 人天且不改核心代码</td><td>M</td><td>M</td></tr>
+      </table>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a3">0 字</span></div>
+      <textarea id="a3" data-qid="a3" style="min-height:120px" placeholder="(1) ……&#10;(2) ……&#10;(3) ……&#10;(4) ……&#10;(5) ……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a3">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="5" step="0.5" data-score="a3"> / 5</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题4】<span class="score">（6 分）</span>ATAM 四类点识别</div>
+    <div class="q-body">
+      <p>架构评审会上列出以下 4 项架构决策，请分别判断其属于<b>敏感点、权衡点、风险点、非风险点</b>中的哪一种，并各用一句话说明理由。</p>
+      <ol>
+        <li>基层医院调阅影像时优先读取部署在市级节点的边缘缓存，未命中再回源省级中心存储。</li>
+        <li>所有影像调阅请求统一经省级安全接入网关完成解密与权限校验后再转发至存储层。</li>
+        <li>将 AI 推理服务的批处理大小（batch size）由 1 调整为 16，以提高 GPU 利用率。</li>
+        <li>影像对象存储采用三副本 + 跨机房纠删码，消息中间件采用三副本集群。</li>
+      </ol>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题4 <span class="cnt" data-for="a4">0 字</span></div>
+      <textarea id="a4" data-qid="a4" placeholder="1) 属于……，理由：……&#10;2) 属于……，理由：……&#10;3) 属于……，理由：……&#10;4) 属于……，理由：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a4">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a4"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r1">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r1">
+    <h4>问题1（8 分，每空 1 分，每空 2 条需求）</h4>
+    <table>
+      <tr><th style="width:60px">空号</th><th style="width:110px">质量属性</th><th>对应需求</th></tr>
+      <tr><td style="text-align:center">(1)</td><td>可用性</td><td><span class="kk">a、f</span></td></tr>
+      <tr><td style="text-align:center">(2)</td><td>性能</td><td><span class="kk">b、i</span></td></tr>
+      <tr><td style="text-align:center">(3)</td><td>可修改性</td><td><span class="kk">c、j</span></td></tr>
+      <tr><td style="text-align:center">(4)</td><td>安全性</td><td><span class="kk">d、h</span></td></tr>
+      <tr><td style="text-align:center">(5)</td><td>可测试性</td><td><span class="kk">e、k</span></td></tr>
+      <tr><td style="text-align:center">(6)</td><td>易用性</td><td><span class="kk">g、l</span></td></tr>
+    </table>
+    <p><b>判断依据：</b>含"可用率、切换、不中断"→可用性；含"秒/分钟内完成"→性能；含"人天、不改代码、可配置、不停机"→可修改性；含"授权、加密、审计追溯"→安全性；含"注入、回放、验证"→可测试性；含"无须培训、操作效率"→易用性。</p>
+
+    <h4>问题2（6 分）</h4>
+    <p><b>1）（2 分）</b>刺激源、刺激、环境、制品、响应、响应度量。</p>
+    <p><b>2）（4 分）</b>需求 (f) 的六要素：</p>
+    <table>
+      <tr><th style="width:100px">要素</th><th>内容</th></tr>
+      <tr><td>刺激源</td><td>影像存储节点（服务器、存储设备或其上的存储服务）</td></tr>
+      <tr><td>刺激</td><td>存储节点发生故障、失效</td></tr>
+      <tr><td>环境</td><td>平台正常运行、医生在线调阅影像期间</td></tr>
+      <tr><td>制品</td><td>影像存储服务及在线调阅链路</td></tr>
+      <tr><td>响应</td><td>系统自动切换至备用节点，调阅请求改由备用节点处理，服务不中断</td></tr>
+      <tr><td>响应度量</td><td>从故障发生到切换完成 ≤ 30 秒，切换期间调阅成功率 100%</td></tr>
+    </table>
+
+    <h4>问题3（5 分，每空 1 分）</h4>
+    <table>
+      <tr><th style="width:60px">空号</th><th>答案</th></tr>
+      <tr><td style="text-align:center">(1)</td><td>可用性</td></tr>
+      <tr><td style="text-align:center">(2)</td><td>(f) 存储节点故障 30 秒内切换、调阅不中断</td></tr>
+      <tr><td style="text-align:center">(3)</td><td>影像调阅响应时间（响应时延）</td></tr>
+      <tr><td style="text-align:center">(4)</td><td>(b) 500 MB 影像 60 秒内可在线调阅</td></tr>
+      <tr><td style="text-align:center">(5)</td><td>可修改性</td></tr>
+    </table>
+
+    <h4>问题4（6 分，每项 1.5 分：类型 0.5 + 理由 1）</h4>
+    <ol>
+      <li><b>权衡点</b>。边缘缓存提升了调阅性能、降低了骨干带宽，但引入缓存一致性、边缘存储成本与运维复杂度，同时影响性能与成本/可修改性等多个质量属性。</li>
+      <li><b>风险点</b>。统一网关成为全局单点与性能瓶颈，(f) 的 30 秒切换、(b) 的 60 秒调阅均可能无法达成，且网关容量尚未验证。</li>
+      <li><b>敏感点</b>。批处理大小直接决定 GPU 利用率与推理时延，是达成 (i) 15 秒指标的关键参数（调大可提吞吐，但会拉长单请求时延）。</li>
+      <li><b>非风险点</b>。三副本、纠删码、多副本消息集群均为业界成熟方案，已有大规模生产验证。</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题二
+     ============================================================ -->
+<section class="qblock" id="q2">
+  <div class="qhead">试题二（25分）城市轨道交通"一码通行"系统</div>
+  <div class="qintro">
+    考点：缓存穿透/击穿/雪崩 · Cache-Aside 一致性 · 分布式锁 · Redis 持久化与高可用
+    <span class="tag">2024上</span><span class="tag">2024下</span><span class="tag">2025上</span><span class="tag">2025下</span><span class="tag">2026上</span>
+    　共 4 个小题
+  </div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某市地铁集团建设"<b>一码通行</b>"系统，乘客出示乘车码即可进出闸机。系统日均客流 <b>800 万人次</b>，早高峰 1 小时 <b>200 万人次</b>，峰值请求 <b>6 万 QPS</b>，全线网闸机 <b>2 万台</b>。系统用 Redis 集群缓存乘车码状态、账户余额与黑名单，账户与交易数据存放在 MySQL，扣费通过消息队列异步落账。</p>
+    <p>上线后出现三类故障现象：</p>
+    <ul>
+      <li><b>现象 1</b>：部分乘客使用已注销或伪造的乘车码（账户在数据库中根本不存在）持续刷码，这些请求全部落到数据库，数据库 CPU 升至 95%。</li>
+      <li><b>现象 2</b>：早高峰开始瞬间，全线网共用的"乘车码规则配置"缓存项（同一 key）到期失效，数万请求同时涌向数据库，接口响应时间由 50 ms 升至 3 s。</li>
+      <li><b>现象 3</b>：3 号线因信号设备改造导致机房断电，该线路 12 个缓存节点全部失效；恢复后缓存为空，全部流量直接压向数据库，连接池耗尽，波及全线网。</li>
+    </ul>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（7 分）</span>缓存三类故障辨识</div>
+    <div class="q-body">
+      <p>分别指出上述三个现象对应的缓存问题类型（穿透 / 击穿 / 雪崩），并各给出至少两种解决方案。</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a5">0 字</span></div>
+      <textarea id="a5" data-qid="a5" placeholder="现象1：属于……，方案：① …… ② ……&#10;现象2：属于……，方案：① …… ② ……&#10;现象3：属于……，方案：① …… ② ……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a5">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a5"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（7 分）</span>缓存与数据库一致性</div>
+    <div class="q-body">
+      <p>系统对余额采用 Cache-Aside 策略。线程 A 执行扣费（更新数据库余额并删除缓存），线程 B 查询余额。</p>
+      <p>1. 说明两者交错执行时缓存与数据库不一致的产生过程。（2 分）</p>
+      <p>2. 给出三种及以上治理方案。（3 分）</p>
+      <p>3. 若采用"延迟双删"，延迟时长应如何确定？为什么它仍不能保证强一致？（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a6">0 字</span></div>
+      <textarea id="a6" data-qid="a6" placeholder="1) 时序：线程B…… → 线程A…… → 线程B…… → 结果……&#10;2) 方案：① …… ② …… ③ ……&#10;3) 延迟时长：……；原因：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a6">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a6"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（6 分）</span>Redis 分布式锁</div>
+    <div class="q-body">
+      <p>为防止同一乘车码在两台闸机上被并发扣费，团队拟用 Redis 实现分布式锁。</p>
+      <p>1. 写出加锁、解锁的关键命令，并说明实现时必须保证的要点。（3 分）</p>
+      <p>2. 若业务执行时间超过锁的过期时间，会出现什么问题？如何解决？（1.5 分）</p>
+      <p>3. 若 Redis 主从切换时锁尚未同步到新主节点，会有什么后果？可采取哪些措施？（1.5 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a7">0 字</span></div>
+      <textarea id="a7" data-qid="a7" placeholder="1) 加锁：SET ……&#10;   解锁：Lua ……&#10;   要点：① …… ② …… ③ ……&#10;2) 问题：……；解决：……&#10;3) 后果：……；措施：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a7">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a7"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题4】<span class="score">（5 分）</span>持久化与高可用</div>
+    <div class="q-body">
+      <p>1. 比较 RDB 与 AOF 两种持久化方式的优缺点。（3 分）</p>
+      <p>2. 说明主从复制 + 哨兵在乘车码系统中的可用性作用。（1 分）</p>
+      <p>3. 为什么账户余额不能只保存在 Redis 中、而必须以数据库为准？（1 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题4 <span class="cnt" data-for="a8">0 字</span></div>
+      <textarea id="a8" data-qid="a8" style="min-height:120px" placeholder="1) RDB：优点…… 缺点……&#10;   AOF：优点…… 缺点……&#10;2) ……&#10;3) ……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a8">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="5" step="0.5" data-score="a8"> / 5</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r2">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r2">
+    <h4>问题1（7 分：判断 1 分 ×3，方案每类 1 分，答满 2 条即可）</h4>
+    <table>
+      <tr><th style="width:60px">现象</th><th style="width:150px">类型</th><th>解决方案（每类至少 2 条）</th></tr>
+      <tr><td style="text-align:center">1</td><td><b>缓存穿透</b>（请求的数据在缓存和数据库中都不存在）</td><td>① 布隆过滤器预先拦截不存在的乘车码；② 缓存空值并设短 TTL；③ 接入层做乘车码格式/签名校验与黑名单本地缓存；④ 对同一用户/IP 限流</td></tr>
+      <tr><td style="text-align:center">2</td><td><b>缓存击穿</b>（单个热点 key 失效瞬间）</td><td>① 互斥锁/分布式锁重建，其余请求等待或返回降级值；② 逻辑过期 + 异步重建；③ 热点 key 不设过期、后台定时刷新；④ 高峰前主动预热</td></tr>
+      <tr><td style="text-align:center">3</td><td><b>缓存雪崩</b>（大量 key 或整个节点同时失效）</td><td>① TTL 加随机抖动，避免同时过期；② Redis 多副本 + 多可用区部署，启用持久化缩短恢复时间；③ 多级缓存（本地 Caffeine + Redis）；④ 数据库连接池保护 + 熔断限流；⑤ 缓存预热与降级开关</td></tr>
+    </table>
+
+    <h4>问题2（7 分）</h4>
+    <p><b>1）（2 分）</b>不一致过程：线程 B 缓存未命中 → 读数据库得到旧余额 100 元 → 线程 A 更新数据库余额为 80 元并删除缓存 → 线程 B 把先前读到的旧值 100 元写回缓存。结果缓存 100 元、数据库 80 元，后续读请求一直命中旧值，不一致持续到缓存过期。</p>
+    <p><b>2）（3 分，答出 3 条即可）</b></p>
+    <ul>
+      <li>同一乘车码的读写串行化：按 codeId 哈希到单写者队列，或加互斥锁。</li>
+      <li>先更新数据库、再删除缓存，并配合延迟双删。</li>
+      <li>用 binlog/CDC（Canal）订阅数据库变更后异步失效缓存，业务代码与缓存解耦。</li>
+      <li>事务消息 / Outbox 表保证"更新 + 失效"最终一定执行，配重试与死信。</li>
+      <li>数据带版本号或时间戳，回填时用 CAS 比较，拒绝旧版本覆盖新版本。</li>
+      <li>强一致要求的余额读写不走缓存，或收敛到同一数据服务。</li>
+    </ul>
+    <p><b>3）（2 分）</b>延迟时长应大于"一次读请求耗时 + 主从复制延迟"，通常取数百毫秒至 1 秒，须按实测 P99 设定；即便如此，第二次删除仍可能失败，且并发窗口、主从延迟、删除失败客观存在。缓存与数据库没有共同事务，只能做到最终一致，无法保证强一致。</p>
+
+    <h4>问题3（6 分）</h4>
+    <p><b>1）（3 分）</b>加锁：<code>SET lock:code:{codeId} {requestId} NX PX 3000</code>；解锁：用 Lua 脚本先 <code>GET</code> 比对 requestId 再 <code>DEL</code>，保证"判断 + 删除"原子。要点：① 用一条命令原子加锁（SET NX PX）；② 值写入唯一持有者标识（UUID/requestId）；③ 必须设置过期时间防死锁；④ 必须原子释放，避免误删他人锁；⑤ 获取失败要有超时与重试策略。</p>
+    <p><b>2）（1.5 分）</b>锁提前过期释放后，两个客户端可能同时进入临界区。解决：看门狗（Redisson watchdog）自动续租、合理设置租期；业务侧再用版本号/CAS 或幂等键兜底。</p>
+    <p><b>3）（1.5 分）</b>主从为异步复制，锁尚未同步即发生切换时，新主节点上无此锁，其他客户端可再次加锁，互斥失效导致重复扣费。措施：RedLock 多节点多数派加锁（存在争议）、引入 fencing token（单调递增令牌，由存储端校验旧令牌）、把扣费正确性交给数据库唯一约束与幂等表，不把正确性完全寄托于锁。</p>
+
+    <h4>问题4（5 分）</h4>
+    <p><b>1）（3 分）</b></p>
+    <ul>
+      <li><b>RDB</b>：定时生成数据快照。优点：文件紧凑、便于备份与全量恢复、恢复加载快、由子进程完成对主进程影响小。缺点：两次快照之间宕机会丢数据；数据量大时 fork 与写时复制会造成时延抖动。</li>
+      <li><b>AOF</b>：追加记录写命令。优点：丢数据窗口小（everysec 最多约 1 秒）、日志可读可修复、误删可恢复。缺点：文件更大、写放大、刷盘影响性能、恢复需重放命令较慢。</li>
+      <li>生产上常 RDB + AOF 混用，并以主从 + 哨兵/集群保证可用性。</li>
+    </ul>
+    <p><b>2）（1 分）</b>主从复制提供数据副本与读扩展；哨兵监控主节点健康，故障时自动选主并切换，客户端经哨兵获知新主地址，缩短不可用时间，消除单点。</p>
+    <p><b>3）（1 分）</b>Redis 是内存缓存，可能因内存淘汰、过期策略、重启或主从异步复制而丢数据；余额属资金数据，必须有数据库事务、唯一约束与日终对账兜底，缓存仅用于加速，失效时可回源重建。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题三
+     ============================================================ -->
+<section class="qblock" id="q3">
+  <div class="qhead">试题三（25分）全国冷链药品追溯平台</div>
+  <div class="qintro">
+    考点：范式判定与 3NF 分解 · 海量数据分片与冷热分层 · 多模存储选型
+    <span class="tag">2024上</span><span class="tag">2025上</span><span class="tag">2026上</span>
+    　共 3 个小题
+  </div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某平台对疫苗、血液制品等冷链药品做全链路追溯：记录从生产、干线运输、冷库仓储到门店/医院的全过程温湿度与流转信息。全网部署 <b>20 万个</b>温湿度采集点，常态每 30 秒上报一条，日增数据约 <b>5.7 亿条</b>；需支持批次多级流向追溯、温控超限告警、监管报表，以及"某批次是否流经问题冷库"的多跳路径查询。</p>
+    <p>现有运输任务单关系模式如下（主键为 <b>任务编号 + 药品批次号</b>）：</p>
+    <p style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:6px;padding:10px 14px;font-size:13.5px">
+      运输任务单（<b>任务编号</b>，发车时间，车牌号，司机编号，司机姓名，司机联系电话，起点冷库编号，起点冷库名称，终点机构编号，终点机构名称，<b>药品批次号</b>，药品名称，温度下限，温度上限）
+    </p>
+    <p>业务规则：一个运输任务可装载多个药品批次；一个药品批次只对应一种药品；一个运输任务只指派一名司机、从一冷库发往一家机构；一个司机可执行多个任务。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（8 分）</span>范式判定与分解</div>
+    <div class="q-body">
+      <p>1. 指出该关系模式最高满足第几范式，并说明理由。（3 分）</p>
+      <p>2. 将其分解为 3NF，写出分解后的关系模式，并标明主键与外键。（5 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a9">0 字</span></div>
+      <textarea id="a9" data-qid="a9" style="min-height:190px" placeholder="1) 最高满足第 X 范式，因为……&#10;2) 分解结果：&#10;   运输任务(……) 主键…… 外键……&#10;   司机(……)&#10;   冷库(……)&#10;   机构(……)&#10;   运输批次明细(……)&#10;   药品批次(……)"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a9">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a9"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（9 分）</span>海量温控数据存储</div>
+    <div class="q-body">
+      <p>1. 说明直接用关系型数据库存储日增 5.7 亿条温湿度明细会遇到的三个问题。（3 分）</p>
+      <p>2. 给出该场景的数据存储与分层方案。（4 分）</p>
+      <p>3. 若采用分库分表，分别说明"按采集点编号哈希"与"按时间范围"两种分片键的优缺点，并给出你的选择。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a10">0 字</span></div>
+      <textarea id="a10" data-qid="a10" style="min-height:170px" placeholder="1) 问题：① …… ② …… ③ ……&#10;2) 方案：存储……；削峰……；预聚合……；冷热分层……&#10;3) 哈希分片：优点…… 缺点……&#10;   时间分片：优点…… 缺点……&#10;   选择：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a10">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a10"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>存储技术选型</div>
+    <div class="q-body">
+      <p>从备选存储技术中为下列 (1)~(6) 选择最合适的一种，并说明 (2) 为何不宜用关系型数据库多表连接实现。</p>
+      <p style="font-size:13.5px">备选：A. MySQL　B. HBase　C. MongoDB　D. Elasticsearch　E. Neo4j　F. TDengine（时序数据库）</p>
+      <table>
+        <tr><th style="width:60px">空号</th><th>业务场景</th><th style="width:110px">选择</th></tr>
+        <tr><td style="text-align:center">(1)</td><td>20 万个采集点每 30 秒一条的温湿度数据写入，以及按采集点 + 时间窗口做降采样聚合</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(2)</td><td>某批次药品的多级流向追溯、"是否流经问题冷库"的多跳路径查询</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(3)</td><td>监管人员按药品名称、生产企业、批号做关键词检索与多维组合筛选</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(4)</td><td>冷链运输单据：不同品类字段差异大，且含嵌套的温度记录数组</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(5)</td><td>亿级温控明细按"采集点编号 + 时间前缀"随机读写与范围扫描</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(6)</td><td>药品基础信息、企业资质、结算订单等强事务业务</td><td class="fill">　</td></tr>
+      </table>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a11">0 字</span></div>
+      <textarea id="a11" data-qid="a11" placeholder="(1) ……&#10;(2) ……&#10;(3) ……&#10;(4) ……&#10;(5) ……&#10;(6) ……&#10;为什么不用关系库多表连接：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a11">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a11"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r3">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r3">
+    <h4>问题1（8 分）</h4>
+    <p><b>1）（3 分）</b>最高满足 <b>1NF</b>。</p>
+    <p>理由：主键为 (任务编号, 药品批次号)，存在非主属性对主键一部分的依赖——任务编号 → 发车时间、车牌号、司机编号、司机姓名、司机联系电话、起点冷库编号、起点冷库名称、终点机构编号、终点机构名称；药品批次号 → 药品名称。同时存在传递依赖：司机编号 → 司机姓名/联系电话，起点冷库编号 → 起点冷库名称，终点机构编号 → 终点机构名称。故不满足 2NF。</p>
+    <p><b>2）（5 分）</b>分解为 3NF：</p>
+    <table>
+      <tr><th>关系模式</th><th style="width:150px">主键</th><th style="width:230px">外键</th></tr>
+      <tr><td>运输任务(任务编号, 发车时间, 车牌号, 司机编号, 起点冷库编号, 终点机构编号)</td><td>任务编号</td><td>司机编号→司机；起点冷库编号→冷库；终点机构编号→机构</td></tr>
+      <tr><td>司机(司机编号, 司机姓名, 司机联系电话)</td><td>司机编号</td><td>—</td></tr>
+      <tr><td>冷库(冷库编号, 冷库名称)</td><td>冷库编号</td><td>—</td></tr>
+      <tr><td>机构(机构编号, 机构名称)</td><td>机构编号</td><td>—</td></tr>
+      <tr><td>运输批次明细(任务编号, 药品批次号, 温度下限, 温度上限)</td><td>(任务编号, 药品批次号)</td><td>任务编号→运输任务；药品批次号→药品批次</td></tr>
+      <tr><td>药品批次(药品批次号, 药品名称)</td><td>药品批次号</td><td>—</td></tr>
+    </table>
+
+    <h4>问题2（9 分）</h4>
+    <p><b>1）（3 分，答出 3 条即可）</b></p>
+    <ul>
+      <li>单表日增 5.7 亿行，二级索引维护与写入放大严重，B+ 树层高增加、主键插入热点。</li>
+      <li>按时间范围做聚合统计需扫描海量行，查询响应不可控。</li>
+      <li>存储成本高，历史数据归档与冷热迁移困难。</li>
+      <li>备份与恢复窗口不可控，DDL 变更代价大。</li>
+    </ul>
+    <p><b>2）（4 分）</b></p>
+    <ul>
+      <li>采集明细写入时序数据库（TDengine、InfluxDB 等），或按"采集点哈希 + 时间分区"分库分表。</li>
+      <li>写入前经 Kafka 削峰，流式计算（Flink）实时判定超限，告警不依赖事后查询。</li>
+      <li>建立 1 分钟/1 小时预聚合表（降采样），报表查聚合表而非明细。</li>
+      <li>冷热分层：热数据 7 天（SSD/内存）、温数据 90 天（SATA）、冷数据 3 年（对象存储或 HDFS 列式 Parquet 压缩）。</li>
+      <li>设置 retention/TTL 自动清理过期分区。</li>
+    </ul>
+    <p><b>3）（2 分）</b></p>
+    <ul>
+      <li>按采集点编号哈希：写入均匀、无热点，单点查询快；但跨采集点的时间范围聚合需扫描全部分片。</li>
+      <li>按时间范围：时间聚合与冷热归档方便；但当前时间片写入集中，形成写热点，历史分片扩容需重分布。</li>
+      <li>选择：<b>采集点编号哈希做主分片 + 表内按时间分区</b>，兼顾写入均匀与时间裁剪；或直接使用时序数据库由引擎按时间分区管理。</li>
+    </ul>
+
+    <h4>问题3（8 分：每空 1 分，(2) 说明 2 分）</h4>
+    <table>
+      <tr><th style="width:60px">空号</th><th>答案</th></tr>
+      <tr><td style="text-align:center">(1)</td><td><span class="kk">F</span> TDengine（时序数据库）</td></tr>
+      <tr><td style="text-align:center">(2)</td><td><span class="kk">E</span> Neo4j（图数据库）</td></tr>
+      <tr><td style="text-align:center">(3)</td><td><span class="kk">D</span> Elasticsearch</td></tr>
+      <tr><td style="text-align:center">(4)</td><td><span class="kk">C</span> MongoDB</td></tr>
+      <tr><td style="text-align:center">(5)</td><td><span class="kk">B</span> HBase</td></tr>
+      <tr><td style="text-align:center">(6)</td><td><span class="kk">A</span> MySQL</td></tr>
+    </table>
+    <p><b>为什么 (2) 不用关系库多表连接：</b>药品流向的追溯深度与路径不固定，关系库需按跳数反复自连接，连接次数随跳数增长，SQL 难以表达变长路径；数据量上亿后连接与索引开销急剧上升。图数据库以节点和边直接存储关系，原生支持变长路径遍历与可达性、最短路径等图算法，且新增关系类型无需修改表结构。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题四
+     ============================================================ -->
+<section class="qblock" id="q4">
+  <div class="qhead">试题四（25分）连锁药店 O2O 即时配送平台</div>
+  <div class="qintro">
+    考点：DDD 限界上下文 · 微服务拆分 · 分布式事务 · 契约测试与可观测性
+    <span class="tag">2024上</span><span class="tag">2024下</span><span class="tag">2025下</span>
+    　共 4 个小题
+  </div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某连锁药店在全国拥有 <b>6000 家</b>门店，原单体系统承载线上商城、门店 POS、处方审核、医保结算等业务，一次发布影响全站，迭代周期长达 <b>6 周</b>。公司拟按领域驱动设计（DDD）拆分微服务并部署到 Kubernetes，支持"线上下单—门店拣货—骑手配送—医保在线支付"的 O2O 模式。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（6 分）</span>限界上下文与上下文集成</div>
+    <div class="q-body">
+      <p>1. 说明限界上下文的定义以及划分限界上下文的作用（300 字以内）。（3 分）</p>
+      <p>2. "订单交易"上下文在下单支付前需确认处方已审核通过，而处方模型会随监管要求频繁调整。指出这两个上下文之间的上下游关系，并说明应采用何种集成方式保护下游，为什么。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a12">0 字</span></div>
+      <textarea id="a12" data-qid="a12" placeholder="1) 定义：…… 作用：①②③&#10;2) 上游：…… 下游：……&#10;   集成方式：…… 理由：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a12">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a12"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（7 分）</span>业务能力归类</div>
+    <div class="q-body">
+      <p>将下列 12 项业务能力归入"订单交易、药品履约、处方与用药安全、医保结算"4 个限界上下文（每项 0.5 分），并用一句话说明"库存锁定"为何不属于订单交易上下文（1 分）。</p>
+      <p style="font-size:13.5px">(a) 订单创建　(b) 订单状态流转　(c) 优惠券核销　(d) 库存锁定　(e) 门店拆零拣货　(f) 骑手调度　(g) 处方审核　(h) 电子处方流转　(i) 用药禁忌校验　(j) 医保个账支付　(k) 医保对账　(l) 医保目录匹配</p>
+      <table>
+        <tr><th style="width:180px">限界上下文</th><th>业务能力（填字母）</th></tr>
+        <tr><td>订单交易</td><td class="fill">　</td></tr>
+        <tr><td>药品履约</td><td class="fill">　</td></tr>
+        <tr><td>处方与用药安全</td><td class="fill">　</td></tr>
+        <tr><td>医保结算</td><td class="fill">　</td></tr>
+      </table>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a13">0 字</span></div>
+      <textarea id="a13" data-qid="a13" style="min-height:130px" placeholder="订单交易：……&#10;药品履约：……&#10;处方与用药安全：……&#10;医保结算：……&#10;库存锁定不属于订单交易，因为……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a13">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a13"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（7 分）</span>跨服务分布式事务</div>
+    <div class="q-body">
+      <p>一次下单需完成：创建订单（订单服务）、锁定门店库存（履约服务）、扣减医保个账（医保服务）。</p>
+      <p>1. 说明为什么不宜采用 2PC/XA 实现该事务。（2 分）</p>
+      <p>2. 给出一套基于 Saga 或 TCC 的分布式事务方案，写明正向步骤与补偿动作。（3 分）</p>
+      <p>3. 说明为避免补偿错乱必须处理的三类问题及对应措施。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a14">0 字</span></div>
+      <textarea id="a14" data-qid="a14" style="min-height:170px" placeholder="1) 原因：① …… ② …… ③ ……&#10;2) 正向：T1…… → T2…… → T3……&#10;   补偿：C3…… → C2…… → C1……&#10;3) ① 幂等：…… ② 空回滚：…… ③ 悬挂：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a14">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a14"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题4】<span class="score">（5 分）</span>微服务测试与可观测性</div>
+    <div class="q-body">
+      <p>1. 微服务拆分后，联调环境不稳定、服务间接口频繁变更，应如何设计测试策略？（3 分）</p>
+      <p>2. 说明生产环境可观测性建设的三个主要方面，并说明 SLO 与错误预算如何用于发布决策。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题4 <span class="cnt" data-for="a15">0 字</span></div>
+      <textarea id="a15" data-qid="a15" style="min-height:120px" placeholder="1) 测试策略：① …… ② …… ③ ……&#10;2) 三方面：……；SLO/错误预算：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a15">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="5" step="0.5" data-score="a15"> / 5</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r4">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r4">
+    <h4>问题1（6 分）</h4>
+    <p><b>1）（3 分）</b>限界上下文是领域模型的显式边界，边界内的术语、规则与模型含义唯一且无歧义。作用：把复杂领域拆分为高内聚、低耦合的模块，使各模型可独立开发与演进；消除同名概念在不同业务中的歧义；为团队划分与微服务拆分提供依据；明确上下文之间的集成关系与契约。</p>
+    <p><b>2）（3 分）</b>"处方与用药安全"是上游，"订单交易"是下游。上游以<b>开放主机服务（OHS）</b>（REST 接口或领域事件）+ <b>发布语言</b>（明确的契约/schema）对外提供"处方审核结果"能力；下游建立<b>防腐层（ACL）</b>，将处方模型转换为自身"是否可支付"的概念，从而隔离监管调整带来的模型变化，避免处方字段与状态变更直接冲击订单代码。</p>
+
+    <h4>问题2（7 分）</h4>
+    <table>
+      <tr><th style="width:170px">限界上下文</th><th>业务能力</th></tr>
+      <tr><td>订单交易</td><td><span class="kk">(a) 订单创建、(b) 订单状态流转、(c) 优惠券核销</span></td></tr>
+      <tr><td>药品履约</td><td><span class="kk">(d) 库存锁定、(e) 门店拆零拣货、(f) 骑手调度</span></td></tr>
+      <tr><td>处方与用药安全</td><td><span class="kk">(g) 处方审核、(h) 电子处方流转、(i) 用药禁忌校验</span></td></tr>
+      <tr><td>医保结算</td><td><span class="kk">(j) 医保个账支付、(k) 医保对账、(l) 医保目录匹配</span></td></tr>
+    </table>
+    <p><b>说明（1 分）：</b>库存锁定虽由下单触发，但库存的领域规则（批次、效期、拆零、门店可售量、缺货释放）属于履约上下文，订单上下文只保存"锁定单号/锁定结果"的引用。把库存模型放进订单会造成跨上下文模型耦合、职责混乱，也不利于履约独立扩容与演进。</p>
+
+    <h4>问题3（7 分）</h4>
+    <p><b>1）（2 分）</b>2PC/XA 同步阻塞，参与方在提交前一直持锁，长事务下吞吐低；协调者故障会导致参与者悬挂；要求各资源都支持 XA，微服务常跨异构存储与消息，往往不具备；与微服务去中心化、独立部署、独立数据库的目标冲突。</p>
+    <p><b>2）（3 分）</b>编排式 Saga（订单服务作协调者）：</p>
+    <ul>
+      <li>正向：T1 创建订单（待支付）→ T2 履约服务锁定库存 → T3 医保服务扣减个账 → T4 订单置为已支付。</li>
+      <li>补偿：T3 失败 → C3 退回个账；T2 失败 → C2 释放库存 → C1 取消订单（置为已取消）。</li>
+      <li>或 TCC：库存 Try 预占 / Confirm 扣减 / Cancel 释放；个账 Try 冻结 / Confirm 扣款 / Cancel 解冻。</li>
+    </ul>
+    <p><b>3）（2 分，答出 3 类即可）</b></p>
+    <ul>
+      <li><b>幂等</b>：每步携带全局事务号 + 分支号，服务端用去重表或唯一键，重复请求返回同一结果。</li>
+      <li><b>空回滚</b>：Cancel 先于 Try 到达时，记录事务状态后直接返回成功，不产生副作用。</li>
+      <li><b>悬挂</b>：Try 迟到时先查该分支是否已回滚，已回滚则拒绝执行。</li>
+      <li><b>最终一致兜底</b>：消息重试 + 定时对账补偿，差异自动修复。</li>
+    </ul>
+
+    <h4>问题4（5 分）</h4>
+    <p><b>1）（3 分）</b></p>
+    <ul>
+      <li>测试金字塔：以单元测试为主，集成测试聚焦服务内与关键依赖，契约测试覆盖服务间，端到端只保留少量关键链路。</li>
+      <li>消费者驱动契约测试（Pact）：提供者在 CI 中验证契约，接口不兼容在合入前暴露。</li>
+      <li>服务虚拟化/Mock（WireMock、Testcontainers）替代不稳定的外部依赖，保证测试可重复。</li>
+      <li>契约版本化与兼容性检查：字段只增不删、新增可选字段、保留旧版本过渡期。</li>
+    </ul>
+    <p><b>2）（2 分）</b>三个主要方面：日志（集中采集，TraceID 贯穿）、指标（RED/USE，Prometheus + 告警）、链路追踪（OpenTelemetry，跨服务调用链）。发布决策：以 SLO 定义可用性与时延目标，按错误预算消耗速率决定是否继续灰度；预算耗尽即冻结发布并优先修复，金丝雀发布按异常指标自动回滚。</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题五
+     ============================================================ -->
+<section class="qblock" id="q5">
+  <div class="qhead">试题五（25分）城市供水管网智能漏损监测系统</div>
+  <div class="qintro">
+    考点：边云四层架构 · MQTT QoS · 时序数据库 · 嵌入式可靠性与测试验证
+    <span class="tag">2024上</span><span class="tag">2024下</span><span class="tag">2025上</span><span class="tag">2025下</span><span class="tag">2026上</span>
+    　共 4 个小题
+  </div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某市在 <b>12000 km</b> 供水管网部署 <b>3 万个</b>压力、流量、噪声传感器，采样周期 1 秒~1 分钟。系统在边缘网关做压力突变识别与阀门联动，在云端训练漏损定位模型并下发调度策略。业务要求：爆管等紧急事件从传感器采集到告警推送端到端不超过 <b>3 秒</b>；家庭网络或公网中断时，现场仍须完成本地告警与关阀。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（7 分）</span>四层架构与边缘计算</div>
+    <div class="q-body">
+      <p>1. 按"感知层、边缘层、平台层、应用层"四层说明各层的主要功能（300 字以内）。（4 分）</p>
+      <p>2. 说明本系统采用边缘计算的三条理由。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a16">0 字</span></div>
+      <textarea id="a16" data-qid="a16" placeholder="1) 感知层：……&#10;   边缘层：……&#10;   平台层：……&#10;   应用层：……&#10;2) 理由：① …… ② …… ③ ……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a16">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a16"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（7 分）</span>MQTT QoS 选型</div>
+    <div class="q-body">
+      <p>MQTT 提供 QoS 0、QoS 1、QoS 2 三种服务质量等级。请为下列业务选择合适等级填入表中。</p>
+      <table>
+        <tr><th style="width:60px">空号</th><th>业务场景</th><th style="width:100px">QoS 等级</th></tr>
+        <tr><td style="text-align:center">(1)</td><td>传感器每分钟上报一次管网压力原始采样值，允许个别数据丢失</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(2)</td><td>每日零点的累计流量读数，要求不丢失，重复上报可由服务端按批次号去重</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(3)</td><td>压力骤降（疑似爆管）告警上报</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(4)</td><td>云端向现场下发"关闭 3 号阀门"控制指令</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(5)</td><td>云端下发"采集周期由 60 秒改为 30 秒"的配置指令，重复下发不影响结果</td><td class="fill">　</td></tr>
+        <tr><td style="text-align:center">(6)</td><td>网关补传断网期间缓存的历史告警，须逐条不丢不重</td><td class="fill">　</td></tr>
+      </table>
+      <p>并用 200 字以内的文字说明：为什么 (3)(4) 两类业务必须采用该等级。</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a17">0 字</span></div>
+      <textarea id="a17" data-qid="a17" style="min-height:150px" placeholder="(1) ……&#10;(2) ……&#10;(3) ……&#10;(4) ……&#10;(5) ……&#10;(6) ……&#10;说明：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a17">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="7" step="0.5" data-score="a17"> / 7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（6 分）</span>时序数据库</div>
+    <div class="q-body">
+      <p>1. 说明该系统在边缘网关与云端采用时序数据库存储压力、流量数据的原因（至少 4 点）。（4 分）</p>
+      <p>2. 说明时序数据库与关系型数据库在数据模型和写入方式上的主要差异。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a18">0 字</span></div>
+      <textarea id="a18" data-qid="a18" style="min-height:150px" placeholder="1) ① …… ② …… ③ …… ④ ……&#10;2) 数据模型：……&#10;   写入方式：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a18">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="6" step="0.5" data-score="a18"> / 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题4】<span class="score">（5 分）</span>可靠性与测试验证</div>
+    <div class="q-body">
+      <p>1. 为保证"断网仍能本地告警关阀"与"不因单点死机失效"，说明嵌入式侧应采取的两项可靠性机制。（2 分）</p>
+      <p>2. 说明如何用硬件在环（HIL）测试与现场灰度验证"3 秒告警"这一指标，并指出两者各自能发现什么问题、不能发现什么问题。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题4 <span class="cnt" data-for="a19">0 字</span></div>
+      <textarea id="a19" data-qid="a19" style="min-height:140px" placeholder="1) ① …… ② ……&#10;2) HIL：做法……；能发现……；不能发现……&#10;   灰度：做法……；能发现……；不能发现……&#10;   结论：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a19">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="5" step="0.5" data-score="a19"> / 5</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r5">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r5">
+    <h4>问题1（7 分）</h4>
+    <p><b>1）（4 分，每层 1 分）</b></p>
+    <ul>
+      <li><b>感知层</b>：部署压力、流量、噪声传感器与阀门执行器，采集原始数据并执行开关阀动作。</li>
+      <li><b>边缘层</b>：就近完成数据清洗、滤波与压力突变识别，运行本地联动规则，断网时自治并缓存待补传数据，承担 Modbus/MQTT 等协议转换。</li>
+      <li><b>平台层</b>：时序数据存储、漏损定位模型训练与下发、设备与固件管理、告警与工单、数据共享与开放接口。</li>
+      <li><b>应用层</b>：面向调度、抢修、营收与监管的 Web/移动应用及对外服务。</li>
+    </ul>
+    <p><b>2）（3 分，答出 3 条即可）</b>① 实时性：本地处理省去公网往返，才能满足 3 秒告警；② 断网自治：公网中断仍能本地判断并关阀；③ 带宽与成本：3 万个高频采集点不必全量上云，只上传特征与告警，降低带宽与云端存储成本；④ 减少对云端推理的依赖，云端故障不影响本地安全动作。</p>
+
+    <h4>问题2（7 分：每空 0.5 分，共 3 分；说明 4 分）</h4>
+    <table>
+      <tr><th style="width:60px">空号</th><th>答案</th></tr>
+      <tr><td style="text-align:center">(1)</td><td><span class="kk">QoS 0</span></td></tr>
+      <tr><td style="text-align:center">(2)</td><td><span class="kk">QoS 1</span></td></tr>
+      <tr><td style="text-align:center">(3)</td><td><span class="kk">QoS 2</span></td></tr>
+      <tr><td style="text-align:center">(4)</td><td><span class="kk">QoS 2</span></td></tr>
+      <tr><td style="text-align:center">(5)</td><td><span class="kk">QoS 1</span></td></tr>
+      <tr><td style="text-align:center">(6)</td><td><span class="kk">QoS 2</span></td></tr>
+    </table>
+    <p><b>说明（4 分）：</b>爆管告警与关阀指令直接关系供水安全与设备动作。QoS 0 可能丢消息，导致漏报或阀门不动作；QoS 1 保证到达但可能重复，重复告警会造成多支抢修队重复出动、重复关阀可能触发二次动作或状态错乱；QoS 2 通过 PUBLISH → PUBREC → PUBREL → PUBCOMP 四次握手实现"恰好一次"，既不丢失也不重复，才能保证告警必达且唯一、控制指令只执行一次。</p>
+
+    <h4>问题3（6 分）</h4>
+    <p><b>1）（4 分，答出 4 点即可）</b></p>
+    <ul>
+      <li>高写入吞吐，适配 3 万采集点的高频写入。</li>
+      <li>列式存储 + 时间戳差分编码，压缩比高，显著节省存储。</li>
+      <li>原生支持按时间窗口降采样与聚合（avg/max/min、连续查询），报表快。</li>
+      <li>内置 TTL/分区保留策略，过期数据自动清理，降低运维成本。</li>
+      <li>以"时间 + 标签（tag）"建立索引，范围扫描高效；数据以追加写为主，极少更新删除，与设计前提高度匹配。</li>
+    </ul>
+    <p><b>2）（2 分）</b>数据模型：时序库以"测量名 + 标签集 + 时间戳 + 字段值"组织，schema 弱、按时间分区；关系库是二维表 + 主键/外键，强 schema。写入方式：时序库以批量追加写为主，几乎不更新删除；关系库支持随机更新与事务，高频写入需维护多级索引，易产生页分裂与索引膨胀。</p>
+
+    <h4>问题4（5 分）</h4>
+    <p><b>1）（2 分）</b></p>
+    <ul>
+      <li><b>看门狗 + 心跳</b>：硬件/软件看门狗在程序跑飞或死锁时自动复位；网关与云端互发心跳，超时判定离线并切本地自治。</li>
+      <li><b>双机热备 + 本地自治规则</b>：关键节点冗余部署，主节点故障时备机秒级接管；本地保存规则与阀门控制逻辑，断网时按本地策略执行并缓存事件，恢复后幂等补传。</li>
+    </ul>
+    <p><b>2）（3 分）</b></p>
+    <ul>
+      <li><b>HIL</b>：把真实控制器接入仿真管网模型，注入爆管、传感器漂移、网络中断等故障，测量"采集—判断—执行"的真实时延。能发现实时性、时序、驱动、资源竞争与复位逻辑问题；不能反映真实管网流体瞬变、运营商网络质量与大规模并发。</li>
+      <li><b>现场灰度</b>：选取少量真实站点上线，按线上指标统计端到端时延 P99。能发现真实网络时延、设备差异、告警风暴与运维问题；但样本有限、故障不可控，难以覆盖极端与破坏性场景。</li>
+      <li><b>结论</b>：二者互补——HIL 保证确定性与极端场景可复现，灰度验证真实环境与规模效应，再以线上监控持续校准指标。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 参考答案总区 ================= -->
+<section id="ref" class="refwrap">
+  <h2 style="border:0;margin-bottom:4px">参考答案与采分点</h2>
+  <p style="font-size:13.5px;color:#6B7280">
+    参考答案已<b>分别放在每道大题下方</b>（点击各题下方的「显示本大题参考答案」展开），
+    也可点工具栏的「显示全部参考答案」一次性展开全部 5 题。
+  </p>
+</section>
+
+<!-- ================= 考点覆盖 ================= -->
+<section class="cover-note" id="scope">
+  <h3>附：2024—2026 案例真题考点频次与本卷对应</h3>
+  <table>
+    <tr>
+      <th style="width:210px">考点簇</th>
+      <th style="width:46px">24上</th><th style="width:46px">24下</th><th style="width:46px">25上</th><th style="width:46px">25下</th><th style="width:46px">26上</th>
+      <th style="width:60px">频次</th><th>本卷落点</th>
+    </tr>
+    <tr><td>质量属性识别 / 场景六要素 / 效用树</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td><td><b>5/5</b></td><td>试题一 Q1~Q3</td></tr>
+    <tr><td>架构评估（敏感点·权衡点·风险点）</td><td>○</td><td>●</td><td>●</td><td>●</td><td>●</td><td>4/5</td><td>试题一 Q4</td></tr>
+    <tr><td>缓存与 Redis（一致性·三大问题·持久化·分布式锁）</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td><td><b>5/5</b></td><td>试题二全部</td></tr>
+    <tr><td>数据库设计（范式·分库分表·冷热分层）</td><td>●</td><td>●</td><td>●</td><td>●</td><td>●</td><td><b>5/5</b></td><td>试题三 Q1、Q2</td></tr>
+    <tr><td>NoSQL / 多模存储选型</td><td>●</td><td>○</td><td>●</td><td>●</td><td>○</td><td>3/5</td><td>试题三 Q3</td></tr>
+    <tr><td>微服务 / DDD 限界上下文 / 云原生</td><td>●</td><td>○</td><td>●</td><td>●</td><td>○</td><td>4/5</td><td>试题四全部</td></tr>
+    <tr><td>嵌入式·物联网·边缘计算·MQTT</td><td>○</td><td>●</td><td>●</td><td>●</td><td>●</td><td>4/5</td><td>试题五全部</td></tr>
+    <tr><td>软件测试（测试策略·验证手段）</td><td>○</td><td>●</td><td>○</td><td>○</td><td>○</td><td>2/5</td><td>试题四 Q4、试题五 Q4</td></tr>
+    <tr><td>信息安全（加密·权限·审计）</td><td>○</td><td>●</td><td>●</td><td>●</td><td>○</td><td>3/5</td><td>试题一 Q1、Q4</td></tr>
+  </table>
+  <p style="font-size:12.5px;color:#6B7280;margin-top:6px">●＝该考期明确涉及；○＝部分涉及。频次按本库五套案例真题计。</p>
+
+  <h3 style="margin-top:22px">使用方法</h3>
+  <ol>
+    <li><b>限时作答</b>：点工具栏「开始计时」，建议 150 分钟；实战按 5 选 3 只需 90 分钟（第 1 题必答 + 任选 2 题）。</li>
+    <li><b>先答后看</b>：参考答案默认隐藏，答完再点每题下方的「显示本大题参考答案」，避免边看边抄。</li>
+    <li><b>自评打分</b>：每个答题框右下角有「自评得分」输入框，按参考答案里的<b>采分点</b>给自己打分，工具栏实时汇总（满分 125）。</li>
+    <li><b>自动保存</b>：输入内容实时写入浏览器本地存储（localStorage），关掉页面再打开不丢失；换设备或清缓存会丢失，重要内容请先「打印 / 导出 PDF」。</li>
+    <li><b>字数提示</b>：答题框右上角显示当前字数。案例题不硬性卡字数，但<b>每个小题建议写满给定区间</b>，过短一般拿不到高分。</li>
+    <li><b>打印</b>：点「打印 / 导出 PDF」会连带展开参考答案一起打印，可作为纸质练习卷。</li>
+  </ol>
+
+  <h3 style="margin-top:22px">答题建议</h3>
+  <ol>
+    <li><b>先看分值再动笔</b>：25 分大题通常 3~4 问，每问 5~9 分，按"每分一句"估算作答量，宁可多写要点。</li>
+    <li><b>填空题不留空</b>：质量属性归类、QoS 选型、存储选型这类题，蒙也要蒙满，不倒扣分。</li>
+    <li><b>对比题写"两面"</b>：凡问"优缺点 / 为什么不用 X"，必须写清 X 的代价与 Y 的收益，只写正面通常只得一半分。</li>
+    <li><b>分解题写过程</b>：范式分解要写出主键、外键与依赖依据，只写结果会扣分。</li>
+    <li><b>时间分配</b>：实战 90 分钟做 3 题，每题约 28 分钟（读题 5 + 作答 20 + 检查 3）。</li>
+  </ol>
+
+  <h3 style="margin-top:22px">⚠️ 声明</h3>
+  <p style="font-size:13px;color:#6B7280">
+    本卷为<b>根据本知识库 2024—2026 五套案例真题的考点与题型自主命制</b>的练习题，题干场景、单位名称、数据均为虚构，
+    不来自任何真实考试或企业。<b>不是真题</b>，仅用于考点串联与答题训练。
+    参考答案为编写者依据教材与考点整理的要点，<b>非官方评分标准</b>。
+  </p>
+</section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORE = "ruankao_mock_case_hf_2026";
+  var TOTAL_Q = 19, TOTAL_SCORE = 125;
+
+  var state = { answers:{}, scores:{}, seconds:150*60, running:false };
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORE);
+      if(raw){ var o = JSON.parse(raw); state.answers = o.answers||{}; state.scores = o.scores||{}; }
+    }catch(e){}
+  }
+  function save(){
+    try{ localStorage.setItem(STORE, JSON.stringify({answers:state.answers, scores:state.scores})); }catch(e){}
+  }
+
+  var tas = [].slice.call(document.querySelectorAll("textarea[data-qid]"));
+  var scoreIns = [].slice.call(document.querySelectorAll("input[data-score]"));
+  var timerEl = document.getElementById("timer");
+  var progressEl = document.getElementById("progress");
+
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  tas.forEach(function(ta){
+    var id = ta.dataset.qid;
+    if(state.answers[id]) ta.value = state.answers[id];
+    updateCount(id);
+    var savedEl = document.querySelector('.saved[data-for="'+id+'"]');
+    var t = null;
+    ta.addEventListener("input", function(){
+      state.answers[id] = ta.value;
+      updateCount(id);
+      save();
+      if(savedEl){ savedEl.classList.add("show"); clearTimeout(t);
+        t = setTimeout(function(){ savedEl.classList.remove("show"); }, 1200); }
+      updateProgress();
+    });
+  });
+  scoreIns.forEach(function(inp){
+    var id = inp.dataset.score;
+    if(state.scores[id] != null) inp.value = state.scores[id];
+    inp.addEventListener("input", function(){
+      var v = parseFloat(inp.value);
+      state.scores[id] = isNaN(v) ? null : v;
+      save(); updateProgress();
+    });
+  });
+
+  function updateCount(id){
+    var ta = document.getElementById(id);
+    var el = document.querySelector('.cnt[data-for="'+id+'"]');
+    if(!ta || !el) return;
+    var n = ta.value.replace(/\s/g,"").length;
+    el.textContent = n + " 字";
+  }
+  function updateProgress(){
+    var done = tas.filter(function(t){ return t.value.replace(/\s/g,"").length >= 20; }).length;
+    var sum = scoreIns.reduce(function(a,i){ var v=parseFloat(i.value); return a + (isNaN(v)?0:v); }, 0);
+    sum = Math.round(sum*10)/10;
+    progressEl.textContent = "已作答 " + done + "/" + TOTAL_Q + "　｜　自评 " + sum + "/" + TOTAL_SCORE;
+  }
+
+  function fmt(s){
+    s = Math.max(0,s);
+    var m = Math.floor(s/60), ss = s%60;
+    return (m<10?"0":"")+m + ":" + (ss<10?"0":"")+ss;
+  }
+  function renderTimer(){
+    timerEl.textContent = fmt(state.seconds);
+    timerEl.classList.toggle("warn", state.seconds <= 600);
+  }
+  var tick = null;
+  var btnTimer = document.getElementById("btnTimer");
+  btnTimer.addEventListener("click", function(){
+    state.running = !state.running;
+    if(state.running){
+      btnTimer.textContent = "暂停计时";
+      tick = setInterval(function(){
+        state.seconds--;
+        renderTimer();
+        if(state.seconds <= 0){ clearInterval(tick); state.running=false; btnTimer.textContent="开始计时"; toast("时间到！"); }
+      }, 1000);
+      toast("计时开始，建议 150 分钟");
+    }else{
+      clearInterval(tick); btnTimer.textContent = "继续计时";
+    }
+  });
+  document.getElementById("btnResetTimer").addEventListener("click", function(){
+    clearInterval(tick); state.running=false; state.seconds = 150*60;
+    btnTimer.textContent = "开始计时"; renderTimer();
+  });
+  renderTimer();
+
+  var refBtns = [].slice.call(document.querySelectorAll(".ref-toggle"));
+  refBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      var el = document.getElementById(b.dataset.ref);
+      var open = el.classList.toggle("open");
+      b.textContent = (open ? "▾ 隐藏本大题参考答案" : "▸ 显示本大题参考答案");
+    });
+  });
+  var allOpen = false;
+  document.getElementById("btnToggleAll").addEventListener("click", function(){
+    allOpen = !allOpen;
+    document.querySelectorAll(".ref").forEach(function(el){ el.classList.toggle("open", allOpen); });
+    refBtns.forEach(function(b){
+      b.textContent = (allOpen ? "▾ 隐藏本大题参考答案" : "▸ 显示本大题参考答案");
+    });
+    this.textContent = allOpen ? "隐藏全部参考答案" : "显示全部参考答案";
+  });
+
+  document.getElementById("btnClear").addEventListener("click", function(){
+    if(!confirm("确定清空全部作答与自评？此操作不可撤销。")) return;
+    state.answers = {}; state.scores = {};
+    tas.forEach(function(t){ t.value=""; updateCount(t.dataset.qid); });
+    scoreIns.forEach(function(i){ i.value=""; });
+    save(); updateProgress(); toast("已清空答卷");
+  });
+  document.getElementById("btnPrint").addEventListener("click", function(){
+    document.querySelectorAll(".ref").forEach(function(el){ el.classList.add("open"); });
+    setTimeout(function(){ window.print(); }, 120);
+  });
+
+  load();
+  tas.forEach(function(t){
+    var id = t.dataset.qid;
+    if(state.answers[id]) t.value = state.answers[id];
+    updateCount(id);
+  });
+  scoreIns.forEach(function(inp){
+    var id = inp.dataset.score;
+    if(state.scores[id] != null) inp.value = state.scores[id];
+  });
+  updateProgress();
+
+  document.addEventListener("keydown", function(e){
+    if((e.ctrlKey||e.metaKey) && e.key === "s"){ e.preventDefault(); save(); toast("已保存到本地"); }
+  });
+})();
+</script>
+</body>
+</html>
