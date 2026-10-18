@@ -3,6 +3,12 @@
 .obsidian/workspace-mobile.json
 .obsidian/cache
 .obsidian/plugins/*/data.json
+.obsidian/plugins/*/*.map
+
+# Obsidian 新建未命名的空壳文件
+未命名*.md
+未命名*.base
+未命名*.canvas
 
 # 系统垃圾文件
 Thumbs.db
