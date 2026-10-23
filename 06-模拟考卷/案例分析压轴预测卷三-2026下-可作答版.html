@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统架构设计师 · 案例分析压轴预测卷（三）· 可作答版</title>
+<style>
+:root{
+  --page-w: 1080px;
+  --fs-body: 15.5px;
+  --lh: 1.85;
+  --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
+  --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
+  --ff-mono: "JetBrains Mono",Consolas,monospace;
+  --c-primary:#2563EB;
+  --c-text:#111827;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-bg:#FFFFFF;
+  --c-soft:#EEF2FF;
+  --c-code:#F9FAFB;
+  --c-warn:#B45309;
+  --c-warn-bg:#FFFBEB;
+  --c-ok:#047857;
+  --c-ok-bg:#ECFDF5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body);font-size:var(--fs-body);line-height:var(--lh);
+  color:var(--c-text);background:#F3F4F6;
+  padding:26px 20px 80px;
+}
+.wrap{width:100%;max-width:var(--page-w);margin:0 auto;background:var(--c-bg);
+  padding:46px 54px 64px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.35;font-weight:700;color:var(--c-text)}
+h1{font-size:23px;text-align:center;margin-bottom:6px}
+h2{font-size:18px;margin:42px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--c-primary)}
+h3{font-size:15px;margin:20px 0 8px}
+h4{font-size:14.5px;margin:16px 0 6px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 1.6em}
+li{margin:4px 0}
+a{color:var(--c-primary)}
+b,strong{font-weight:700}
+
+/* ---------- 封面 ---------- */
+.cover{text-align:center;padding:10px 0 28px;border-bottom:1px solid var(--c-border);margin-bottom:22px}
+.cover-eyebrow{font-family:var(--ff-head);font-size:12px;letter-spacing:.16em;color:var(--c-primary);margin-bottom:14px}
+.cover-title{font-size:26px;font-weight:700;font-family:var(--ff-head);line-height:1.35;margin-bottom:8px}
+.cover-sub{font-size:13.5px;color:var(--c-muted);margin-bottom:20px}
+.cover-info{font-size:13px;color:var(--c-text);line-height:2}
+.cover-info b{color:var(--c-primary)}
+.cover-date{font-size:12px;color:var(--c-muted);margin-top:14px}
+
+/* ---------- 工具条 ---------- */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.97);backdrop-filter:blur(6px);
+  border:1px solid var(--c-border);border-radius:8px;padding:10px 12px;margin-bottom:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.btn{font-family:var(--ff-head);font-size:12.5px;padding:6px 13px;border-radius:6px;border:1px solid var(--c-border);
+  background:#fff;color:var(--c-text);cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn.primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.danger:hover{border-color:#DC2626;color:#DC2626}
+.spacer{flex:1}
+.timer{font-family:var(--ff-mono);font-size:14px;font-weight:600;padding:5px 11px;border-radius:6px;
+  background:var(--c-soft);color:var(--c-primary);min-width:82px;text-align:center}
+.timer.warn{background:#FEF2F2;color:#DC2626}
+.progress-txt{font-size:12.5px;color:var(--c-muted);font-family:var(--ff-head)}
+
+/* ---------- 答题卡 ---------- */
+.card{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px solid var(--c-border);border-radius:8px;
+  background:var(--c-code);padding:10px 12px;margin-bottom:20px}
+.card-label{font-family:var(--ff-head);font-size:11.5px;color:var(--c-muted);letter-spacing:.06em;margin-right:4px}
+.dot{width:34px;height:26px;border:1px solid var(--c-border);border-radius:5px;background:#fff;
+  font-family:var(--ff-mono);font-size:11px;color:var(--c-muted);cursor:pointer;transition:.15s}
+.dot:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.dot.done{background:#DCFCE7;border-color:#86EFAC;color:#047857}
+.dot.viewed{border-color:#93C5FD;color:var(--c-primary)}
+
+/* ---------- 注意事项 ---------- */
+.notice{background:var(--c-warn-bg);border:1px solid #FDE68A;border-radius:8px;padding:14px 18px;margin:18px 0 6px;font-size:14px}
+.notice-title{font-family:var(--ff-head);font-weight:700;font-size:13.5px;color:var(--c-warn);
+  letter-spacing:.14em;text-align:center;margin-bottom:8px}
+.notice ol{margin-left:1.6em}
+.notice li{margin:5px 0}
+
+/* ---------- 题块 ---------- */
+.qblock{margin:34px 0}
+.qhead{font-family:var(--ff-head);font-size:17px;font-weight:700;color:var(--c-text);
+  background:var(--c-soft);border-left:4px solid var(--c-primary);padding:9px 14px;border-radius:0 6px 6px 0;margin-bottom:4px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qhead .score{font-size:12.5px;font-weight:600;color:var(--c-primary);background:#fff;border:1px solid #C7D2FE;
+  padding:2px 9px;border-radius:20px;margin-left:auto}
+.qintro{font-size:13.5px;color:var(--c-muted);margin:6px 0 12px}
+.scene{background:#FCFCFD;border:1px solid var(--c-border);border-radius:6px;padding:14px 16px;margin:12px 0;font-size:14.5px}
+.scene-tag{display:inline-block;font-family:var(--ff-head);font-size:12px;color:var(--c-primary);
+  background:var(--c-soft);padding:1px 8px;border-radius:4px;margin-bottom:8px}
+
+/* ---------- 示意图 ---------- */
+.fig{border:1px solid var(--c-border);border-radius:8px;background:#FCFCFD;padding:16px 14px 12px;margin:16px 0}
+.fig-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;align-items:stretch}
+.fig-box{background:#fff;border:1px solid #C7D2FE;border-radius:6px;padding:7px 11px;font-size:12px;
+  text-align:center;font-family:var(--ff-head);color:var(--c-text);line-height:1.5;min-width:92px;
+  display:flex;flex-direction:column;justify-content:center}
+.fig-box small{display:block;font-size:10.5px;color:var(--c-muted);font-weight:400;margin-top:2px}
+.fig-box.hl{background:var(--c-soft);border-color:#A5B4FC}
+.fig-box.dark{background:#1F2937;border-color:#1F2937;color:#fff}
+.fig-band{background:var(--c-soft);border:1px solid #A5B4FC;border-radius:6px;padding:9px 12px;text-align:center;
+  font-size:12.5px;color:var(--c-primary);font-family:var(--ff-head);font-weight:600}
+.fig-band small{color:var(--c-muted);font-weight:400;font-size:11px}
+.fig-arrow{text-align:center;color:#9CA3AF;font-size:13px;line-height:1;margin:7px 0;letter-spacing:2px}
+.fig-cap{text-align:center;font-size:12px;color:var(--c-muted);margin-top:10px;font-family:var(--ff-head)}
+.fig-split{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fig-split>div{flex:1;min-width:180px}
+
+/* ---------- 问题 ---------- */
+.q{margin:26px 0 0;padding-top:14px;border-top:1px dashed var(--c-border)}
+.q-title{font-family:var(--ff-head);font-size:14.5px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.q-title .score{color:var(--c-primary);font-weight:600;font-size:12.5px;background:var(--c-soft);
+  padding:1px 8px;border-radius:4px}
+.q-body{font-size:14.5px}
+.q-body p{margin:8px 0}
+.sub{margin:7px 0 7px 0}
+.sub .n{font-family:var(--ff-head);font-weight:700;color:var(--c-primary);margin-right:3px}
+
+/* ---------- 答题框 ---------- */
+.answer{margin:12px 0 4px;border:1px solid #C7D2FE;border-radius:8px;overflow:hidden;background:#fff}
+.answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);
+  padding:7px 12px;font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
+.answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
+.answer textarea{display:block;width:100%;min-height:130px;border:0;outline:0;resize:vertical;
+  padding:13px 16px;font-family:var(--ff-body);font-size:15px;line-height:1.85;color:var(--c-text);background:#fff}
+.answer textarea:focus{background:#FBFDFF}
+.answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
+  background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head);flex-wrap:wrap}
+.selfscore{margin-left:auto;display:flex;align-items:center;gap:5px}
+.selfscore input{width:48px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;
+  font-family:var(--ff-mono);font-size:12px;text-align:center}
+.saved{color:var(--c-ok);opacity:0;transition:.4s}
+.saved.show{opacity:1}
+
+/* ---------- 解析 ---------- */
+.ref-btn{margin:10px 0 0;display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--ff-head);font-size:12.5px;color:var(--c-ok);border:1px solid #A7F3D0;
+  background:var(--c-ok-bg);padding:6px 13px;border-radius:6px;cursor:pointer;transition:.15s}
+.ref-btn:hover{background:#D1FAE5}
+.ref{display:none;margin:10px 0 0;border:1px solid #A7F3D0;border-radius:8px;background:var(--c-ok-bg);padding:14px 18px}
+.ref.open{display:block;animation:fade .18s ease-out}
+@keyframes fade{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.ref-h{font-family:var(--ff-head);font-size:13px;font-weight:700;color:var(--c-ok);margin-bottom:8px;
+  display:flex;align-items:center;gap:8px}
+.ref-h .pt{font-size:11px;font-weight:400;color:#065F46;background:#D1FAE5;padding:1px 8px;border-radius:10px}
+.ref p{margin:6px 0;font-size:14px}
+.ref ul,.ref ol{margin-left:1.4em;font-size:14px}
+.ref li{margin:4px 0}
+.ref .pt-tag{display:inline-block;font-family:var(--ff-head);font-size:11px;color:#065F46;
+  background:#D1FAE5;border-radius:3px;padding:0 5px;margin-left:2px}
+.ref .kw{background:#D1FAE5;padding:1px 4px;border-radius:3px;font-family:var(--ff-head);font-size:12.5px;color:#065F46}
+.ref .ai{font-size:12.5px;color:#065F46;opacity:.85;border-top:1px dashed #A7F3D0;margin-top:10px;padding-top:8px}
+
+/* ---------- 底部 ---------- */
+.footer{margin-top:46px;padding-top:16px;border-top:1px solid var(--c-border);font-size:12px;color:var(--c-muted);text-align:center}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#111827;color:#fff;
+  font-family:var(--ff-head);font-size:13px;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 打印 ---------- */
+@media print{
+  body{background:#fff;padding:0}
+  .wrap{box-shadow:none;padding:0;max-width:none}
+  .toolbar,.card,.ref-btn,.toast{display:none!important}
+  .answer{break-inside:avoid}
+  .answer textarea{min-height:auto;height:auto;field-sizing:content}
+  .ref{display:block!important;break-inside:avoid}
+  h2{break-after:avoid}
+  .q{break-inside:auto}
+}
+@media (max-width:760px){
+  .wrap{padding:26px 18px 44px}
+  body{padding:10px 8px 60px}
+  .cover-title{font-size:21px}
+  h2{font-size:16.5px}
+  .qhead{font-size:15.5px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 封面 -->
+  <div class="cover">
+    <div class="cover-eyebrow">全国计算机技术与软件专业技术资格（水平）考试</div>
+    <div class="cover-title">2026 下半年系统架构设计师<br>案例分析压轴预测卷（三）</div>
+    <div class="cover-sub">可作答版 · 逐题核对参考答案与采分点</div>
+    <div class="cover-info">
+      试题一必答　｜　试题二~五任选 <b>2</b> 题　｜　满分 <b>75</b> 分　｜　<b>90</b> 分钟<br>
+      本卷共 5 道大题 · 15 个问题，全做可作 125 分全卷练习
+    </div>
+    <div class="cover-date">来源：微信公众号「每日软考重点知识」图片版转录整理</div>
+  </div>
+
+  <!-- 工具条 -->
+  <div class="toolbar">
+    <span class="timer" id="timer">90:00</span>
+    <button class="btn primary" id="btnTimer">开始计时</button>
+    <button class="btn" id="btnResetTimer">重置</button>
+    <button class="btn" id="btnToggleAll">展开全部解析</button>
+    <span class="spacer"></span>
+    <span class="progress-txt" id="progress">已作答 0/15</span>
+    <button class="btn" id="btnPrint">打印 / 导出 PDF</button>
+    <button class="btn danger" id="btnClear">清空</button>
+    <button class="btn" id="btnTop">回到顶部</button>
+  </div>
+
+  <!-- 答题卡 -->
+  <div class="card">
+    <span class="card-label">答题卡</span>
+    <button class="dot" data-jump="q1-1">1-1</button>
+    <button class="dot" data-jump="q1-2">1-2</button>
+    <button class="dot" data-jump="q1-3">1-3</button>
+    <button class="dot" data-jump="q2-1">2-1</button>
+    <button class="dot" data-jump="q2-2">2-2</button>
+    <button class="dot" data-jump="q2-3">2-3</button>
+    <button class="dot" data-jump="q3-1">3-1</button>
+    <button class="dot" data-jump="q3-2">3-2</button>
+    <button class="dot" data-jump="q3-3">3-3</button>
+    <button class="dot" data-jump="q4-1">4-1</button>
+    <button class="dot" data-jump="q4-2">4-2</button>
+    <button class="dot" data-jump="q4-3">4-3</button>
+    <button class="dot" data-jump="q5-1">5-1</button>
+    <button class="dot" data-jump="q5-2">5-2</button>
+    <button class="dot" data-jump="q5-3">5-3</button>
+  </div>
+
+  <!-- 注意事项 -->
+  <div class="notice">
+    <div class="notice-title">注 意 事 项</div>
+    <ol>
+      <li>本试卷共 5 道试题，满分 75 分。试题一为必答题；试题二、三、四、五为选答题，任选其中 <b>2 道</b>作答。若作答多于 2 道，按作答的前两题计分。</li>
+      <li>每道试题 25 分，应结合案例背景按答题要求作答，观点明确、分条叙述、书写清晰。</li>
+      <li>考试时间 90 分钟。写作时先列要点骨架，再补案例细节，采分点优先于字数。</li>
+    </ol>
+  </div>
+
+  <!-- ============ 试题一 ============ -->
+  <div class="qblock" id="sec1">
+    <div class="qhead">试题一（必答题，25 分）<span class="score">高并发 Web 架构演进</span></div>
+    <div class="qintro">阅读以下关于高并发 Web 系统架构演进的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+    <div class="scene">
+      <span class="scene-tag">【说明】</span>
+      <p>某电商平台「惠农市集」原为单体架构：单台 Tomcat 应用服务器、Session 保存在本机内存、单实例 MySQL 承载全部读写。日常页面访问量约 50 万次/日即可支撑，但每逢"年货节"大促，峰值每秒请求数从 800 骤增至 12000，页面平均响应时间超 8 秒，应用与数据库频繁过载宕机。架构师主导架构演进：接入层引入 CDN 与四层/七层负载均衡，应用层改造为无状态服务集群并支持水平扩容，数据层引入缓存集群与 MySQL 主从读写分离，并配套限流降级措施，如图 1-1 所示。</p>
+    </div>
+
+    <div class="fig">
+      <div class="fig-row">
+        <div class="fig-box">客户端<small>App / 小程序</small></div>
+        <div class="fig-box hl">CDN<small>静态资源加速</small></div>
+        <div class="fig-box hl">LVS 四层<small>双机热备（VIP）</small></div>
+      </div>
+      <div class="fig-arrow">▼</div>
+      <div class="fig-row">
+        <div class="fig-box hl">Nginx 七层反向代理<small>集群 · 动静分离</small></div>
+        <div class="fig-box">应用服务器集群<small>无状态 · Session 外置 · 水平扩容</small></div>
+      </div>
+      <div class="fig-arrow">▼　读写分离</div>
+      <div class="fig-split">
+        <div class="fig-row">
+          <div class="fig-box">Redis 缓存集群<small>热点数据 / 分布式 Session</small></div>
+        </div>
+        <div class="fig-row">
+          <div class="fig-box">MySQL 主库<small>写</small></div>
+          <div class="fig-box">MySQL 从库集群<small>读 · 主从复制</small></div>
+        </div>
+      </div>
+      <div class="fig-cap">图 1-1　高并发 Web 集群架构</div>
+    </div>
+
+    <div class="q" id="q1-1">
+      <div class="q-title">【问题 1】<span class="score">9 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>负载均衡按工作层次可分为四层与七层，说明 LVS 与 Nginx 各工作在哪一层，并从转发机制、适用场景两方面比较二者。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>负载均衡器自身是关键单点，结合图 1-1 说明采用"双机热备"消除该单点的基本原理。（2 分）</p>
+        <p class="sub"><span class="n">（3）</span>应用服务器集群要求"无状态"，说明无状态化改造的要点（会话处理）及其带来的好处。（3 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q1-1">0 字</span></div>
+        <textarea id="ta-q1-1" data-qid="q1-1" placeholder="按（1）（2）（3）分条作答，先写结论再补依据……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q1-1" min="0" max="9" step="0.5"> / 9
+          <span class="saved" data-for="q1-1">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r1-1">▸ 查看答案解析</button>
+      <div class="ref" id="r1-1">
+        <div class="ref-h">问题 1 参考答案 <span class="pt">9 分</span></div>
+        <p><b>（1）四层与七层负载均衡（4 分）</b></p>
+        <ul>
+          <li>LVS 工作在<b>传输层（四层）</b>：基于 IP + 端口报文转发（NAT / DR / TUN 三种模式），不解析应用内容，性能极高、吞吐大，适合作为入口的第一级大流量分发。<span class="pt-tag">2 分</span></li>
+          <li>Nginx 工作在<b>应用层（七层）</b>：可解析 HTTP 协议，按 URL、Cookie、Header 等内容做更灵活的路由（本案例用于动静分离与反向代理），功能丰富但单机性能低于 LVS。二者常<b>级联使用</b>：前置 LVS、Nginx 在后端做精细分发。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <p><b>（2）双机热备原理（2 分）</b></p>
+        <ul>
+          <li>主备两台负载均衡器通过 <span class="kw">VRRP（Keepalived）</span>共享一个虚拟 IP（VIP）对外服务；主节点周期发送心跳通告，主节点故障时备节点在<b>秒级接管 VIP 与转发服务</b>，客户端无感知，从而消除单点故障。</li>
+        </ul>
+        <p><b>（3）无状态化改造（3 分）</b></p>
+        <ul>
+          <li><b>要点：</b>将会话状态从应用本机内存迁移到<b>外部共享存储</b>（Redis 集中存放 Session，或改用签名的 Token/JWT），应用实例本身不保存业务状态、不保存用户态；任何实例均可处理任意请求。<span class="pt-tag">2 分</span></li>
+          <li><b>好处：</b>实例可随意增减、水平扩容而不影响在线用户；负载均衡无需会话粘滞；故障时倒掉后用户只需重新登录甚至无感，<b>可用性与可伸缩性同时提升</b>。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <div class="ai">答题提示：本条最容易失分的是"只答 Session 外置、不答好处"。四层/七层务必点明"是否解析应用层内容"这一本质差异。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q1-2">
+      <div class="q-title">【问题 2】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>数据层采用"主从复制 + 读写分离"，说明主从复制的基本原理、主从延迟可能带来的问题及常见对策。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>大促期间系统需"限流、降级、隔离"三板斧保护核心链路。说明令牌桶限流的原理，并为降级与隔离在本案例中各举一个落地做法。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q1-2">0 字</span></div>
+        <textarea id="ta-q1-2" data-qid="q1-2" placeholder="原理 + 问题 + 对策，三段式作答；令牌桶要写出「速率 + 容量」两个要素……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q1-2" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q1-2">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r1-2">▸ 查看答案解析</button>
+      <div class="ref" id="r1-2">
+        <div class="ref-h">问题 2 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）主从复制与读写分离（4 分）</b></p>
+        <ul>
+          <li><b>原理：</b>主库将数据变更写入 <span class="kw">binlog</span>（二进制日志），从库的 IO 线程拉取 binlog 写入本地中继日志，SQL 线程重放日志，使从库与主库保持一致；写走主库、读走从库，读能力随从库数量线性扩展。<span class="pt-tag">2 分</span></li>
+          <li><b>主从延迟问题：</b>主库写入后从库尚未重放完成，用户"写后立即读"（如下单后查订单）可能读到旧数据。<span class="pt-tag">1 分</span></li>
+          <li><b>对策：</b>写后强制路由主库（关键读走主）；半同步复制降低丢数风险；对从库延迟做监控与摘除；读多写少、能容忍短暂不一致的场景接受最终一致。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（2）限流降级隔离（4 分）</b></p>
+        <ul>
+          <li><b>令牌桶：</b>以恒定速率向桶中放入令牌，请求需取得令牌才被放行，桶有容量上限；既能限制<b>平均速率</b>，又允许一定程度的<b>突发流量</b>（桶中积攒的令牌），比固定窗口计数更平滑。<span class="pt-tag">2 分</span></li>
+          <li><b>降级：</b>大促时非核心功能主动降级——如商品评价、推荐列表改为返回缓存的静态数据或直接关闭，保住下单、支付核心链路。<span class="pt-tag">1 分</span></li>
+          <li><b>隔离：</b>采用线程池/连接池隔离（<span class="kw">舱壁模式</span>）——推荐、评价等易波动服务使用独立线程池与数据库连接，其故障不耗尽核心交易的资源。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <div class="ai">答题提示："降级"与"隔离"必须给<b>本案例的具体对象</b>（评价/推荐 → 缓存静态页；独立线程池/连接池），只写定义不给例子一般拿不到分。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q1-3">
+      <div class="q-title">【问题 3】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>从性能、可伸缩性、可用性三方面，对比架构演进前后系统的变化。（3 分）</p>
+        <p class="sub"><span class="n">（2）</span>说明 CDN 加速静态资源的基本原理，以及"动静分离"为什么能提升系统整体承载能力。（3 分）</p>
+        <p class="sub"><span class="n">（3）</span>本案例应用层容量采用"加机器的水平扩容"而非"换更高配置服务器的垂直扩容"，说明其主要理由。（2 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q1-3">0 字</span></div>
+        <textarea id="ta-q1-3" data-qid="q1-3" placeholder="三方面各一行，用「演进前 → 演进后」的对比句式最省分……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q1-3" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q1-3">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r1-3">▸ 查看答案解析</button>
+      <div class="ref" id="r1-3">
+        <div class="ref-h">问题 3 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）三方面对比（3 分，每方面 1 分）</b></p>
+        <ul>
+          <li><b>性能：</b>响应时间从 8 秒以上降至数百毫秒，峰值每秒请求数从 800 提升到 12000 仍可平稳承载；</li>
+          <li><b>可伸缩性：</b>从单机垂直极限变为无状态集群水平扩容，加机器即可线性提升处理能力；</li>
+          <li><b>可用性：</b>从单点故障全局不可用，到 CDN / 双机热备 / 集群冗余 / 主从切换多级容错，单点故障不再导致整体宕机。</li>
+        </ul>
+        <p><b>（2）CDN 与动静分离（3 分）</b></p>
+        <ul>
+          <li><b>CDN 原理：</b>将图片、CSS、JS 等静态资源复制分发到各地边缘节点，用户按调度<b>就近获取</b>内容，请求不回源，降低源站带宽与传输链路路径。<span class="pt-tag">2 分</span></li>
+          <li><b>动静分离：</b>把动态请求与静态资源请求分开，静态由 CDN/Nginx 直接响应，动态请求才进入应用集群；静态请求占比大且无需计算，分离后应用集群资源<b>集中服务于动态业务</b>，整体承载能力显著提升。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（3）水平扩容理由（2 分）</b></p>
+        <ul>
+          <li>单机性能提升有<b>物理上限</b>且成本非线性增长（高端服务器价格远超普通服务器之和），无法无限追赶业务增长；水平扩容可小步扩容、<b>故障域小</b>（一台故障不影响整体）、弹性伸缩，性价比与可用性更优。</li>
+        </ul>
+        <div class="ai">答题提示：垂直扩容的"价格非线性上涨 + 物理上限 + 单机故障域大"是标准三点，写全更稳。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 试题二 ============ -->
+  <div class="qblock" id="sec2">
+    <div class="qhead">试题二（选答题，25 分）<span class="score">SOA 与企业应用集成</span></div>
+    <div class="qintro">阅读以下关于 SOA 与企业应用集成的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+    <div class="scene">
+      <span class="scene-tag">【说明】</span>
+      <p>某大型制造集团下设 12 家子公司，集团并存 40 余套异构信息系统：集团财务用 SAP（BAPI/RFC 接口）、生产执行用 MES（Web Service）、办公用 OA（HTTP/JSON）、仓储用 WMS（数据库直连），另有 20 年前开发的 COBOL 工资系统（文件接口）。系统间数据孤岛严重，同一物料编码在各系统不一致，跨系统对账靠人工导表。集团决定建设企业集成平台：采用 SOA 思想对各系统能力进行服务化封装，通过企业服务总线 ESB 统一接入，并建设主数据管理（MDM）统一物料、供应商、组织等主数据，如图 2-1 所示。</p>
+    </div>
+
+    <div class="fig">
+      <div class="fig-row">
+        <div class="fig-box">ERP 系统</div>
+        <div class="fig-box">CRM 系统</div>
+        <div class="fig-box">OA 系统</div>
+        <div class="fig-box">WMS 系统</div>
+        <div class="fig-box">遗留系统<small>COBOL 文件接口</small></div>
+      </div>
+      <div class="fig-arrow">▼　适配器（统一接入）</div>
+      <div class="fig-band">企业服务总线 ESB
+        <small>消息路由 · 协议转换 · 格式转换 · 消息增强 · 安全 · 监控</small>
+      </div>
+      <div class="fig-arrow">▼</div>
+      <div class="fig-row">
+        <div class="fig-box hl">服务注册中心<small>UDDI 服务目录</small></div>
+        <div class="fig-box hl">统一主数据管理<small>MDM 主数据</small></div>
+        <div class="fig-box hl">安全服务<small>认证 / 授权 / 审计</small></div>
+      </div>
+      <div class="fig-cap">图 2-1　基于 ESB 的企业应用集成架构</div>
+    </div>
+
+    <div class="q" id="q2-1">
+      <div class="q-title">【问题 1】<span class="score">9 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>说明 SOA 的三个参与角色及三者之间的三个基本操作。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>结合本案例，说明 ESB 的主要功能（至少答出五条）。（5 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q2-1">0 字</span></div>
+        <textarea id="ta-q2-1" data-qid="q2-1" placeholder="三角色 + 三操作；ESB 功能尽量写 6~7 条并挂上本案例的系统名……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q2-1" min="0" max="9" step="0.5"> / 9
+          <span class="saved" data-for="q2-1">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r2-1">▸ 查看答案解析</button>
+      <div class="ref" id="r2-1">
+        <div class="ref-h">问题 1 参考答案 <span class="pt">9 分</span></div>
+        <p><b>（1）SOA 参与者与操作（4 分）</b></p>
+        <ul>
+          <li><b>三个角色：</b>服务注册中心（管理服务描述，本案例的 UDDI 服务目录）、服务提供者（封装并发布服务，如财务系统、库存服务）、服务请求者（查找并调用服务，如集成平台上的消费方）。<span class="pt-tag">2 分</span></li>
+          <li><b>三个操作：</b>发布（提供者向注册中心注册服务描述）、查找（请求者向注册中心查找所需服务）、绑定（请求者根据服务描述与提供者建立连接并调用）。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <p><b>（2）ESB 的主要功能（5 分，每答 1 条 1 分，答出五条即可）</b></p>
+        <ol>
+          <li>应用程序的<b>位置透明性</b>（调用方无需知道服务物理位置）；</li>
+          <li><b>传输协议转换</b>（RPC / WebService / HTTP / 文件接口统一为总线协议）；</li>
+          <li><b>消息格式转换</b>（JSON / XML / 定长报文 / COBOL 文件格式互换）；</li>
+          <li><b>消息路由</b>（基于内容的路由与过滤）；</li>
+          <li><b>消息增强</b>（补充、翻译、加签等）；</li>
+          <li><b>安全支持</b>（认证、授权、加密）；</li>
+          <li><b>监控与管理</b>（服务目录、流量与异常监控）。</li>
+        </ol>
+        <div class="ai">答题提示：本题写 5 条刚好压线，建议写 6~7 条并各挂一个案例对象（SAP 的 BAPI、COBOL 的文件接口），避免只背名词。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q2-2">
+      <div class="q-title">【问题 2】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>说明 ESB 的"协议转换、消息格式转换、消息路由"三项功能在本案例中分别如何落地。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>与传统的点对点集成相比，说明采用 ESB 总线式集成的优点（至少三条）。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q2-2">0 字</span></div>
+        <textarea id="ta-q2-2" data-qid="q2-2" placeholder="三项功能逐条「是什么 → 在本案例中怎么落地」……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q2-2" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q2-2">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r2-2">▸ 查看答案解析</button>
+      <div class="ref" id="r2-2">
+        <div class="ref-h">问题 2 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）三项功能落地（4 分）</b></p>
+        <ul>
+          <li><b>协议转换：</b>COBOL 工资系统的文件接口、SAP 的 BAPI、MES 的 Web Service，在总线适配层统一转换为标准的 SOAP/REST 服务调用，各系统<b>无需改造自身接口</b>。<span class="pt-tag">1.5 分</span></li>
+          <li><b>消息格式转换：</b>各系统物料、供应商等主数据结构定义互不相同，总线按<b>映射规则</b>将其转换为 MDM 主数据的统一 XML/JSON 规范后分发。<span class="pt-tag">1.5 分</span></li>
+          <li><b>消息路由：</b>物料主数据变更事件由总线按内容路由——凡订阅"物料变更"的系统（ERP、MES、WMS）各收到一份推送，而采购审批消息只路由给 OA。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（2）总线式集成优点（4 分，每答 1 分）</b></p>
+        <ol>
+          <li>集成关系从 <b>n×(n-1)/2 条点对点</b>降为每系统 1 条接入，耦合度与维护成本大幅下降；</li>
+          <li>新系统只需接入总线一次，即可与所有已接入系统交互，扩展性好；</li>
+          <li>协议与格式差异在总线<b>集中处理</b>，存量系统（COBOL 工资系统）无需改造；</li>
+          <li>统一的安全、监控、审计与数据管控，避免多点重复建设。</li>
+        </ol>
+        <div class="ai">答题提示：n×(n-1)/2 这个公式是采分亮点，能算出"12 家子公司 40 余套系统"的量级对比更有说服力。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q2-3">
+      <div class="q-title">【问题 3】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>说明服务划分的粒度原则，并解释"原子服务"与"编排（组合）服务"的含义及关系，结合本案例各举一例。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>随着集团规模扩大，ESB 中心化架构可能暴露哪些问题？这与后续向微服务架构演进有何关系？（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q2-3">0 字</span></div>
+        <textarea id="ta-q2-3" data-qid="q2-3" placeholder="粒度原则 + 两个概念 + 案例各一例；再答 ESB 的三类问题与「智能端点、哑管道」……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q2-3" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q2-3">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r2-3">▸ 查看答案解析</button>
+      <div class="ref" id="r2-3">
+        <div class="ref-h">问题 3 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）服务粒度与原子/编排服务（4 分）</b></p>
+        <ul>
+          <li><b>粒度原则：</b>粗细适中——太粗复用性差、变更影响大，太细则服务数量爆炸、组合调用开销高；以<b>业务能力为边界</b>、高内聚低耦合，一个服务完成一个完整的业务语义。<span class="pt-tag">2 分</span></li>
+          <li><b>原子服务：</b>直接封装单一系统能力、不再拆分的最小服务单元，如"获取库存量""查询工商信息"。<b>编排服务：</b>按业务流程把多个原子服务组合起来完成上层业务，如"供应商准入" = 查询工商信息 + 资质审核 + 写入主数据 + 通知 OA。两者关系：编排服务<b>复用</b>原子服务，原子服务变更需评估其上的编排服务。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <p><b>（2）ESB 中心化的问题与微服务演进（4 分）</b></p>
+        <ul>
+          <li><b>问题：</b>总线成为<b>性能瓶颈与单点风险</b>；集中转换/路由逻辑随接入系统增多而复杂膨胀（"智能总线"越来越重）；部署变更牵一动全身；开发受制于总线厂商的标准能力。<span class="pt-tag">2 分</span></li>
+          <li><b>与微服务的关系：</b>微服务主张"<b>去中心化、智能端点、哑管道</b>"——把总线的路由、转换智能下沉到各服务内部，服务间用轻量通信（REST / 消息队列），按业务独立部署伸缩，从而化解中心化瓶颈，这正是从 SOA 演进到微服务的主要动因。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <div class="ai">答题提示："智能端点、哑管道"（smart endpoints, dumb pipes）是必写关键词，阅卷时属于标志性表述。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 试题三 ============ -->
+  <div class="qblock" id="sec3">
+    <div class="qhead">试题三（选答题，25 分）<span class="score">信息安全体系设计</span></div>
+    <div class="qintro">阅读以下关于信息安全体系设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+    <div class="scene">
+      <span class="scene-tag">【说明】</span>
+      <p>某农批市场电子结算与供应链金融平台为商户提供在线结算、转账、授信贷款等服务，涉及大量资金交易与商户敏感信息，按等级保护三级要求建设。平台安全架构师设计了以密码技术为基础的安全体系：交易报文采用混合加密（数字信封）保护机密性，关键操作采用数字签名实现完整性与抗抵赖，身份认证基于 PKI 数字证书，如图 3-1 所示。</p>
+    </div>
+
+    <div class="fig">
+      <div class="fig-split">
+        <div>
+          <div class="fig-band" style="margin-bottom:8px">发送方 A</div>
+          <div class="fig-row">
+            <div class="fig-box">明文报文<small>message</small></div>
+            <div class="fig-box hl">SHA-256 摘要<small>H1</small></div>
+          </div>
+          <div class="fig-arrow">▼</div>
+          <div class="fig-row">
+            <div class="fig-box">A 私钥加密<small>→ 数字签名</small></div>
+            <div class="fig-box">K 加密报文<small>对称密钥 K</small></div>
+            <div class="fig-box">B 公钥加密 K<small>→ 数字信封</small></div>
+          </div>
+        </div>
+        <div>
+          <div class="fig-band" style="margin-bottom:8px">接收方 B</div>
+          <div class="fig-row">
+            <div class="fig-box hl">A 公钥验签<small>解出 H1 并与 H2 比对</small></div>
+            <div class="fig-box">B 私钥解密<small>从信封取回 K</small></div>
+          </div>
+          <div class="fig-arrow">▼</div>
+          <div class="fig-row">
+            <div class="fig-box">K 解密报文<small>重算摘要 H2</small></div>
+            <div class="fig-box hl">完整性 + 来源<small>H1 = H2 通过</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="fig-arrow" style="margin-top:10px">传输内容：密文 E(K, 报文) ＋ 数字签名 S(A 私钥, 摘要) ＋ 数字信封 E(B 公钥, K)</div>
+      <div class="fig-cap">图 3-1　数字信封与数字签名流程</div>
+    </div>
+
+    <div class="q" id="q3-1">
+      <div class="q-title">【问题 1】<span class="score">9 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>从加密速度、解密效率、密钥管理三方面比较对称加密与非对称加密。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>结合图 3-1 说明数字签名的生成与验证过程，并指出数字签名所能满足的安全需求。（3 分）</p>
+        <p class="sub"><span class="n">（3）</span>说明数字信封如何结合两种密码技术的优点。（2 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q3-1">0 字</span></div>
+        <textarea id="ta-q3-1" data-qid="q3-1" placeholder="三个维度逐条对比；签名写「生成 + 验证」两段；数字信封写「谁加密什么」……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q3-1" min="0" max="9" step="0.5"> / 9
+          <span class="saved" data-for="q3-1">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r3-1">▸ 查看答案解析</button>
+      <div class="ref" id="r3-1">
+        <div class="ref-h">问题 1 参考答案 <span class="pt">9 分</span></div>
+        <p><b>（1）对称与非对称加密比较（4 分）</b></p>
+        <ul>
+          <li><b>密钥：</b>对称加密加解密使用<b>同一密钥</b>，需通过安全通道分发共享密钥，n 方通信需 n(n-1)/2 个密钥，密钥管理复杂；非对称加密使用<b>公钥/私钥对</b>，公钥可公开，只需保管私钥。<span class="pt-tag">1.5 分</span></li>
+          <li><b>效率：</b>对称加密（AES / SM4）运算速度快，适合大数据量加密；非对称加密（RSA / SM2）运算慢，只适合小量数据。<span class="pt-tag">1.5 分</span></li>
+          <li><b>密钥管理/功能：</b>对称加密密钥分发困难且难以提供抗抵赖；非对称加密便于密钥分发并可提供数字签名，但公钥的真实性需 <b>PKI 证书</b>保证。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（2）数字签名过程与作用（3 分）</b></p>
+        <ul>
+          <li><b>生成：</b>发送方对原文计算 SHA-256 摘要，用<b>自己的私钥</b>加密摘要得到数字签名，附在报文后发送；<b>验证：</b>接收方用<b>发送方公钥</b>解出摘要 H1，对收到的原文重新计算摘要 H2，比对 H1 = H2 通过。<span class="pt-tag">2 分</span></li>
+          <li><b>满足的安全需求：</b>完整性（原文任何改动导致摘要不一致）、真实性/来源确认（私钥唯一确认发送方身份）、抗抵赖（他人无法伪造其私钥签名）。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（3）数字信封（2 分）</b></p>
+        <ul>
+          <li>用对称密钥 K 加密大容量原文（获得对称加密的<b>高效率</b>），再用接收方公钥加密 K 形成数字信封（获得非对称加密<b>密钥分发的便利与安全</b>）；接收方先用私钥解出 K 再解密原文，兼顾"对称加密高效"与"非对称加密密钥管理简单"两者的优点。</li>
+        </ul>
+        <div class="ai">答题提示：最容易错的是把"用谁的私钥"写反——签名用<b>发送方私钥</b>，验证用<b>发送方公钥</b>；加密 K 用<b>接收方公钥</b>，解密用<b>接收方私钥</b>。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q3-2">
+      <div class="q-title">【问题 2】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>说明 PKI 体系的基本组成（CA、证书库、密钥备份与恢复系统等）及 CA 签发数字证书的主要内容。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>商户通过 HTTPS 访问结算平台时，说明握手阶段如何验证服务器身份并协商会话密钥。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q3-2">0 字</span></div>
+        <textarea id="ta-q3-2" data-qid="q3-2" placeholder="PKI 五部分组成 + 证书八项内容；HTTPS 握手按 ①②③ 顺序写……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q3-2" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q3-2">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r3-2">▸ 查看答案解析</button>
+      <div class="ref" id="r3-2">
+        <div class="ref-h">问题 2 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）PKI 组成与证书内容（4 分）</b></p>
+        <ul>
+          <li><b>组成：</b>认证机构 <b>CA</b>（证书的签发、吊销与信任锚）、数字证书库（存放与查询证书，含吊销列表 CRL / OCSP）、密钥备份与恢复系统（对加密密钥托管备份，防密钥永久丢失）、证书作废处理系统、应用程序接口（API）。<span class="pt-tag">3 分（答出四部分）</span></li>
+          <li><b>证书内容：</b>证书版本、序列号、签名算法、颁发机构（CA）名称、有效期、证书主体（商户/服务器）名称、主体公钥信息，以及 <b>CA 对上述信息的数字签名</b>。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（2）HTTPS 握手（4 分）</b></p>
+        <ol>
+          <li>客户端向服务器发起握手，出示自身支持的加密套件与随机数；</li>
+          <li>服务器返回<b>数字证书</b>（含公钥）与随机数；</li>
+          <li>客户端用内置的 <b>CA 根证书链验证服务器证书</b>（域名、有效期、吊销状态）——验证通过则生成预主密钥（Pre-Master Key），用证书内公钥加密后发给服务器；</li>
+          <li>服务器用私钥解出预主密钥，双方基于<b>两个随机数 + 预主密钥</b>（或 ECDHE 密钥协商）导出相同的<b>会话密钥</b>；</li>
+          <li>此后通信使用会话密钥对称加解密，并以 MAC 保证完整性。</li>
+        </ol>
+        <div class="ai">采分点：验证身份 2 分、协商会话密钥 2 分。写成"用私钥加密、公钥解密"直接判错，务必是"公钥加密会话密钥"。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q3-3">
+      <div class="q-title">【问题 3】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>信息系统面临的安全威胁来源可分为六类（物理环境、通信链路、网络系统、操作系统、应用系统、管理）。请结合本案例，任选四类各举一个具体威胁。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>平台需对不同岗位（商户、出纳、风控、审计）实施权限控制。比较自主访问控制（DAC）、强制访问控制（MAC）与基于角色的访问控制（RBAC）的特点，并为本案例选择合适模型、说明理由。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q3-3">0 字</span></div>
+        <textarea id="ta-q3-3" data-qid="q3-3" placeholder="威胁必须「扣住资金/商户信息」；三个模型各一句特点，最后给选型理由……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q3-3" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q3-3">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r3-3">▸ 查看答案解析</button>
+      <div class="ref" id="r3-3">
+        <div class="ref-h">问题 3 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）四类威胁举例（4 分，每类 1 分，任选四类）</b></p>
+        <ul>
+          <li><b>物理环境：</b>机房断电或服务器硬盘损坏导致结算数据丢失；</li>
+          <li><b>通信链路：</b>公网传输链路被窃听，截获商户银行卡信息；或对结算接口流量干扰；</li>
+          <li><b>网络系统：</b>互联网开放带来的扫描、DDoS 攻击与越权访问内网；</li>
+          <li><b>操作系统：</b>服务器系统后门/漏洞被植入木马；</li>
+          <li><b>应用系统：</b>结算程序漏洞被利用（如 SQL 注入篡改授信额度）、越权查询他人余额；</li>
+          <li><b>管理：</b>运维人员权限失控或口令泄露、离职人员未及时回收权限。</li>
+        </ul>
+        <p><b>（2）访问控制模型选择（4 分）</b></p>
+        <ul>
+          <li><b>DAC：</b>由资源属主自主授权，灵活但权限易扩散、难集中管控；<b>MAC：</b>按安全级别标签强制约束，由系统统一设定，用于强管控场景；<b>RBAC：</b>按岗位定义角色，用户通过被赋予角色获得权限，便于按职责授权与审计。<span class="pt-tag">3 分</span></li>
+          <li><b>选型：</b>本案例选择 <b>RBAC</b>——平台有商户、出纳、风控、审计等岗位且划分清晰、人员变动频繁，RBAC 只维护"角色—权限"映射，新员工授权、离职回收都只需调整角色分配，便于<b>最小权限原则</b>与集中审计；超高价值的资金核心操作可在 RBAC 基础上叠加 <b>MAC</b> 约束。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <div class="ai">答题提示：威胁举例一定要"落到本案例"（资金、授信、商户信息），只写"黑客攻击"这类泛化描述容易不给分。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 试题四 ============ -->
+  <div class="qblock" id="sec4">
+    <div class="qhead">试题四（选答题，25 分）<span class="score">微内核与插件化架构</span></div>
+    <div class="qintro">阅读以下关于微内核与插件化架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+    <div class="scene">
+      <span class="scene-tag">【说明】</span>
+      <p>某软件企业的交易计费中台对外提供通用计费能力，但不同行业客户的计费规则差异极大：零售客户按"阶梯单价 + 会员折扣"，物流客户按"重量 + 线路 + 时效加价"，电力客户按"峰谷分时"。过去采用一个代码分支服务一个客户的方式，定制品需求导致代码分支泛滥、版本冲突频繁，一次新功能需要逐分支合并回归，平均交付周期 45 天。企业决定将计费中台重构为"微内核 + 插件"架构：内核只保留核心流程引擎、插件注册管理、事件总线与配置中心等稳定能力，各计费算法、风控规则、营销策略实现为独立插件，通过统一的插件接口契约接入，如图 4-1 所示。</p>
+    </div>
+
+    <div class="fig">
+      <div class="fig-row">
+        <div class="fig-box">计费插件</div>
+        <div class="fig-box">风控插件</div>
+        <div class="fig-box">营销插件</div>
+        <div class="fig-box">对账插件</div>
+      </div>
+      <div class="fig-arrow">▼　注册 / 回调</div>
+      <div class="fig-band">插件接口 / 扩展点契约
+        <small>统一生命周期 install · start · stop · uninstall</small>
+      </div>
+      <div class="fig-arrow">▼</div>
+      <div class="fig-band" style="background:#1F2937;border-color:#1F2937;color:#fff">微内核核心
+        <small style="color:#D1D5DB">核心流程引擎 · 插件注册与管理 · 事件总线 · 配置中心</small>
+      </div>
+      <div class="fig-arrow">▼</div>
+      <div class="fig-row">
+        <div class="fig-box">数据访问</div>
+        <div class="fig-box">消息通信</div>
+        <div class="fig-box">缓存服务</div>
+        <div class="fig-box">日志</div>
+      </div>
+      <div class="fig-cap">图 4-1　微内核插件化架构</div>
+    </div>
+
+    <div class="q" id="q4-1">
+      <div class="q-title">【问题 1】<span class="score">9 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>说明微内核（Microkernel）架构的基本组成与核心思想。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>结合本案例，说明微内核架构带来的优点（至少三条）与需要注意的缺点（至少两条）。（5 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q4-1">0 字</span></div>
+        <textarea id="ta-q4-1" data-qid="q4-1" placeholder="组成四件套 + 一句话核心思想；优缺点必须挂案例（45 天、分支泛滥）……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q4-1" min="0" max="9" step="0.5"> / 9
+          <span class="saved" data-for="q4-1">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r4-1">▸ 查看答案解析</button>
+      <div class="ref" id="r4-1">
+        <div class="ref-h">问题 1 参考答案 <span class="pt">9 分</span></div>
+        <p><b>（1）组成与核心思想（4 分）</b></p>
+        <ul>
+          <li><b>组成：</b>微内核（保留最稳定的核心能力——本案例的核心流程引擎、插件注册与管理、事件总线、配置中心）+ 插件（实现具体可变业务逻辑）+ 插件接口/扩展点契约（内核与插件之间的标准接入协议）+ 支撑的基础设施服务。<span class="pt-tag">2 分</span></li>
+          <li><b>核心思想：</b>把系统中"稳定不变的部分"沉淀为内核，"频繁变化的部分"外置为可独立开发、部署、替换的插件，通过统一约定在运行时组合，实现"<b>一次开发、插件扩展、按需装配</b>"。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <p><b>（2）优点与缺点（5 分）</b></p>
+        <ul>
+          <li><b>优点（3 分，答出三条）：</b>① 新行业计费规则只需开发新插件接入，不改内核与既有插件，交付周期从 45 天显著缩短；② 内核稳定、插件可按客户装配，产品线化交付成为可能（复用）；③ 插件独立开发、测试、发布，消除分支泛滥与版本冲突，降低维护成本；④ 故障与风险局部化，插件失败可隔离降级。</li>
+          <li><b>缺点（2 分，答出两条）：</b>① 插件经内核间接调用（事件分发/注册查找），比一体化调用多一层开销，高性能路径存在性能损失；② 插件质量参差可能拖垮内核，需严格的契约与隔离治理；③ 插件版本与内核版本耦合高，设计不良会导致插件间隐式依赖。</li>
+        </ul>
+        <div class="ai">答题提示：优点别只写"可扩展"，要把案例里的"45 天交付""分支泛滥"作为<b>对照结果</b>写出来，这才是高分句。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q4-2">
+      <div class="q-title">【问题 2】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>插件接口契约（扩展点）的设计是插件化成败的关键，说明扩展点设计中应考虑的要点（如契约稳定、版本兼容、上下文隔离等）。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>说明插件"热插拔"（不重启内核动态加载/卸载）的实现机制，以及插件运行失败时的隔离与降级手段。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q4-2">0 字</span></div>
+        <textarea id="ta-q4-2" data-qid="q4-2" placeholder="扩展点四要点；热插拔写「独立构件 + 类加载隔离 + 生命周期 + 摘流」，降级写「超时/隔离/默认规则」……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q4-2" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q4-2">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r4-2">▸ 查看答案解析</button>
+      <div class="ref" id="r4-2">
+        <div class="ref-h">问题 2 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）扩展点设计要点（4 分，每答 1 分）</b></p>
+        <ol>
+          <li><b>契约稳定：</b>接口一旦发布保持向后兼容，新增能力扩展新接口而非修改旧接口；</li>
+          <li><b>版本管理：</b>契约带版本号，内核支持多版本插件共存与灰度升级；</li>
+          <li><b>上下文隔离：</b>插件通过标准上下文对象（请求、配置、客户身份）与内核交互，不直接访问内核内部状态与其他插件私有数据；</li>
+          <li><b>生命周期与依赖：</b>明确 install / start / stop / uninstall 与依赖声明，防止循环依赖、防崩溃传染。</li>
+        </ol>
+        <p><b>（2）热插拔与故障隔离（4 分）</b></p>
+        <ul>
+          <li><b>热插拔机制：</b>插件以独立构件（独立 jar / 容器 / 进程）打包，内核提供<b>类加载器隔离</b>或独立进程宿主，通过注册中心动态注册，按生命周期回调完成加载/卸载；配置中心下发启停指令即可完成替换，流量先摘除引流，实现<b>不重启内核</b>的升级。<span class="pt-tag">2 分</span></li>
+          <li><b>故障隔离与降级：</b>插件以独立线程池/进程运行并设置<b>超时与资源上限</b>；插件异常由内核捕获并降级（返回默认规则 / 上次可用规则 / 转入人工审核），故障插件自动摘除并告警，不影响其他插件与内核稳定。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <div class="ai">答题提示：热插拔的三要素是"独立宿主 + 类加载隔离 + 生命周期回调"，缺一个就容易被扣细节分。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q4-3">
+      <div class="q-title">【问题 3】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>微内核风格与层次风格、事件驱动风格既有联系又有区别。说明微内核与这两种风格的关系（可从组织、调用方向等方面比较）。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>说明基于事件总线（消息/发布-订阅）的插件协作机制，并指出该机制在性能与调试方面的权衡。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q4-3">0 字</span></div>
+        <textarea id="ta-q4-3" data-qid="q4-3" placeholder="两两比较各一段（2 分 + 2 分）；事件总线写「发布—订阅—回传—汇总」，权衡写时延与排障……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q4-3" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q4-3">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r4-3">▸ 查看答案解析</button>
+      <div class="ref" id="r4-3">
+        <div class="ref-h">问题 3 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）与其他风格的关系（4 分）</b></p>
+        <ul>
+          <li><b>与层次风格：</b>微内核内部也可分层（接口层—内核层—基础设施层），但层次风格按"<b>调用方向、逐层抽象</b>"组织，跨层严格受限；微内核按"稳定核心"与"可扩展插件"组织，插件与内核是"<b>注册—回调</b>"的协作，插件之间不直接调用，不像层次那样纵向依赖。<span class="pt-tag">2 分</span></li>
+          <li><b>与事件驱动风格：</b>微内核的插件协作通常借助事件总线实现，同"内核发事件、插件订阅响应"，两者在<b>交互机制上高度融合</b>；区别在于事件驱动风格以事件流为系统组织核心，而微内核强调内核对插件生命周期的<b>管理控制</b>，事件总线只是内核提供的统一通道。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <p><b>（2）事件总线协作与权衡（4 分）</b></p>
+        <ul>
+          <li><b>机制：</b>内核在流程关键点（计费请求、订单创建等）发布领域事件到事件总线，订阅了该事件类型的插件被并行触发，各自依据上下文完成计算并将结果事件回传，内核汇总后出结果；插件之间不直接调用，只通过<b>事件契约</b>交互。<span class="pt-tag">2 分</span></li>
+          <li><b>权衡：</b>优点是松耦合、易扩展、可并行；代价是调用链<b>异步化</b>——一次计费可能触发多个插件，端到端时延叠加，且执行顺序与全局状态难以有序跟踪，调试排障需依赖链路追踪与事件回放设施，强一致的跨插件事务也较难实现。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <div class="ai">答题提示：这类"风格对比题"的得分点在"同（联系）+ 异（区别）"两句话结构，只答差异会丢一半。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 试题五 ============ -->
+  <div class="qblock" id="sec5">
+    <div class="qhead">试题五（选答题，25 分）<span class="score">区块链应用架构</span></div>
+    <div class="qintro">阅读以下关于区块链应用架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+    <div class="scene">
+      <span class="scene-tag">【说明】</span>
+      <p>某农产品批发市场的溯源业务长期依赖纸质台账与各主体自建系统：商户进货台账、检测报告、物流温控记录分散且可被方便修改，出现食品安全问题时责任难以认定，且定位问题批次慢、往往需要 3 天以上才能锁定问题批次。市场监管方希望联合商户、监管部门、经销商组建联盟链溯源，采用联盟链构建农产品溯源平台，关键业务数据（批次登记、检测结果、流转交接、结算凭证哈希）上链存证，检测图片与视频等大文件存放于链下对象存储并仅将哈希上链，物联网设备自动采集温度、过磅与 GPS 数据，如图 5-1 所示。</p>
+    </div>
+
+    <div class="fig">
+      <div class="fig-row">
+        <div class="fig-box">物联网自动<small>温度 / 过磅 / GPS</small></div>
+        <div class="fig-box">商户上链<small>批次登记 / 交接</small></div>
+        <div class="fig-box">消费者扫码<small>溯源查询</small></div>
+        <div class="fig-box">监管节点<small>抽查 / 召回</small></div>
+      </div>
+      <div class="fig-arrow">▼</div>
+      <div class="fig-band">溯源服务层
+        <small>存证 API · 查询验证 · 流转管理 · 事件通知</small>
+      </div>
+      <div class="fig-arrow">▼</div>
+      <div class="fig-band" style="background:#1F2937;border-color:#1F2937;color:#fff">农产品溯源联盟网络
+        <small style="color:#D1D5DB">市场管理节点 · 商户节点 · 监管节点 · 银行节点</small>
+      </div>
+      <div class="fig-row" style="margin-top:8px">
+        <div class="fig-box hl">共识机制 PBFT</div>
+        <div class="fig-box hl">智能合约<small>溯源规则 / 自动冻结</small></div>
+        <div class="fig-box hl">链上仅存哈希<small>大文件链下存</small></div>
+      </div>
+      <div class="fig-cap">图 5-1　区块链农产品溯源应用架构</div>
+    </div>
+
+    <div class="q" id="q5-1">
+      <div class="q-title">【问题 1】<span class="score">9 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>说明区块链的核心技术特征（至少三条），并指出其如何解决本案例"台账可被单方修改"的问题。（3 分）</p>
+        <p class="sub"><span class="n">（2）</span>比较公有链、联盟链、私有链在准入方式与适用场景上的差异，并说明本案例选择联盟链的理由。（4 分）</p>
+        <p class="sub"><span class="n">（3）</span>说明智能合约的概念，并结合本案例举出两个适合智能合约自动执行的业务规则。（2 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q5-1">0 字</span></div>
+        <textarea id="ta-q5-1" data-qid="q5-1" placeholder="特征≥3 条 + 如何解决改账；三类链比较 + 选型理由；智能合约概念 + 两个规则……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q5-1" min="0" max="9" step="0.5"> / 9
+          <span class="saved" data-for="q5-1">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r5-1">▸ 查看答案解析</button>
+      <div class="ref" id="r5-1">
+        <div class="ref-h">问题 1 参考答案 <span class="pt">9 分</span></div>
+        <p><b>（1）核心技术特征与问题解决（3 分）</b></p>
+        <ul>
+          <li><b>核心特征：</b>去中心化（多方共同维护账本，无单一控制点）、不可篡改（哈希链 + 多方共识，单方无法改写历史）、可追溯（全部交易按时间有序留痕）、集体维护与透明可信。<span class="pt-tag">2 分（答出三条）</span></li>
+          <li><b>本案例：</b>批次登记、检测结果、流转交接、结算凭证哈希上链，任何一方（包括市场管理方）都无法单独修改或删除历史记录，从技术上消解了"单方改账"的可能。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（2）三类区块链比较与选型（4 分）</b></p>
+        <ul>
+          <li><b>公有链：</b>完全开放、任何人可参与记账，去中心化最强，但性能低（TPS 有限）、交易信息公开透明；<b>联盟链：</b>由若干机构共同组成联盟、授权准入，性能高、可管控、可隐私分级；<b>私有链：</b>单一机构内部使用，中心化程度最高。<span class="pt-tag">3 分</span></li>
+          <li><b>选型理由：</b>本案例参与方为市场方、商户、监管、银行等<b>特定且有限</b>的主体，需要准入控制、监管合规与高吞吐，公有链的开放性、公开性与性能都不合适，故选择联盟链。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <p><b>（3）智能合约（2 分）</b></p>
+        <ul>
+          <li><b>概念：</b>部署在链上、满足预设条件即由系统自动执行的程序化规则，无需人工干预，执行结果上链可查证。</li>
+          <li><b>本案例举例：</b>① "检测结果不合格的批次自动冻结并通知召回"；② "确认收货且检测合格后 T+1 自动与商户结算分账"。</li>
+        </ul>
+        <div class="ai">答题提示：选型理由要落在"参与方有限 + 需准入 + 需监管合规 + 要高吞吐"四点，只写"联盟链性能高"偏薄。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q5-2">
+      <div class="q-title">【问题 2】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>本案例采用"关键数据上链 + 大文件链下存储（仅哈希上链）"的协同设计。说明这样设计的两条理由。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>说明实用拜占庭容错（PBFT）与工作量证明（PoW）在共识机制上的差异，并指出联盟链通常选择 PBFT 类共识的原因。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q5-2">0 字</span></div>
+        <textarea id="ta-q5-2" data-qid="q5-2" placeholder="两条理由（性能成本 / 隐私合规）；PBFT vs PoW 从记账权、能耗、确认时间、容错维度比……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q5-2" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q5-2">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r5-2">▸ 查看答案解析</button>
+      <div class="ref" id="r5-2">
+        <div class="ref-h">问题 2 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）链上链下协同理由（4 分）</b></p>
+        <ul>
+          <li><b>① 性能与成本：</b>区块链存储与全网冗余代价高，检测图片、视频等大文件直接上链会显著拖慢共识与同步；仅存哈希（几十字节）即可同时保证"<b>可验证</b>"——链下文件一旦被改动，其哈希与链上记录不符即被发现。<span class="pt-tag">2 分</span></li>
+          <li><b>② 隐私与合规：</b>原始文档可能包含商业信息与个人信息，留在链下便于按权限访问、符合数据合规要求；链上只存哈希不泄露内容，同时链上存证可担保不可篡改与持久可查。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <p><b>（2）PBFT 与 PoW 比较及选型原因（4 分）</b></p>
+        <ul>
+          <li><b>PoW：</b>通过算力竞争解超随机数（nonce）争夺记账权，去中心化最强，但能耗巨大、吞吐低、确认达分钟级且存在分叉概率，是<b>概率性最终一致</b>；<b>PBFT：</b>由固定的共识节点通过预准备/准备/确认三阶段达成多数一致，无需算力竞争，确认<b>秒级、无分叉、吞吐高</b>，但要求节点身份已知、通信开销 O(n²)，只能容忍不超过 <b>1/3</b> 的拜占庭节点。<span class="pt-tag">3 分</span></li>
+          <li><b>选择原因：</b>联盟链节点数有限且身份可信（有准入控制），不需要 PoW 的开放性与算力防攻击，而更看重<b>性能、确定性与监管可控</b>，故通常选择 PBFT 类共识。<span class="pt-tag">1 分</span></li>
+        </ul>
+        <div class="ai">答题提示："1/3 容错"与"O(n²) 通信开销"是两个加分关键词，写出即显示理解深度。</div>
+      </div>
+    </div>
+
+    <div class="q" id="q5-3">
+      <div class="q-title">【问题 3】<span class="score">8 分</span></div>
+      <div class="q-body">
+        <p class="sub"><span class="n">（1）</span>溯源的难点在于"源头可信"：若商户在数据上链前就录入假数据，链只能保证"不可篡改"而不能保证"真实"。请给出至少两条保障源头数据可信的措施。（4 分）</p>
+        <p class="sub"><span class="n">（2）</span>说明基于该平台的食品安全召回场景中，区块链如何提升追溯效率与责任认定能力；并指出该架构仍存在的两条局限。（4 分）</p>
+      </div>
+      <div class="answer">
+        <div class="answer-head">作答区<span class="cnt" data-for="q5-3">0 字</span></div>
+        <textarea id="ta-q5-3" data-qid="q5-3" placeholder="源头可信≥2 条（设备直采 / 上链校验 / 多主体交叉 / 监管抽查）；召回价值 + 两条局限……"></textarea>
+        <div class="answer-foot">自评得分 <input type="number" data-score="q5-3" min="0" max="8" step="0.5"> / 8
+          <span class="saved" data-for="q5-3">已保存</span>
+        </div>
+      </div>
+      <button class="ref-btn" data-ref="r5-3">▸ 查看答案解析</button>
+      <div class="ref" id="r5-3">
+        <div class="ref-h">问题 3 参考答案 <span class="pt">8 分</span></div>
+        <p><b>（1）源头可信措施（4 分，每条 2 分，答出两条）</b></p>
+        <ul>
+          <li><b>① 物联网设备直接采集：</b>温湿度、过磅、GPS 由具备身份证书的设备自动采集，并由设备端签名后加密上链，绕开人工录入环节，杜绝"先改后传"；</li>
+          <li><b>② 上链前校验：</b>智能合约对数据格式、阈值（如温度超限）、业务逻辑进行自动校验，异常数据打回并告警；</li>
+          <li><b>③ 多主体交叉确认：</b>进货批次需供应商与采购商户双方签名确认，检测报告由具备资质的第三方检测机构签名上链，形成互证；</li>
+          <li><b>④ 监管抽查比对：</b>监管节点定期抽查实物与链上记录比对，违规商户在链上留下信用惩戒记录。</li>
+        </ul>
+        <p><b>（2）召回场景价值与局限（4 分）</b></p>
+        <ul>
+          <li><b>价值：</b>问题批次曝光后，沿链上流转记录可<b>分钟级</b>定位同批次货品的分销商户与销售去向（原需 3 天以上）；每个环节的交接签名与时间戳构成完整<b>证据链</b>，责任认定有据可查、无法推诿；智能合约自动触发召回冻结与通知，缩短响应时间。<span class="pt-tag">2 分</span></li>
+          <li><b>局限（答出两点）：</b>① 性能与容量——联盟链吞吐仍低于中心化系统，高频小颗粒数据不宜全量上链；② 隐私保护——联盟内部数据共享与商户商业隐私需通道隔离/加密权衡；③ 标准与治理——节点治理与数据标准尚未统一，节点增多带来共识开销；④ "源头可信"仍依赖链下治理手段，链本身不能保证录入前数据的真实。<span class="pt-tag">2 分</span></li>
+        </ul>
+        <div class="ai">答题提示：这道题是"批判性"问法，局限部分千万别只重复优点反面，要落到吞吐、隐私、治理、源头四个真实边界上。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    2026 下半年系统架构设计师 · 案例分析压轴预测卷（三）· 可作答版<br>
+    内容转录自微信公众号「每日软考重点知识」图片版，参考答案非官方评分标准，仅供练习自评
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORE = "ruankao_pred3_case_v1";
+  var TOTAL_Q = 15, TOTAL_SCORE = 125, EXAM_MIN = 90;
+
+  var state = { answers:{}, scores:{}, seconds:EXAM_MIN*60, running:false };
+  var tas, scoreIns, timerEl, progressEl, toastEl;
+
+  function $(s, r){ return (r||document).querySelector(s); }
+  function $all(s, r){ return [].slice.call((r||document).querySelectorAll(s)); }
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORE);
+      if(raw){
+        var o = JSON.parse(raw);
+        state.answers = o.answers || {};
+        state.scores  = o.scores  || {};
+      }
+    }catch(e){}
+  }
+  function save(){
+    try{ localStorage.setItem(STORE, JSON.stringify({answers:state.answers, scores:state.scores})); }catch(e){}
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  /* ---------- 初始化 ---------- */
+  function init(){
+    tas = $all("textarea[data-qid]");
+    scoreIns = $all("input[data-score]");
+    timerEl = document.getElementById("timer");
+    progressEl = document.getElementById("progress");
+    toastEl = document.getElementById("toast");
+
+    load();
+
+    tas.forEach(function(ta){
+      var id = ta.dataset.qid;
+      if(state.answers[id]) ta.value = state.answers[id];
+      refreshCount(id);
+      renderDot(id);
+      var savedEl = $('.saved[data-for="'+id+'"]');
+      var t = null;
+      ta.addEventListener("input", function(){
+        state.answers[id] = ta.value;
+        refreshCount(id); save(); updateProgress(); renderDot(id);
+        if(savedEl){
+          savedEl.classList.add("show");
+          clearTimeout(t);
+          t = setTimeout(function(){ savedEl.classList.remove("show"); }, 1200);
+        }
+      });
+      // Tab 缩进：输入两个全角空格，答题更顺手
+      ta.addEventListener("keydown", function(e){
+        if(e.key === "Tab"){
+          e.preventDefault();
+          var s = ta.selectionStart, en = ta.selectionEnd;
+          ta.value = ta.value.slice(0,s) + "　　" + ta.value.slice(en);
+          ta.selectionStart = ta.selectionEnd = s + 2;
+          ta.dispatchEvent(new Event("input"));
+        }
+      });
+    });
+
+    scoreIns.forEach(function(inp){
+      var id = inp.dataset.score;
+      if(state.scores[id] != null) inp.value = state.scores[id];
+      inp.addEventListener("input", function(){
+        var v = parseFloat(inp.value);
+        var max = parseFloat(inp.getAttribute("max"));
+        if(!isNaN(v) && v > max){ inp.value = max; v = max; }
+        if(!isNaN(v) && v < 0){ inp.value = 0; v = 0; }
+        state.scores[id] = isNaN(v) ? null : v;
+        save(); updateProgress();
+      });
+    });
+
+    bindTimer();
+    bindRefs();
+    bindToolbar();
+    bindDots();
+    renderTimer();
+    updateProgress();
+  }
+
+  function refreshCount(id){
+    var ta = document.getElementById("ta-"+id);
+    var el = $('.cnt[data-for="'+id+'"]');
+    if(!ta || !el) return;
+    el.textContent = ta.value.replace(/\s/g,"").length + " 字";
+  }
+  function renderDot(id){
+    var d = $('.dot[data-jump="'+id+'"]');
+    if(!d) return;
+    var ta = document.getElementById("ta-"+id);
+    d.classList.toggle("done", !!(ta && ta.value.replace(/\s/g,"").length >= 20));
+  }
+  function updateProgress(){
+    var done = tas.filter(function(t){ return t.value.replace(/\s/g,"").length >= 20; }).length;
+    var sum = scoreIns.reduce(function(a,i){ var v = parseFloat(i.value); return a + (isNaN(v)?0:v); }, 0);
+    sum = Math.round(sum*10)/10;
+    progressEl.textContent = "已作答 " + done + "/" + TOTAL_Q + "　｜　自评 " + sum + "/" + TOTAL_SCORE;
+  }
+
+  /* ---------- 计时器 ---------- */
+  var tick = null;
+  function fmt(s){
+    s = Math.max(0,s);
+    var m = Math.floor(s/60), ss = s%60;
+    return (m<10?"0":"")+m + ":" + (ss<10?"0":"")+ss;
+  }
+  function renderTimer(){
+    timerEl.textContent = fmt(state.seconds);
+    timerEl.classList.toggle("warn", state.seconds <= 600);
+  }
+  function bindTimer(){
+    var b = document.getElementById("btnTimer");
+    b.addEventListener("click", function(){
+      state.running = !state.running;
+      if(state.running){
+        b.textContent = "暂停计时";
+        tick = setInterval(function(){
+          state.seconds--;
+          renderTimer();
+          if(state.seconds <= 0){
+            clearInterval(tick); state.running = false;
+            b.textContent = "开始计时"; toast("时间到，请停笔自评");
+          }
+        }, 1000);
+        toast("计时开始，建议 90 分钟");
+      }else{
+        clearInterval(tick); b.textContent = "继续计时";
+      }
+    });
+    document.getElementById("btnResetTimer").addEventListener("click", function(){
+      clearInterval(tick); state.running = false; state.seconds = EXAM_MIN*60;
+      b.textContent = "开始计时"; renderTimer(); toast("计时已重置为 90:00");
+    });
+  }
+
+  /* ---------- 解析展开 ---------- */
+  function bindRefs(){
+    $all(".ref-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var el = document.getElementById(btn.dataset.ref);
+        var open = el.classList.toggle("open");
+        btn.textContent = open ? "▾ 收起答案解析" : "▸ 查看答案解析";
+        var qid = btn.closest(".q").id;
+        var d = $('.dot[data-jump="'+qid+'"]');
+        if(d) d.classList.add("viewed");
+      });
+    });
+  }
+
+  /* ---------- 工具条 ---------- */
+  var allOpen = false;
+  function bindToolbar(){
+    document.getElementById("btnToggleAll").addEventListener("click", function(){
+      allOpen = !allOpen;
+      $all(".ref").forEach(function(el){ el.classList.toggle("open", allOpen); });
+      $all(".ref-btn").forEach(function(b){ b.textContent = allOpen ? "▾ 收起答案解析" : "▸ 查看答案解析"; });
+      this.textContent = allOpen ? "收起全部解析" : "展开全部解析";
+      if(allOpen) toast("已展开全部 15 个问题的答案解析");
+    });
+
+    document.getElementById("btnPrint").addEventListener("click", function(){
+      $all(".ref").forEach(function(el){ el.classList.add("open"); });
+      $all(".ref-btn").forEach(function(b){ b.textContent = "▾ 收起答案解析"; });
+      setTimeout(function(){ window.print(); }, 120);
+    });
+
+    document.getElementById("btnClear").addEventListener("click", function(){
+      if(!confirm("确定清空全部作答内容与自评分数？此操作不可撤销。")) return;
+      tas.forEach(function(ta){ ta.value = ""; state.answers[ta.dataset.qid] = ""; refreshCount(ta.dataset.qid); renderDot(ta.dataset.qid); });
+      scoreIns.forEach(function(i){ i.value = ""; state.scores[i.dataset.score] = null; });
+      save(); updateProgress(); toast("已清空");
+    });
+
+    document.getElementById("btnTop").addEventListener("click", function(){
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  }
+
+  /* ---------- 答题卡跳转 ---------- */
+  function bindDots(){
+    $all(".dot").forEach(function(d){
+      d.addEventListener("click", function(){
+        var el = document.getElementById(d.dataset.jump);
+        if(!el) return;
+        var y = el.getBoundingClientRect().top + window.pageYOffset - 78;
+        window.scrollTo({top:y, behavior:"smooth"});
+        var ta = el.querySelector("textarea");
+        if(ta) setTimeout(function(){ ta.focus({preventScroll:true}); }, 380);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+
+  // Ctrl/Cmd + S 手动保存
+  document.addEventListener("keydown", function(e){
+    if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){
+      e.preventDefault(); save(); toast("已保存到本机浏览器");
+    }
+  });
+})();
+</script>
+</body>
+</html>

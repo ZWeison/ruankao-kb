@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026下半年 系统架构设计师 · 案例分析压轴预测卷（四）</title>
+<style>
+:root{
+  --page-w: 1040px;
+  --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
+  --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
+  --ff-mono: "JetBrains Mono",Consolas,monospace;
+  --c-primary:#2563EB;
+  --c-text:#111827;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-soft:#EEF2FF;
+  --c-code:#F9FAFB;
+  --c-warn:#B45309;
+  --c-warn-bg:#FFFBEB;
+  --c-ok:#047857;
+  --c-ok-bg:#ECFDF5;
+  --c-red:#B91C1C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body);font-size:16px;line-height:1.85;
+  color:var(--c-text);background:#F3F4F6;padding:24px 18px 80px;
+}
+.wrap{width:100%;max-width:var(--page-w);margin:0 auto;background:#fff;
+  padding:44px 52px 60px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.4;font-weight:700}
+
+/* 封面 */
+.cover{text-align:center;padding:6px 0 26px;border-bottom:2px solid var(--c-text);margin-bottom:8px}
+.cover-eyebrow{font-family:var(--ff-head);font-size:12.5px;letter-spacing:.16em;color:var(--c-muted);margin-bottom:14px}
+.cover-title{font-size:22px;font-weight:700;font-family:var(--ff-head);line-height:1.5}
+.cover-title small{display:block;font-size:19px;margin-top:4px}
+.cover-sub{font-size:13px;color:var(--c-muted);margin-top:10px}
+.cover-info{font-size:13px;color:var(--c-text);line-height:2;margin-top:14px}
+.cover-info b{color:var(--c-primary)}
+
+/* 工具条 */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border:1px solid var(--c-border);
+  border-radius:8px;padding:9px 12px;margin:18px 0 22px}
+.btn{font-family:var(--ff-head);font-size:12.5px;padding:6px 13px;border-radius:6px;border:1px solid var(--c-border);
+  background:#fff;color:var(--c-text);cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn.primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.danger:hover{border-color:#DC2626;color:#DC2626}
+.spacer{flex:1}
+.timer{font-family:var(--ff-mono);font-size:14px;font-weight:600;padding:5px 11px;border-radius:6px;
+  background:var(--c-soft);color:var(--c-primary);min-width:78px;text-align:center}
+.timer.warn{background:#FEF2F2;color:#DC2626}
+.progress-txt{font-size:12.5px;color:var(--c-muted);font-family:var(--ff-head)}
+
+/* 注意事项 */
+.notice{border:1px solid var(--c-border);border-radius:8px;padding:16px 22px;margin:18px 0 10px;background:var(--c-code)}
+.notice h3{font-size:15px;text-align:center;letter-spacing:.3em;margin-bottom:10px}
+.notice ol{margin-left:1.4em;font-size:14px;line-height:1.9}
+.notice li{margin:3px 0}
+
+/* 目录 */
+.toc{background:#fff;border:1px solid var(--c-border);border-left:3px solid var(--c-primary);border-radius:6px;
+  padding:14px 20px;margin:18px 0 6px}
+.toc-title{font-family:var(--ff-head);font-size:12.5px;font-weight:700;color:var(--c-muted);letter-spacing:.1em;margin-bottom:6px}
+.toc ol{margin-left:1.4em;font-size:13.5px}
+.toc li{margin:3px 0}
+.toc a{color:var(--c-text);text-decoration:none}
+.toc a:hover{color:var(--c-primary);text-decoration:underline}
+
+/* 题块 */
+.qblock{margin:42px 0}
+.qhead{font-family:var(--ff-head);font-size:17px;font-weight:700;background:var(--c-soft);
+  border-left:4px solid var(--c-primary);padding:9px 14px;border-radius:0 6px 6px 0}
+.qhead .tag{font-size:12px;font-weight:600;color:#fff;background:var(--c-primary);
+  padding:2px 8px;border-radius:10px;margin-right:8px;vertical-align:2px}
+.qhead .tag.opt{background:#7C3AED}
+.qintro{font-size:13px;color:var(--c-muted);margin:8px 0 4px;font-family:var(--ff-head)}
+.note{font-family:var(--ff-head);font-size:14px;font-weight:700;margin:16px 0 4px}
+.scene{font-size:14.5px;line-height:1.95}
+.scene p{margin:7px 0;text-indent:2em}
+.scene b{color:var(--c-red);font-weight:600}
+
+/* 图 */
+.fig{margin:18px 0 6px;border:1px solid var(--c-border);border-radius:8px;background:#FCFCFD;padding:10px 6px}
+.fig svg{display:block;width:100%;height:auto}
+.figcap{text-align:center;font-size:13px;font-family:var(--ff-head);color:var(--c-text);margin:6px 0 16px}
+.fignote{text-align:center;font-size:12px;color:var(--c-muted);margin-top:-4px}
+svg text{font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+svg .t{font-size:13px;fill:#111827}
+svg .ts{font-size:11px;fill:#6B7280}
+svg .bx{fill:#fff;stroke:#374151;stroke-width:1.2}
+svg .bx2{fill:#EEF2FF;stroke:#2563EB;stroke-width:1.4}
+svg .ln{stroke:#374151;stroke-width:1.2;fill:none}
+svg .lnd{stroke:#6B7280;stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+
+/* 问题 */
+.q{margin:22px 0 0}
+.q-title{font-family:var(--ff-head);font-size:14.5px;font-weight:700;margin-bottom:2px}
+.q-title .score{color:var(--c-primary);font-weight:600;font-size:13px}
+.q-body{font-size:14.5px;line-height:1.9}
+.q-body p{margin:6px 0;text-indent:2em}
+.q-body p.noind{text-indent:0}
+.q-body ol,.q-body ul{margin:6px 0 6px 2em}
+.q-body li{margin:4px 0}
+.sub{text-indent:0}
+
+/* 答题区 */
+.answer{margin:12px 0 4px;border:1px solid #C7D2FE;border-radius:8px;overflow:hidden;background:#fff}
+.answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);padding:6px 12px;
+  font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
+.answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
+.answer textarea{display:block;width:100%;min-height:110px;border:0;outline:0;resize:vertical;
+  padding:12px 15px;font-family:var(--ff-body);font-size:15px;line-height:1.8;color:var(--c-text);background:#fff}
+.answer textarea:focus{background:#FBFDFF}
+.answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
+  background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head)}
+.selfscore{margin-left:auto;display:flex;align-items:center;gap:5px}
+.selfscore input{width:46px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;
+  font-family:var(--ff-mono);font-size:12px;text-align:center}
+.saved{color:var(--c-ok);opacity:0;transition:.4s}
+.saved.show{opacity:1}
+
+/* 参考答案 */
+.ref-toggle{display:inline-block;font-family:var(--ff-head);font-size:12.5px;color:var(--c-ok);
+  border:1px solid #A7F3D0;background:var(--c-ok-bg);padding:5px 13px;border-radius:6px;cursor:pointer;margin:16px 0 0}
+.ref-toggle:hover{background:#D1FAE5}
+.ref{display:none;background:var(--c-ok-bg);border:1px solid #A7F3D0;border-radius:8px;padding:15px 20px;margin:12px 0}
+.ref.open{display:block}
+.ref h4{font-size:14px;color:var(--c-ok);margin:12px 0 4px;font-family:var(--ff-head)}
+.ref h4:first-child{margin-top:0}
+.ref p{font-size:14px;margin:5px 0;line-height:1.9}
+.ref ul{margin:4px 0 4px 1.5em;font-size:14px}
+.ref li{margin:4px 0;line-height:1.85}
+.ref .step{color:#065F46}
+.ref b{color:#065F46;font-weight:600}
+.ref .cal{font-family:var(--ff-mono);font-size:13px;background:#fff;border:1px dashed #A7F3D0;
+  border-radius:5px;padding:8px 12px;margin:8px 0;line-height:1.8;color:#065F46}
+
+/* 附录 */
+.appendix{margin-top:52px;border-top:1px solid var(--c-border);padding-top:22px}
+.appendix h2{font-size:17px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+th,td{border:1px solid var(--c-border);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--c-code);font-family:var(--ff-head);font-weight:600;font-size:13px}
+td b{color:var(--c-primary)}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#111827;color:#fff;
+  font-family:var(--ff-head);font-size:13px;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;transition:.25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 打印 */
+@media print{
+  body{background:#fff;padding:0;font-size:12pt}
+  .wrap{box-shadow:none;padding:0;max-width:none}
+  .toolbar,.ref-toggle,.toast{display:none!important}
+  .ref{display:block!important;break-inside:auto;background:#fff;border-color:#CCC}
+  .answer{border-color:#CCC}
+  .answer textarea{min-height:70px;background:#fff}
+  .qblock{break-inside:auto}
+  h1,h2,h3{break-after:avoid}
+  .fig,.answer{break-inside:avoid}
+}
+@media (max-width:900px){
+  .wrap{padding:32px 22px 44px}
+  .cover-title{font-size:18px}
+  .qhead{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ 封面 ============ -->
+<header class="cover">
+  <div class="cover-eyebrow">全国计算机技术与软件专业技术资格（水平）考试</div>
+  <div class="cover-title">2026 下半年 系统架构设计师
+    <small>案例分析 · 压轴预测卷（四）</small>
+  </div>
+  <div class="cover-sub">分布式事务与一致性 · 海量对象存储 · 主数据管理 · 联邦学习 · 知识图谱</div>
+  <div class="cover-info">
+    全卷 <b>5 道</b>试题，每题 <b>25 分</b>，满分 <b>75 分</b>（试题一必答，其余四题任选两题）<br>
+    考试时间 <b>90 分钟</b>　｜　共 <b>15 个</b>小题　｜　整理自「考卷1」9 页扫描件
+  </div>
+</header>
+
+<!-- ============ 工具条 ============ -->
+<div class="toolbar">
+  <span class="timer" id="timer">90:00</span>
+  <button class="btn primary" id="btnTimer">开始计时</button>
+  <button class="btn" id="btnResetTimer">重置</button>
+  <button class="btn" id="btnToggleAll">显示全部参考答案</button>
+  <span class="spacer"></span>
+  <span class="progress-txt" id="progress">已作答 0/15　｜　自评 0/75</span>
+  <button class="btn danger" id="btnClear">清空答卷</button>
+  <button class="btn" id="btnPrint">打印 / 导出 PDF</button>
+</div>
+
+<!-- ============ 注意事项 ============ -->
+<div class="notice">
+  <h3>注 意 事 项</h3>
+  <ol>
+    <li>本试卷共 <b>5</b> 道试题，满分 <b>75</b> 分。试题一为必答题；试题二、试题三、试题四、试题五为选答题，请任选其中 <b>2</b> 道作答。选答题若多做，按所答的前两题计分。</li>
+    <li>每道试题 <b>25</b> 分，应结合案例背景按题目要求作答。观点明确、分条叙述、书写清晰。</li>
+    <li>考试时间 <b>90</b> 分钟。</li>
+  </ol>
+</div>
+
+<!-- ============ 目录 ============ -->
+<nav class="toc">
+  <div class="toc-title">试 题 目 录</div>
+  <ol>
+    <li><a href="#q1">试题一（必答）分布式事务与数据一致性 —— Saga / TCC / 本地消息表</a></li>
+    <li><a href="#q2">试题二（选答）海量数据存储 —— 对象存储 / 纠删码 / 生命周期分层</a></li>
+    <li><a href="#q3">试题三（选答）数据治理 —— 主数据管理（MDM）平台</a></li>
+    <li><a href="#q4">试题四（选答）隐私计算 —— 横向联邦学习与安全聚合</a></li>
+    <li><a href="#q5">试题五（选答）知识图谱 —— 本体建模 / 图存储 / 知识融合</a></li>
+    <li><a href="#appendix">附：考点与采分点索引</a></li>
+  </ol>
+</nav>
+
+<!-- ==================================================
+     试题一
+     ================================================== -->
+<section class="qblock" id="q1">
+  <div class="qhead"><span class="tag">必答</span>试题一（25分）分布式事务编排与可靠消息</div>
+  <div class="qintro">阅读以下关于分布式事务与数据一致性架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某农批供应链平台"惠农链"将原单体结算系统改造为微服务架构：订单、库存、结算、积分四个服务分库部署。商户完成一笔提货结算，需要依次扣减库存、生成结算单、发放积分。原方案在一个数据库事务内完成；拆分后跨库调用无法使用本地事务，任一环节失败都会造成数据不一致（如库存已扣减但结算单未生成）。架构师采用 <b>Saga 编排模式</b>组织跨服务事务，并配合"<b>本地消息表 + 可靠消息</b>"机制保证最终一致性，总体结构如图 1-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 390" role="img" aria-label="分布式事务编排与可靠消息机制架构图">
+      <!-- 订单服务 -->
+      <rect class="bx" x="15" y="100" width="150" height="88"/>
+      <text class="t" x="90" y="135" text-anchor="middle">订单服务</text>
+      <text class="t" x="90" y="158" text-anchor="middle">（事务发起方）</text>
+      <!-- ① -->
+      <line class="ln" x1="165" y1="144" x2="228" y2="144"/>
+      <polygon points="228,144 219,140 219,148" fill="#374151"/>
+      <text class="ts" x="196" y="136" text-anchor="middle">①</text>
+      <!-- Saga 协调器 -->
+      <rect class="bx2" x="230" y="86" width="212" height="118"/>
+      <text class="t" x="336" y="136" text-anchor="middle">Saga 事务协调器</text>
+      <text class="t" x="336" y="159" text-anchor="middle">（编排 + 状态机）</text>
+      <!-- 右侧干线 -->
+      <line class="ln" x1="442" y1="145" x2="476" y2="145"/>
+      <line class="ln" x1="476" y1="55" x2="476" y2="256"/>
+      <line class="ln" x1="476" y1="55" x2="575" y2="55"/>
+      <polygon points="575,55 566,51 566,59" fill="#374151"/>
+      <line class="ln" x1="476" y1="145" x2="575" y2="145"/>
+      <polygon points="575,145 566,141 566,149" fill="#374151"/>
+      <line class="ln" x1="476" y1="256" x2="575" y2="256"/>
+      <polygon points="575,256 566,252 566,260" fill="#374151"/>
+      <text class="ts" x="484" y="138" style="font-size:10.5px">Try/Confirm</text>
+      <!-- 三个参与服务 -->
+      <rect class="bx" x="577" y="25" width="215" height="60"/>
+      <text class="t" x="684" y="61" text-anchor="middle">库存服务（T1）</text>
+      <rect class="bx" x="577" y="115" width="215" height="60"/>
+      <text class="t" x="684" y="151" text-anchor="middle">结算服务（T2）</text>
+      <rect class="bx" x="577" y="226" width="215" height="60"/>
+      <text class="t" x="684" y="262" text-anchor="middle">积分服务（T3）</text>
+      <!-- 可靠消息 -->
+      <rect class="bx" x="230" y="270" width="212" height="62"/>
+      <text class="t" x="336" y="296" text-anchor="middle">可靠消息 / 死信队列</text>
+      <text class="t" x="336" y="318" text-anchor="middle">（本地消息表）</text>
+      <line class="lnd" x1="336" y1="206" x2="336" y2="266"/>
+      <polygon points="336,204 332,213 340,213" fill="#6B7280"/>
+      <polygon points="336,268 332,259 340,259" fill="#6B7280"/>
+      <text class="ts" x="344" y="240">投递/回执</text>
+      <text class="ts" x="20" y="378">正向：Try → 全部成功即 Confirm；任一失败则 Cancel（执行补偿）</text>
+    </svg>
+  </div>
+  <div class="figcap">图 1-1　分布式事务编排与可靠消息机制</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明 TCC 模式中 Try、Confirm、Cancel 三个阶段各自的职责。（3 分）</p>
+      <p class="noind">（2）从补偿方式、隔离性、适用场景三个方面比较 Saga 模式与 TCC 模式。（6 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a1">0 字</span></div>
+      <textarea id="a1" data-qid="a1" placeholder="（1）Try：…　Confirm：…　Cancel：…&#10;（2）补偿方式：…&#10;　　 隔离性：…&#10;　　 适用场景：…"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="a1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="a1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）结合图 1-1，说明基于"本地消息表 + 可靠消息"实现最终一致性的主要步骤。（5 分）</p>
+      <p class="noind">（2）说明死信队列在该机制中的作用。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a2">0 字</span></div>
+      <textarea id="a2" data-qid="a2" placeholder="（1）① …&#10;（2）…"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="a2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="a2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）幂等、空回滚、悬挂是补偿型分布式事务的三个经典问题。请分别解释其含义，并给出常用的解决方法。（6 分）</p>
+      <p class="noind">（2）消息中间件可能对同一消息重复投递，请给出消费端保证处理幂等的两种手段。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a3">0 字</span></div>
+      <textarea id="a3" data-qid="a3" placeholder="（1）幂等：…　解决：…&#10;　　 空回滚：…　解决：…&#10;　　 悬挂：…　解决：…&#10;（2）① …　② …"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="a3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="a3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref1">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref1">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）三阶段职责（3 分，每个 1 分）：</p>
+    <ul>
+      <li><b>Try（预留）</b>：检查业务并预留必要资源（如冻结库存数量、预占账户额度），不真正完成业务；</li>
+      <li><b>Confirm（确认）</b>：真正执行业务，使用 Try 预留的资源完成操作，要求成功（失败则重试）；</li>
+      <li><b>Cancel（取消）</b>：取消 Try 阶段的预留，释放资源，使数据回到初始状态。</li>
+    </ul>
+    <p>（2）比较（6 分，每方面 2 分）：</p>
+    <ul>
+      <li><b>补偿方式</b>：TCC 的 Try/Confirm/Cancel 由业务显式实现三个接口，Cancel 对 Try 做反向补偿；Saga 将长事务拆为一系列本地事务 T1…Tn，每个 Ti 配置补偿事务 Ci，失败时逆向依次执行 C(i-1)…C1，无资源预留阶段（每个本地事务直接提交）。</li>
+      <li><b>隔离性</b>：TCC 通过 Try 预留使中间状态对外不可见，隔离性较好；Saga 中间状态直接可见，存在脏读与其他事务覆盖的风险，需要业务侧增加约束（如状态机、业务规则容忍）。</li>
+      <li><b>适用场景</b>：TCC 适合短事务、参与方少、一致性要求高的核心链路（如资金），但开发成本高；Saga 适合流程长、参与方多、能接受最终一致的长事务场景（如跨系统业务流程），开发量相对小。</li>
+    </ul>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）主要步骤（5 分）：</p>
+    <ul>
+      <li class="step">① 订单服务在同一个本地事务中写业务表和本地消息表（消息状态为"待发送"），保证业务与消息的原子性；</li>
+      <li class="step">② 消息投递组件（中继任务）扫描本地消息表，将待发送消息投递到消息中间件；</li>
+      <li class="step">③ 下游服务（库存/结算/积分）消费消息，执行本地事务并返回消费回执（ACK）；</li>
+      <li class="step">④ 上游收到回执后将消息状态更新为"已完成"；</li>
+      <li class="step">⑤ 定时任务对长时间"待发送/未确认"的消息重试投递，并对账补偿，从而保证消息不丢、双方最终一致。</li>
+    </ul>
+    <p>（2）死信队列作用（3 分）：多次消费失败或超时未确认的消息转入死信队列，避免反复重试阻塞正常消费；对死信消息进行告警、人工排查、对账与补偿处理，保证消息不丢不漏，是最终一致性的兜底机制。</p>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）（6 分，每个含义 1 分、方法 1 分）：</p>
+    <ul>
+      <li><b>幂等</b>：同一操作执行一次与多次的效果相同。解决：以唯一业务键建去重表／唯一索引，或用状态机条件更新，重复请求直接返回上次结果。</li>
+      <li><b>空回滚</b>：Try 未执行（如网络超时未到达）而 Cancel 先到达，此时没有可释放的预留资源。解决：记录事务执行表，Cancel 时若查不到 Try 记录，则登记"已空回滚"并直接返回成功。</li>
+      <li><b>悬挂</b>：Cancel 先执行完成之后，迟到的 Try 才到达并预留资源，该资源将永远无人释放。解决：Try 执行前先检查事务执行表，若发现事务已回滚（空回滚标记）则拒绝执行 Try。</li>
+    </ul>
+    <p>（2）（2 分，任答两点）：① 按业务单号建唯一索引／去重表判重；② 使用版本号或状态机做条件更新，仅当状态合法时生效；③ 消费记录 Redis 缓存判重（SetNX）。答出其中两种即可。</p>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题二
+     ================================================== -->
+<section class="qblock" id="q2">
+  <div class="qhead"><span class="tag opt">选答</span>试题二（25分）海量影像数据的对象存储架构</div>
+  <div class="qintro">阅读以下关于海量数据存储与对象存储架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某农批集团拟建设影像资料归档平台，汇聚交易结算抓拍照片、安防监控录像、巡检影像等数据，预计 3 年内有效数据总量达 <b>5PB</b>，且要求任意单节点故障不丢数据、支持在线扩容。架构师设计对象存储系统：统一 REST 接口接入，元数据服务与数据块存储分离；热数据存于 SSD 节点并保留 <b>3 副本</b>，冷数据存于 HDD 节点并采用纠删码 <b>EC 8+3</b> 编码；通过生命周期策略自动在冷热层间迁移，如图 2-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 400" role="img" aria-label="影像归档对象存储架构图">
+      <rect class="bx" x="12" y="38" width="150" height="72"/>
+      <text class="t" x="87" y="68" text-anchor="middle">影像采集系统</text>
+      <text class="t" x="87" y="90" text-anchor="middle">（影像/视频）</text>
+
+      <line class="ln" x1="162" y1="74" x2="198" y2="74"/>
+      <polygon points="198,74 189,70 189,78" fill="#374151"/>
+
+      <rect class="bx2" x="200" y="28" width="200" height="92"/>
+      <text class="t" x="300" y="60" text-anchor="middle">接入网关</text>
+      <text class="t" x="300" y="86" text-anchor="middle">（REST / S3 兼容 API）</text>
+
+      <!-- ② 数据块 -->
+      <line class="ln" x1="400" y1="74" x2="466" y2="74"/>
+      <polygon points="466,74 457,70 457,78" fill="#374151"/>
+      <text class="ts" x="433" y="66" text-anchor="middle">②数据块</text>
+
+      <rect class="bx" x="468" y="28" width="252" height="92"/>
+      <text class="t" x="594" y="62" text-anchor="middle">数据节点集群（热）</text>
+      <text class="t" x="594" y="88" text-anchor="middle">SSD + 3 副本</text>
+
+      <!-- ① 元数据 -->
+      <line class="ln" x1="300" y1="120" x2="300" y2="168"/>
+      <polygon points="300,168 296,159 304,159" fill="#374151"/>
+      <text class="ts" x="308" y="148">①元数据</text>
+
+      <rect class="bx" x="200" y="170" width="200" height="70"/>
+      <text class="t" x="300" y="198" text-anchor="middle">元数据服务</text>
+      <text class="t" x="300" y="220" text-anchor="middle">（命名空间 / 权限）</text>
+
+      <line class="ln" x1="300" y1="240" x2="300" y2="286"/>
+      <polygon points="300,286 296,277 304,277" fill="#374151"/>
+
+      <rect class="bx" x="200" y="288" width="200" height="60"/>
+      <text class="t" x="300" y="323" text-anchor="middle">元数据库（分布式 KV）</text>
+
+      <!-- ③ 迁移 -->
+      <line class="lnd" x1="594" y1="120" x2="594" y2="168"/>
+      <polygon points="594,168 590,159 598,159" fill="#6B7280"/>
+      <text class="ts" x="602" y="148">③迁移</text>
+
+      <rect class="bx" x="468" y="170" width="252" height="82"/>
+      <text class="t" x="594" y="202" text-anchor="middle">数据节点集群（冷）</text>
+      <text class="t" x="594" y="228" text-anchor="middle">HDD + 纠删码 EC 8+3</text>
+
+      <line class="lnd" x1="594" y1="252" x2="594" y2="286"/>
+      <polygon points="594,286 590,277 598,277" fill="#6B7280"/>
+
+      <rect class="bx" x="468" y="288" width="252" height="60"/>
+      <text class="t" x="594" y="323" text-anchor="middle">生命周期策略（热→冷→归档）</text>
+    </svg>
+  </div>
+  <div class="figcap">图 2-1　影像归档对象存储架构</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）从存储开销、可靠性、读写性能三个方面比较多副本与纠删码两种冗余方式。（6 分）</p>
+      <p class="noind">（2）计算 EC 8+3 相比 3 副本的容量开销之比（保留两位小数），并说明 EC 8+3 可容忍的最大同时故障盘数。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="b1">0 字</span></div>
+      <textarea id="b1" data-qid="b1" placeholder="（1）存储开销：…　可靠性：…　读写性能：…&#10;（2）计算过程：…"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="b1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="b1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）与传统文件存储（NAS）相比，从元数据组织、访问方式、扩展性三方面说明对象存储的特点。（6 分）</p>
+      <p class="noind">（2）说明生命周期分层策略在该平台中的作用。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="b2">0 字</span></div>
+      <textarea id="b2" data-qid="b2" placeholder="（1）元数据组织：…　访问方式：…　扩展性：…&#10;（2）…"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="b2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="b2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）已知 3 年后有效数据 5PB：冷数据占 80% 采用 EC 8+3，热数据占 20% 采用 3 副本。估算所需裸存储容量（保留一位小数），写出计算过程。（6 分）</p>
+      <p class="noind">（2）说明 EC 8+3 与 3 副本是否满足"任意单节点故障不丢数据"的要求，以及元数据服务应如何部署以避免成为单点。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="b3">0 字</span></div>
+      <textarea id="b3" data-qid="b3" placeholder="（1）冷数据：…&#10;　　 热数据：…&#10;　　 合计裸容量：…&#10;（2）…"></textarea>
+      <div class="answer-foot">建议 200—250 字<span class="saved" data-for="b3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="b3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref2">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref2">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）（6 分，每方面 2 分）：</p>
+    <ul>
+      <li><b>存储开销</b>：3 副本冗余 200%（有效容量仅 1/3）；EC 8+3 冗余 37.5%（有效容量 8/11），开销显著更低。</li>
+      <li><b>可靠性</b>：3 副本可容忍任意 2 个副本同时丢失；EC 8+3 中 8 个数据块加 3 个校验块，可容忍任意 3 块（所在盘/节点）同时故障，且故障域可按机架/节点分布扩展。</li>
+      <li><b>读写性能</b>：副本写路径简单、可就近读取，读性能好；EC 写入需计算校验块（CPU 开销），部分读或降级读需多块重构，性能与延迟更高。</li>
+    </ul>
+    <p>（2）（3 分）：</p>
+    <div class="cal">EC 8+3 存 8 份有效数据需 11 份物理空间，容量开销 = 11/8 = 1.375<br>
+      3 副本开销 = 3.0<br>
+      开销之比 = 1.375 / 3.0 ≈ 0.46（节省约 54% 空间）</div>
+    <p>可容忍的最大同时故障盘数为 <b>3</b>。</p>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）（6 分，每方面 2 分）：</p>
+    <ul>
+      <li><b>元数据组织</b>：对象存储采用扁平化命名空间（桶 + 对象键）和集中/分布式的 KV 元数据服务，文件存储为树形目录结构；</li>
+      <li><b>访问方式</b>：对象存储通过 RESTful HTTP 接口（PUT/GET/DELETE 按 Key 访问），不提供 POSIX 语义；文件存储通过 NFS/CIFS 挂载，支持随机读写与文件锁；</li>
+      <li><b>扩展性</b>：对象存储的数据节点与元数据服务均可水平扩展，容量可扩展至 EB 级、对象数十亿级；文件存储在元数据规模和目录深度上易成瓶颈，扩展性受限。</li>
+    </ul>
+    <p>（2）（2 分）：按数据的访问频度与时效自动在热（SSD+副本）、冷（HDD+EC）、归档层之间迁移、降冗余或清理过期数据，在保证可访问性的前提下显著降低存储成本，无需人工干预。</p>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）（6 分，过程 4 分、结果 2 分）：</p>
+    <div class="cal">冷数据：5PB × 80% = 4PB；EC 8+3 裸容量 = 4PB × 11/8 = 5.5PB<br>
+      热数据：5PB × 20% = 1PB；3 副本裸容量 = 1PB × 3 = 3PB<br>
+      合计裸容量 ≈ 5.5 + 3 = <b>8.5PB</b></div>
+    <p>（工程实施还应预留 20%～30% 余量用于系统开销、修复流量与扩容缓冲。）</p>
+    <p>（2）（2 分）：EC 8+3 任意 3 块故障可重构数据、3 副本任意 2 个副本丢失可恢复，单节点故障均不会丢数据，满足要求。元数据服务应采用集群化部署（多节点 + 分布式 KV 存储 / Raft 等共识协议保证强一致与自动选主），并对元数据做冗余与定期备份，消除单点。</p>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题三
+     ================================================== -->
+<section class="qblock" id="q3">
+  <div class="qhead"><span class="tag opt">选答</span>试题三（25分）主数据管理（MDM）平台</div>
+  <div class="qintro">阅读以下关于主数据管理与数据治理架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某农批集团信息化系统分散建设：<b>ERP、交易结算、CRM</b> 等系统各自维护商户、商品、摊位等基础数据，存在编码规则不一致、同一商户多处重复建档、变更后各系统不同步等问题，导致跨系统报表口径混乱。集团启动数据治理工程，建设<b>主数据管理（MDM）平台</b>，对核心基础数据实行统一建模、清洗匹配、集中存储、分发回写，总体架构如图 3-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 380" role="img" aria-label="主数据管理平台架构图">
+      <rect class="bx" x="12" y="26" width="168" height="44"/>
+      <text class="t" x="96" y="54" text-anchor="middle">ERP 系统</text>
+      <rect class="bx" x="12" y="112" width="168" height="44"/>
+      <text class="t" x="96" y="140" text-anchor="middle">交易 / 结算系统</text>
+      <rect class="bx" x="12" y="198" width="168" height="44"/>
+      <text class="t" x="96" y="226" text-anchor="middle">CRM 系统</text>
+
+      <line class="ln" x1="180" y1="48" x2="286" y2="118"/>
+      <polygon points="286,118 276,115 281,109" fill="#374151"/>
+      <line class="ln" x1="180" y1="134" x2="286" y2="138"/>
+      <polygon points="286,138 277,134 277,142" fill="#374151"/>
+      <line class="ln" x1="180" y1="220" x2="286" y2="160"/>
+      <polygon points="286,160 276,163 281,169" fill="#374151"/>
+
+      <rect class="bx2" x="288" y="100" width="190" height="86"/>
+      <text class="t" x="383" y="132" text-anchor="middle">数据集成</text>
+      <text class="t" x="383" y="156" text-anchor="middle">（抽取/清洗/转换）</text>
+
+      <line class="ln" x1="478" y1="128" x2="596" y2="62"/>
+      <polygon points="596,62 586,63 590,70" fill="#374151"/>
+      <line class="ln" x1="478" y1="150" x2="596" y2="150"/>
+      <polygon points="596,150 587,146 587,154" fill="#374151"/>
+
+      <rect class="bx" x="598" y="26" width="270" height="62"/>
+      <text class="t" x="733" y="52" text-anchor="middle">主数据建模</text>
+      <text class="t" x="733" y="74" text-anchor="middle">（实体/属性/编码规则）</text>
+
+      <line class="ln" x1="733" y1="88" x2="733" y2="122"/>
+      <polygon points="733,122 729,113 737,113" fill="#374151"/>
+
+      <rect class="bx" x="598" y="124" width="270" height="62"/>
+      <text class="t" x="733" y="150" text-anchor="middle">匹配与合并</text>
+      <text class="t" x="733" y="172" text-anchor="middle">（去重 → 黄金记录）</text>
+
+      <line class="ln" x1="733" y1="186" x2="733" y2="218"/>
+      <polygon points="733,218 729,209 737,209" fill="#374151"/>
+
+      <rect class="bx" x="598" y="220" width="270" height="54"/>
+      <text class="t" x="733" y="253" text-anchor="middle">主数据存储（MDM Hub）</text>
+
+      <line class="ln" x1="733" y1="274" x2="733" y2="300"/>
+      <polygon points="733,300 729,291 737,291" fill="#374151"/>
+
+      <rect class="bx" x="598" y="302" width="270" height="52"/>
+      <text class="t" x="733" y="334" text-anchor="middle">分发服务（ESB / 消息）</text>
+
+      <polyline class="lnd" points="598,328 96,328 96,246"/>
+      <polygon points="96,246 92,255 100,255" fill="#6B7280"/>
+      <text class="ts" x="360" y="320" text-anchor="middle">回写 / 订阅分发</text>
+    </svg>
+  </div>
+  <div class="figcap">图 3-1　主数据管理（MDM）平台架构</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明主数据与业务数据（交易数据）、元数据的区别。（3 分）</p>
+      <p class="noind">（2）结合图 3-1，说明主数据管理的核心步骤。（6 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="c1">0 字</span></div>
+      <textarea id="c1" data-qid="c1" placeholder="（1）主数据：…　业务数据：…　元数据：…&#10;（2）① …～⑥ …"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="c1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="c1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）给出常用的 4 个数据质量维度及其含义。（4 分）</p>
+      <p class="noind">（2）针对"同一商户在 ERP 与 CRM 中编码不同、名称相近但不一致"的问题，指出其违反的质量维度，并说明 MDM 平台的解决机制。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="c2">0 字</span></div>
+      <textarea id="c2" data-qid="c2" placeholder="（1）完整性：…　准确性：…　一致性：…　唯一性：…&#10;（2）违反维度：…　解决机制：…"></textarea>
+      <div class="answer-foot">建议 200—280 字<span class="saved" data-for="c2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="c2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明主数据变更的集中管控流程。（4 分）</p>
+      <p class="noind">（2）说明主数据分发的"推"与"拉"两种模式及各自适用的场景。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="c3">0 字</span></div>
+      <textarea id="c3" data-qid="c3" placeholder="（1）… → … → …&#10;（2）推模式：…　适合…&#10;　　 拉模式：…　适合…"></textarea>
+      <div class="answer-foot">建议 200—280 字<span class="saved" data-for="c3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="c3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref3">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref3">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）（3 分）：主数据是跨多个业务系统共享、被反复引用的核心基础数据（如商户、商品、组织、摊位），变化频率低但影响面广；业务数据是业务过程产生的交易流水（如订单、结算单），高频变化并依赖主数据；元数据是"关于数据的数据"，描述数据的结构、定义、来源与血缘（如表结构、字段说明）。</p>
+    <p>（2）（6 分，每步 1 分）：</p>
+    <ul>
+      <li class="step">① <b>主数据建模</b>：统一实体、属性、编码规则与数据标准；</li>
+      <li class="step">② <b>数据集成</b>：从各源系统抽取数据并清洗、转换；</li>
+      <li class="step">③ <b>匹配与合并</b>：按匹配规则识别同一实体的多条记录，去重合并形成"黄金记录"；</li>
+      <li class="step">④ <b>集中存储</b>：在 MDM Hub 中统一管理并赋予集团唯一编码；</li>
+      <li class="step">⑤ <b>分发与回写</b>：向各订阅系统分发最新主数据，并回写源系统；</li>
+      <li class="step">⑥ <b>持续运营</b>：数据质量监控、变更管控与考核。</li>
+    </ul>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）（4 分，每个 1 分，答出 4 个即可）：完整性（必填字段与关联记录齐全）、准确性（数据与真实业务事实一致）、一致性（同一数据在各系统中口径一致）、唯一性（同一实体只有一条记录、一物一码）、及时性（数据更新满足时效要求）、有效性（格式与值域符合规范）。</p>
+    <p>（2）（4 分）：违反<b>一致性</b>与<b>唯一性</b>维度（编码不同、重复建档），同时名称不一致涉及<b>准确性</b>（2 分）。解决机制：MDM 按相似度匹配规则（编码、名称、证件号、手机号等组合）识别同一商户的多条记录，人工确认后合并为一条黄金记录并赋予集团统一编码，再分发给 ERP、CRM 等系统完成编码映射与替换（2 分）。</p>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）（4 分，每步 1 分）：业务部门或源系统发起变更申请 → 数据管理专员（Steward）校验与审核 → 按管控规则审批 → 发布新版本主数据 → 分发到各订阅系统并要求回执确认，失败自动重试并定期对账。</p>
+    <p>（2）（4 分）：<b>推模式</b>：MDM 主动将变更推送（消息/ESB）到订阅系统，实时性好，适合联机业务系统对主数据强依赖的场景；<b>拉模式</b>：订阅系统按需定时或触发式从 MDM 查询/批量拉取，实现简单、对下游压力小，适合时效要求不高的报表、分析类系统。</p>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题四
+     ================================================== -->
+<section class="qblock" id="q4">
+  <div class="qhead"><span class="tag opt">选答</span>试题四（25分）横向联邦学习与安全聚合</div>
+  <div class="qintro">阅读以下关于隐私计算与联邦学习架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某农产品供应链金融平台计划联合多家市场方开展商户信用评估建模。各市场方积累了本地方商户交易样本，特征体系基本一致，但依据《个人信息保护法》《数据安全法》等要求，原始交易数据不允许出域。架构师设计<b>横向联邦学习</b>方案：各参与方在本地训练模型，仅上传加密的模型梯度（参数），由参数服务器完成安全聚合得到全局模型再下发，如图 4-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 290" role="img" aria-label="横向联邦学习架构图">
+      <rect class="bx" x="14" y="16" width="200" height="46"/>
+      <text class="t" x="114" y="45" text-anchor="middle">参与方 A（本地数据）</text>
+      <rect class="bx" x="14" y="106" width="200" height="46"/>
+      <text class="t" x="114" y="135" text-anchor="middle">参与方 B（本地数据）</text>
+      <rect class="bx" x="14" y="196" width="200" height="46"/>
+      <text class="t" x="114" y="225" text-anchor="middle">参与方 C（本地数据）</text>
+
+      <line class="ln" x1="214" y1="39" x2="336" y2="98"/>
+      <polygon points="336,98 326,97 330,90" fill="#374151"/>
+      <line class="ln" x1="214" y1="129" x2="336" y2="127"/>
+      <polygon points="336,127 327,123 327,131" fill="#374151"/>
+      <line class="ln" x1="214" y1="219" x2="336" y2="160"/>
+      <polygon points="336,160 326,161 330,168" fill="#374151"/>
+
+      <rect class="bx2" x="338" y="78" width="236" height="102"/>
+      <text class="t" x="456" y="106" text-anchor="middle">安全聚合 SecAgg</text>
+      <text class="ts" x="456" y="130" text-anchor="middle">同态加密 / 秘密共享</text>
+      <text class="ts" x="456" y="152" text-anchor="middle">差分隐私加噪</text>
+
+      <line class="ln" x1="574" y1="120" x2="648" y2="120"/>
+      <polygon points="648,120 639,116 639,124" fill="#374151"/>
+      <polygon points="574,120 583,116 583,124" fill="#374151"/>
+
+      <rect class="bx" x="650" y="88" width="230" height="72"/>
+      <text class="t" x="765" y="118" text-anchor="middle">全局模型</text>
+      <text class="t" x="765" y="141" text-anchor="middle">（参数服务器）</text>
+
+      <text class="ts" x="20" y="272">实现：上传加密梯度 / 模型更新（密态）；下发全局模型</text>
+    </svg>
+  </div>
+  <div class="figcap">图 4-1　横向联邦学习架构</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明横向联邦与纵向联邦的区别（样本空间与特征空间的切分方式）。（4 分）</p>
+      <p class="noind">（2）判断本场景应采用哪种联邦方式，并说明理由。（5 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="d1">0 字</span></div>
+      <textarea id="d1" data-qid="d1" placeholder="（1）横向联邦：…　纵向联邦：…&#10;（2）应采用…，理由：…"></textarea>
+      <div class="answer-foot">建议 150—250 字<span class="saved" data-for="d1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="d1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明安全聚合（SecAgg）的作用，并给出两种实现技术。（4 分）</p>
+      <p class="noind">（2）说明差分隐私技术的作用及其代价。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="d2">0 字</span></div>
+      <textarea id="d2" data-qid="d2" placeholder="（1）作用：…　实现技术：① …　② …&#10;（2）作用：…　代价：…"></textarea>
+      <div class="answer-foot">建议 180—260 字<span class="saved" data-for="d2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="d2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">联邦学习工程化落地面临诸多挑战，请针对以下四方面各说明一项主要问题及应对对策。</p>
+      <p class="noind">（1）各参与方数据分布不均衡（Non-IID）对模型的影响与对策。（2 分）</p>
+      <p class="noind">（2）参与方众多导致的通信开销问题与对策。（2 分）</p>
+      <p class="noind">（3）恶意参与方投毒攻击的风险与对策。（2 分）</p>
+      <p class="noind">（4）数据合规方面的要求与设计措施。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="d3">0 字</span></div>
+      <textarea id="d3" data-qid="d3" placeholder="（1）问题：…　对策：…&#10;（2）问题：…　对策：…&#10;（3）问题：…　对策：…&#10;（4）要求：…　措施：…"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="d3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="d3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref4">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref4">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）（4 分）：横向联邦：各参与方特征空间相同（或相近）、样本 ID 不同，即"样本切分"，训练时按特征对齐；纵向联邦：各参与方样本 ID 重叠较多、特征空间不同，即"特征切分"，需先通过加密样本对齐（PSI）求交，再交换中间加密结果。</p>
+    <p>（2）（5 分）：判断：应采用<b>横向联邦</b>（2 分）。理由：各市场方的业务字段与特征体系基本一致，但各自商户样本互不相同，属于典型的"特征对齐、样本切分"场景，无需跨方样本求交（3 分）。</p>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）（4 分）：作用：使参数服务器只能获得各参与方梯度聚合后的总和，无法还原任一参与方的个体梯度，防止从模型更新反推原始数据（2 分）。实现技术（任答两种，2 分）：同态加密（在密文上直接求和）、秘密共享（各方将梯度拆分份额、份额求和重构聚合值）、成对随机掩码（Bonawitz 掩码抵消）。</p>
+    <p>（2）（4 分）：作用：对上传的梯度注入满足 ε-差分隐私的随机噪声，使攻击者无法以高置信度判断某个体样本是否参与训练，提供可量化、可证明的隐私保障（2 分）。代价：噪声引入精度损失，需要在隐私预算 ε 与模型效用之间权衡；噪声与聚合还会增加计算与通信开销（2 分）。</p>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <ul>
+      <li><b>（1）Non-IID</b>　问题：各方数据分布差异大（标签/特征分布不同），聚合后的全局模型在部分参与方上精度下降（2 分）。对策：个性化联邦（全局模型 + 本地微调）、分层/加权聚合、数据增强与重采样、联邦迁移学习。</li>
+      <li><b>（2）通信开销</b>　问题：参与方多、模型大、通信轮次多，通信成为瓶颈（2 分）。对策：梯度压缩（量化/稀疏、Top-K 上传）、本地多轮训练减少通信轮次、异步聚合、就近部署参数服务器。</li>
+      <li><b>（3）投毒攻击</b>　问题：恶意参与方上传毒化梯度使全局模型被污染（后门/精度劣化）（2 分）。对策：鲁棒聚合算法（Krum、Trimmed Mean、中位数聚合）、梯度异常检测、参与方准入与信誉评估、数据与模型审计。</li>
+      <li><b>（4）数据合规</b>　要求：个人信息处理需取得同意并最小化采集，重要数据出境需安全评估，全过程可审计（2 分）。措施：原始数据不出域、传输与梯度全程加密、脱敏与去标识化、留存联邦训练审计日志、明确各方数据处理协议。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题五
+     ================================================== -->
+<section class="qblock" id="q5">
+  <div class="qhead"><span class="tag opt">选答</span>试题五（25分）农产品知识图谱平台</div>
+  <div class="qintro">阅读以下关于知识图谱应用架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某农产品供应链平台拟建设"农产品知识图谱"，融合商户档案、商品目录、检测报告、行政处罚、网络舆情等多源数据，支撑智能问答与关联风险分析（如问题商品流向追溯、关联商户风险传导）。平台采用"数据源—信息抽取—知识融合—图存储—应用"分层架构，如图 5-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 340" role="img" aria-label="知识图谱平台分层架构图">
+      <rect class="bx2" x="30" y="10" width="840" height="46"/>
+      <text class="t" x="450" y="39" text-anchor="middle">数据源层：业务数据库 / 文档 / 网页 / 日志 / 外部开放数据</text>
+      <line class="ln" x1="450" y1="56" x2="450" y2="72"/>
+      <polygon points="450,72 446,63 454,63" fill="#374151"/>
+
+      <rect class="bx" x="30" y="74" width="840" height="46"/>
+      <text class="t" x="450" y="103" text-anchor="middle">信息抽取层：实体识别（NER）/ 关系抽取（RE）/ 属性抽取</text>
+      <line class="ln" x1="450" y1="120" x2="450" y2="136"/>
+      <polygon points="450,136 446,127 454,127" fill="#374151"/>
+
+      <rect class="bx" x="30" y="138" width="840" height="46"/>
+      <text class="t" x="450" y="167" text-anchor="middle">知识融合层：本体映射 / 实体对齐 / 冲突消解 / 质量评估</text>
+      <line class="ln" x1="450" y1="184" x2="450" y2="200"/>
+      <polygon points="450,200 446,191 454,191" fill="#374151"/>
+
+      <rect class="bx" x="30" y="202" width="840" height="46"/>
+      <text class="t" x="450" y="231" text-anchor="middle">知识存储层：图数据库（属性图 / RDF）+ 图计算引擎</text>
+      <line class="ln" x1="450" y1="248" x2="450" y2="264"/>
+      <polygon points="450,264 446,255 454,255" fill="#374151"/>
+
+      <rect class="bx" x="30" y="266" width="840" height="46"/>
+      <text class="t" x="450" y="295" text-anchor="middle">应用层：智能问答 / 关联分析 / 风险预警 / 知识服务 API</text>
+    </svg>
+  </div>
+  <div class="figcap">图 5-1　知识图谱平台分层架构</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明本体（Ontology）在本项目中的作用，并给出本体建模的要素。（4 分）</p>
+      <p class="noind">（2）说明实体识别（NER）与关系抽取（RE）两项任务的内容，并各给出一种实现方法。（5 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="e1">0 字</span></div>
+      <textarea id="e1" data-qid="e1" placeholder="（1）作用：…　建模要素：…&#10;（2）NER：…　方法：…&#10;　　 RE：…　方法：…"></textarea>
+      <div class="answer-foot">建议 200—300 字<span class="saved" data-for="e1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="e1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）与关系数据库相比，说明图数据库在多跳关联查询上的优势及原因。（4 分）</p>
+      <p class="noind">（2）说明属性图模型的基本组成（节点、边、属性），并结合本场景各举一例。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="e2">0 字</span></div>
+      <textarea id="e2" data-qid="e2" placeholder="（1）优势：…　原因：…&#10;（2）节点例：…　边例：…　属性例：…"></textarea>
+      <div class="answer-foot">建议 180—260 字<span class="saved" data-for="e2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="e2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明知识融合中实体对齐与冲突消解的作用。（4 分）</p>
+      <p class="noind">（2）图谱上线后数据持续更新，请说明增量更新机制与质量控制措施。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="e3">0 字</span></div>
+      <textarea id="e3" data-qid="e3" placeholder="（1）实体对齐：…　冲突消解：…&#10;（2）增量更新：…　质量控制：…"></textarea>
+      <div class="answer-foot">建议 200—280 字<span class="saved" data-for="e3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="e3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref5">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref5">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）（4 分）：本体是领域概念及其关系的形式化、规范化的定义（图谱的模式层）。作用：统一语义与建模口径、约束图谱结构、支撑推理与知识复用（2 分）。建模要素：类（概念）、属性（数据属性/对象属性）、关系（实体间关联）、公理/约束、实例（2 分，答出 4 个即可）。</p>
+    <p>（2）（5 分）：<b>实体识别（NER）</b>：从非结构化文本中识别实体 Mention 并标注类别（商户、商品、市场、时间等），方法如规则词典、CRF 序列标注、BERT+CRF 预训练模型微调（2.5 分）；<b>关系抽取（RE）</b>：判定实体对之间的语义关系（如"供应""检出""处罚"），方法如基于依存句法的规则模板、远程监督、预训练模型分类（2.5 分）。</p>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）（4 分）：关系数据库实现多跳关联需多次 JOIN，代价随跳数与数据量急剧增长；图数据库以图结构原生存储，遍历通过邻接指针完成（无索引邻接、免 JOIN），深层关联查询性能稳定，且图模型与业务语义直观匹配，适合追溯、传导类分析。</p>
+    <p>（2）（4 分）：属性图由节点（实体，可带标签与属性）、边（有向关系，带类型与属性）、属性（键值对）组成。示例：节点（商户：甲公司 {信用等级：A}）通过边（：供应 {数量：200，日期：2026-08-09}）指向节点（商品：冷鲜猪肉 {产地：XX}）。</p>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）（4 分）：<b>实体对齐</b>：将不同数据源中指向同一真实实体的记录链接为图谱中同一节点（如"永辉超市"与"永辉超商"），保证实体唯一性；<b>冲突消解</b>：同一实体的同一属性在多来源取值不一致时，依据来源可信度、数据时间戳、权威程度等策略选择或标记待复核值，保证知识一致可信。</p>
+    <p>（2）（4 分）：<b>增量更新</b>：通过 CDC/消息订阅捕获源系统变化，进入"抽取—融合—入库"流水线，数据模型与数据版本化管理（按"变更日志"），支持回滚（2 分）。<b>质量控制</b>：入库前 Schema 与值域校验、置信度阈值过滤低质量三元组、抽样人工复核、问题反馈闭环修正，并定期全量对账评估（2 分）。</p>
+  </div>
+</section>
+
+<!-- ============ 附录 ============ -->
+<section class="appendix" id="appendix">
+  <h2>附：考点与采分点索引</h2>
+  <table>
+    <tr><th style="width:12%">试题</th><th style="width:38%">核心考点</th><th style="width:34%">采分结构</th><th style="width:16%">对应真题频次</th></tr>
+    <tr><td><b>试题一</b></td><td>Saga 编排、TCC 三阶段、本地消息表 + 可靠消息、死信队列、幂等/空回滚/悬挂</td><td>9 + 8 + 8 = 25</td><td>分布式事务：高频</td></tr>
+    <tr><td><b>试题二</b></td><td>对象存储与 NAS 对比、多副本 vs 纠删码、EC 容量计算、冷热分层与生命周期</td><td>9 + 8 + 8 = 25</td><td>存储：近年热门</td></tr>
+    <tr><td><b>试题三</b></td><td>主数据/业务数据/元数据辨析、MDM 六步、数据质量六维度、推拉分发</td><td>9 + 8 + 8 = 25</td><td>数据治理：中高频</td></tr>
+    <tr><td><b>试题四</b></td><td>横向/纵向联邦、SecAgg、差分隐私、Non-IID、投毒、合规</td><td>9 + 8 + 8 = 25</td><td>隐私计算：新考点</td></tr>
+    <tr><td><b>试题五</b></td><td>本体建模、NER/RE、图数据库 vs 关系库、属性图、实体对齐与冲突消解</td><td>9 + 8 + 8 = 25</td><td>知识图谱：高频</td></tr>
+  </table>
+  <p style="font-size:13px;color:#6B7280;margin-top:10px">
+    作答建议：90 分钟做 3 道题，单题约 30 分钟；先写"结论 + 分条要点"，再补细节，每条要点对齐题目给分点数量（如"三个方面"就写三条），避免大段叙述导致采分点被淹没。
+  </p>
+</section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var PREFIX = 'zk2026-4-';
+  var TOTAL_MIN = 90;
+
+  /* ---------- 倒计时 ---------- */
+  var timerEl = document.getElementById('timer');
+  var btnTimer = document.getElementById('btnTimer');
+  var btnReset = document.getElementById('btnResetTimer');
+  var left = TOTAL_MIN * 60, tick = null, running = false;
+
+  function fmt(s){
+    var m = Math.floor(s/60), sec = s%60;
+    return (m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+  }
+  function paint(){
+    timerEl.textContent = fmt(left);
+    timerEl.classList.toggle('warn', left <= 600);
+  }
+  btnTimer.addEventListener('click', function(){
+    if(running){
+      clearInterval(tick); running=false; btnTimer.textContent='继续计时'; return;
+    }
+    running = true; btnTimer.textContent='暂停';
+    tick = setInterval(function(){
+      if(left>0){ left--; paint(); }
+      else { clearInterval(tick); running=false; btnTimer.textContent='时间到'; toast('考试时间结束'); }
+    },1000);
+  });
+  btnReset.addEventListener('click', function(){
+    clearInterval(tick); running=false; left = TOTAL_MIN*60; paint(); btnTimer.textContent='开始计时';
+  });
+  paint();
+
+  /* ---------- 作答保存 ---------- */
+  var areas = Array.prototype.slice.call(document.querySelectorAll('.answer textarea'));
+  var scores = Array.prototype.slice.call(document.querySelectorAll('.selfscore input'));
+
+  function save(key, val){ try{ localStorage.setItem(PREFIX+key, val); }catch(e){} }
+  function load(key){ try{ return localStorage.getItem(PREFIX+key)||''; }catch(e){ return ''; } }
+
+  function refreshProgress(){
+    var done = 0, got = 0;
+    areas.forEach(function(t){ if(t.value.trim().length>0) done++; });
+    scores.forEach(function(i){
+      var v = parseFloat(i.value);
+      if(!isNaN(v)) got += v;
+    });
+    document.getElementById('progress').textContent =
+      '已作答 ' + done + '/' + areas.length + '　｜　自评 ' + got.toFixed(1) + '/75';
+  }
+
+  areas.forEach(function(t){
+    var id = t.dataset.qid;
+    var cnt = document.querySelector('.cnt[data-for="'+id+'"]');
+    var flag = document.querySelector('.saved[data-for="'+id+'"]');
+    t.value = load(id);
+    function upd(){
+      cnt.textContent = t.value.trim().length + ' 字';
+      refreshProgress();
+    }
+    upd();
+    var timerSave = null;
+    t.addEventListener('input', function(){
+      upd();
+      clearTimeout(timerSave);
+      timerSave = setTimeout(function(){
+        save(id, t.value);
+        flag.classList.add('show');
+        setTimeout(function(){ flag.classList.remove('show'); }, 1200);
+      }, 500);
+    });
+  });
+
+  scores.forEach(function(i){
+    var id = i.dataset.score;
+    i.value = load('score-'+id);
+    i.addEventListener('input', function(){ save('score-'+id, i.value); refreshProgress(); });
+  });
+
+  /* ---------- 参考答案 ---------- */
+  document.querySelectorAll('.ref-toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var box = document.getElementById(btn.dataset.ref);
+      var open = box.classList.toggle('open');
+      btn.textContent = (open ? '收起参考答案 ▴' : '展开本题参考答案 ▾');
+    });
+  });
+  var allOpen = false;
+  var btnAll = document.getElementById('btnToggleAll');
+  btnAll.addEventListener('click', function(){
+    allOpen = !allOpen;
+    document.querySelectorAll('.ref').forEach(function(b){ b.classList.toggle('open', allOpen); });
+    document.querySelectorAll('.ref-toggle').forEach(function(b){
+      b.textContent = allOpen ? '收起参考答案 ▴' : '展开本题参考答案 ▾';
+    });
+    btnAll.textContent = allOpen ? '收起全部参考答案' : '显示全部参考答案';
+  });
+
+  /* ---------- 清空 / 打印 ---------- */
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800);
+  }
+  window.toast = toast;
+
+  document.getElementById('btnClear').addEventListener('click', function(){
+    if(!confirm('确定清空全部作答与自评分数？此操作不可撤销。')) return;
+    areas.forEach(function(t){
+      t.value=''; save(t.dataset.qid,'');
+      var c = document.querySelector('.cnt[data-for="'+t.dataset.qid+'"]');
+      if(c) c.textContent='0 字';
+    });
+    scores.forEach(function(i){ i.value=''; save('score-'+i.dataset.score,''); });
+    refreshProgress(); toast('答卷已清空');
+  });
+
+  document.getElementById('btnPrint').addEventListener('click', function(){ window.print(); });
+
+  refreshProgress();
+})();
+</script>
+</body>
+</html>

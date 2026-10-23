@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026下半年 系统架构设计师 · 案例分析压轴预测卷（五）</title>
+<style>
+:root{
+  --page-w: 1040px;
+  --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
+  --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
+  --ff-mono: "JetBrains Mono",Consolas,monospace;
+  --c-primary:#2563EB;
+  --c-text:#111827;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-soft:#EEF2FF;
+  --c-code:#F9FAFB;
+  --c-warn:#B45309;
+  --c-warn-bg:#FFFBEB;
+  --c-ok:#047857;
+  --c-ok-bg:#ECFDF5;
+  --c-red:#B91C1C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body);font-size:16px;line-height:1.85;
+  color:var(--c-text);background:#F3F4F6;padding:24px 18px 80px;
+}
+.wrap{width:100%;max-width:var(--page-w);margin:0 auto;background:#fff;
+  padding:44px 52px 60px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.4;font-weight:700}
+
+/* 封面 */
+.cover{text-align:center;padding:6px 0 26px;border-bottom:2px solid var(--c-text);margin-bottom:8px}
+.cover-eyebrow{font-family:var(--ff-head);font-size:12.5px;letter-spacing:.16em;color:var(--c-muted);margin-bottom:14px}
+.cover-title{font-size:22px;font-weight:700;font-family:var(--ff-head);line-height:1.5}
+.cover-title small{display:block;font-size:19px;margin-top:4px}
+.cover-sub{font-size:13px;color:var(--c-muted);margin-top:10px}
+.cover-info{font-size:13px;color:var(--c-text);line-height:2;margin-top:14px}
+.cover-info b{color:var(--c-primary)}
+
+/* 工具条 */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border:1px solid var(--c-border);
+  border-radius:8px;padding:9px 12px;margin:18px 0 22px}
+.btn{font-family:var(--ff-head);font-size:12.5px;padding:6px 13px;border-radius:6px;border:1px solid var(--c-border);
+  background:#fff;color:var(--c-text);cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn.primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.danger:hover{border-color:#DC2626;color:#DC2626}
+.spacer{flex:1}
+.timer{font-family:var(--ff-mono);font-size:14px;font-weight:600;padding:5px 11px;border-radius:6px;
+  background:var(--c-soft);color:var(--c-primary);min-width:78px;text-align:center}
+.timer.warn{background:#FEF2F2;color:#DC2626}
+.progress-txt{font-size:12.5px;color:var(--c-muted);font-family:var(--ff-head)}
+
+/* 注意事项 */
+.notice{border:1px solid var(--c-border);border-radius:8px;padding:16px 22px;margin:18px 0 10px;background:var(--c-code)}
+.notice h3{font-size:15px;text-align:center;letter-spacing:.3em;margin-bottom:10px}
+.notice ol{margin-left:1.4em;font-size:14px;line-height:1.9}
+.notice li{margin:3px 0}
+
+/* 目录 */
+.toc{background:#fff;border:1px solid var(--c-border);border-left:3px solid var(--c-primary);border-radius:6px;
+  padding:14px 20px;margin:18px 0 6px}
+.toc-title{font-family:var(--ff-head);font-size:12.5px;font-weight:700;color:var(--c-muted);letter-spacing:.1em;margin-bottom:6px}
+.toc ol{margin-left:1.4em;font-size:13.5px}
+.toc li{margin:3px 0}
+.toc a{color:var(--c-text);text-decoration:none}
+.toc a:hover{color:var(--c-primary);text-decoration:underline}
+
+/* 题块 */
+.qblock{margin:42px 0}
+.qhead{font-family:var(--ff-head);font-size:17px;font-weight:700;background:var(--c-soft);
+  border-left:4px solid var(--c-primary);padding:9px 14px;border-radius:0 6px 6px 0}
+.qhead .tag{font-size:12px;font-weight:600;color:#fff;background:var(--c-primary);
+  padding:2px 8px;border-radius:10px;margin-right:8px;vertical-align:2px}
+.qhead .tag.opt{background:#7C3AED}
+.qintro{font-size:13px;color:var(--c-muted);margin:8px 0 4px;font-family:var(--ff-head)}
+.note{font-family:var(--ff-head);font-size:14px;font-weight:700;margin:16px 0 4px}
+.scene{font-size:14.5px;line-height:1.95}
+.scene p{margin:7px 0;text-indent:2em}
+.scene b{color:var(--c-red);font-weight:600}
+
+/* 图 */
+.fig{margin:18px 0 6px;border:1px solid var(--c-border);border-radius:8px;background:#FCFCFD;padding:10px 6px}
+.fig svg{display:block;width:100%;height:auto}
+.figcap{text-align:center;font-size:13px;font-family:var(--ff-head);color:var(--c-text);margin:6px 0 16px}
+svg text{font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+svg .t{font-size:13px;fill:#111827}
+svg .ts{font-size:11px;fill:#6B7280}
+svg .bx{fill:#fff;stroke:#374151;stroke-width:1.2}
+svg .bx2{fill:#EEF2FF;stroke:#2563EB;stroke-width:1.4}
+svg .ln{stroke:#374151;stroke-width:1.2;fill:none}
+svg .lnd{stroke:#6B7280;stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+
+/* 问题 */
+.q{margin:22px 0 0}
+.q-title{font-family:var(--ff-head);font-size:14.5px;font-weight:700;margin-bottom:2px}
+.q-title .score{color:var(--c-primary);font-weight:600;font-size:13px}
+.q-body{font-size:14.5px;line-height:1.9}
+.q-body p{margin:6px 0;text-indent:2em}
+.q-body p.noind{text-indent:0}
+.q-body ol,.q-body ul{margin:6px 0 6px 2em}
+.q-body li{margin:4px 0}
+
+/* 答题区 */
+.answer{margin:12px 0 4px;border:1px solid #C7D2FE;border-radius:8px;overflow:hidden;background:#fff}
+.answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);padding:6px 12px;
+  font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
+.answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
+.answer textarea{display:block;width:100%;min-height:110px;border:0;outline:0;resize:vertical;
+  padding:12px 15px;font-family:var(--ff-body);font-size:15px;line-height:1.8;color:var(--c-text);background:#fff}
+.answer textarea:focus{background:#FBFDFF}
+.answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
+  background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head)}
+.selfscore{margin-left:auto;display:flex;align-items:center;gap:5px}
+.selfscore input{width:46px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;
+  font-family:var(--ff-mono);font-size:12px;text-align:center}
+.saved{color:var(--c-ok);opacity:0;transition:.4s}
+.saved.show{opacity:1}
+
+/* 参考答案 */
+.ref-toggle{display:inline-block;font-family:var(--ff-head);font-size:12.5px;color:var(--c-ok);
+  border:1px solid #A7F3D0;background:var(--c-ok-bg);padding:5px 13px;border-radius:6px;cursor:pointer;margin:16px 0 0}
+.ref-toggle:hover{background:#D1FAE5}
+.ref{display:none;background:var(--c-ok-bg);border:1px solid #A7F3D0;border-radius:8px;padding:15px 20px;margin:12px 0}
+.ref.open{display:block}
+.ref h4{font-size:14px;color:var(--c-ok);margin:12px 0 4px;font-family:var(--ff-head)}
+.ref h4:first-child{margin-top:0}
+.ref p{font-size:14px;margin:5px 0;line-height:1.9}
+.ref ul{margin:4px 0 4px 1.5em;font-size:14px}
+.ref li{margin:4px 0;line-height:1.85}
+.ref .step{color:#065F46}
+.ref b{color:#065F46;font-weight:600}
+.ref .cal{font-family:var(--ff-mono);font-size:13px;background:#fff;border:1px dashed #A7F3D0;
+  border-radius:5px;padding:8px 12px;margin:8px 0;line-height:1.8;color:#065F46}
+
+/* 附录 */
+.appendix{margin-top:52px;border-top:1px solid var(--c-border);padding-top:22px}
+.appendix h2{font-size:17px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+th,td{border:1px solid var(--c-border);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--c-code);font-family:var(--ff-head);font-weight:600;font-size:13px}
+td b{color:var(--c-primary)}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#111827;color:#fff;
+  font-family:var(--ff-head);font-size:13px;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;transition:.25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 打印 */
+@media print{
+  body{background:#fff;padding:0;font-size:12pt}
+  .wrap{box-shadow:none;padding:0;max-width:none}
+  .toolbar,.ref-toggle,.toast{display:none!important}
+  .ref{display:block!important;break-inside:auto;background:#fff;border-color:#CCC}
+  .answer{border-color:#CCC}
+  .answer textarea{min-height:70px;background:#fff}
+  .qblock{break-inside:auto}
+  h1,h2,h3{break-after:avoid}
+  .fig,.answer{break-inside:avoid}
+}
+@media (max-width:900px){
+  .wrap{padding:32px 22px 44px}
+  .cover-title{font-size:18px}
+  .qhead{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ 封面 ============ -->
+<header class="cover">
+  <div class="cover-eyebrow">全国计算机技术与软件专业技术资格（水平）考试</div>
+  <div class="cover-title">2026 下半年 系统架构设计师
+    <small>案例分析 · 压轴预测卷（五）</small>
+  </div>
+  <div class="cover-sub">云原生与 K8s · 零信任安全 · 大模型 RAG · 嵌入式实时 · 多租户 SaaS</div>
+  <div class="cover-info">
+    全卷 <b>5 道</b>试题，每题 <b>25 分</b>，满分 <b>75 分</b>（试题一必答，其余四题任选两题）<br>
+    考试时间 <b>90 分钟</b>　｜　共 <b>15 个</b>小题　｜　整理自「考卷4」12 页扫描件
+  </div>
+</header>
+
+<!-- ============ 工具条 ============ -->
+<div class="toolbar">
+  <span class="timer" id="timer">90:00</span>
+  <button class="btn primary" id="btnTimer">开始计时</button>
+  <button class="btn" id="btnResetTimer">重置</button>
+  <button class="btn" id="btnToggleAll">显示全部参考答案</button>
+  <span class="spacer"></span>
+  <span class="progress-txt" id="progress">已作答 0/15　｜　自评 0/75</span>
+  <button class="btn danger" id="btnClear">清空答卷</button>
+  <button class="btn" id="btnPrint">打印 / 导出 PDF</button>
+</div>
+
+<!-- ============ 注意事项 ============ -->
+<div class="notice">
+  <h3>注 意 事 项</h3>
+  <ol>
+    <li>本试卷共 <b>5</b> 道试题，满分 <b>75</b> 分。试题一为必答题；试题二、试题三、试题四、试题五为选答题，请任选其中 <b>2</b> 道作答。选答题若多做，按所答的前两题计分。</li>
+    <li>每道试题 <b>25</b> 分，应结合案例背景按题目要求作答。观点明确、分条叙述、书写清晰。</li>
+    <li>考试时间 <b>90</b> 分钟。</li>
+  </ol>
+</div>
+
+<!-- ============ 目录 ============ -->
+<nav class="toc">
+  <div class="toc-title">试 题 目 录</div>
+  <ol>
+    <li><a href="#q1">试题一（必答）云原生平台 —— Kubernetes / 服务网格 / 灰度发布</a></li>
+    <li><a href="#q2">试题二（选答）零信任安全 —— 边界失效 / SDP / 微隔离 / IAM</a></li>
+    <li><a href="#q3">试题三（选答）大模型应用 —— RAG / 检索增强 / 推理优化</a></li>
+    <li><a href="#q4">试题四（选答）嵌入式实时系统 —— RMS / 2oo3 表决 / 双机热备</a></li>
+    <li><a href="#q5">试题五（选答）多租户 SaaS —— 数据隔离 / 元数据驱动 / 防越权</a></li>
+    <li><a href="#appendix">附：考点与采分点索引</a></li>
+  </ol>
+</nav>
+
+<!-- ==================================================
+     试题一
+     ================================================== -->
+<section class="qblock" id="q1">
+  <div class="qhead"><span class="tag">必答</span>试题一（25分）全渠道零售平台的云原生架构</div>
+  <div class="qintro">阅读以下关于云原生架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某大型连锁零售企业建成"全渠道零售平台"，涵盖商品、订单、库存、支付、促销、会员等业务。原有系统为单体应用并部署在虚拟机上，存在弹性不足、发布风险高、故障定位困难等问题，企业决定将平台迁移至容器云；采用 <b>Kubernetes</b> 构建同城双集群，业务按微服务拆分并以容器方式部署，通过<b>服务网格</b>实现服务间通信治理，并建设统一的观测体系。平台日常并发 <b>5000</b>，大促峰值为日常的 <b>8 倍</b>；要求发布过程对用户基本无感，出现故障时可在 <b>5 分钟内完成回滚</b>。图 1-1 给出了平台部署架构示意。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 560" role="img" aria-label="全渠道零售平台云原生部署架构图">
+      <!-- 控制面 -->
+      <rect class="lnd" x="60" y="20" width="780" height="118" rx="6"/>
+      <text class="ts" x="72" y="40">Kubernetes 控制面（Master）</text>
+      <rect class="bx2" x="80" y="52" width="170" height="66" rx="4"/>
+      <text class="t" x="165" y="88" text-anchor="middle">API Server</text>
+      <rect class="bx2" x="268" y="52" width="170" height="66" rx="4"/>
+      <text class="t" x="353" y="88" text-anchor="middle">etcd</text>
+      <rect class="bx2" x="456" y="52" width="170" height="66" rx="4"/>
+      <text class="t" x="541" y="88" text-anchor="middle">Scheduler</text>
+      <rect class="bx2" x="644" y="52" width="170" height="66" rx="4"/>
+      <text class="t" x="729" y="80" text-anchor="middle">Controller</text>
+      <text class="t" x="729" y="100" text-anchor="middle">Manager</text>
+
+      <!-- 接入链路 -->
+      <rect class="bx" x="40" y="180" width="150" height="66" rx="4"/>
+      <text class="t" x="115" y="208" text-anchor="middle">客户端</text>
+      <text class="ts" x="115" y="228" text-anchor="middle">（浏览器 / App）</text>
+      <line class="ln" x1="190" y1="213" x2="252" y2="213"/>
+      <polygon points="252,213 243,209 243,217" fill="#374151"/>
+      <rect class="bx" x="255" y="180" width="190" height="66" rx="4"/>
+      <text class="t" x="350" y="208" text-anchor="middle">负载均衡</text>
+      <text class="ts" x="350" y="228" text-anchor="middle">Ingress Controller</text>
+      <line class="ln" x1="445" y1="213" x2="507" y2="213"/>
+      <polygon points="507,213 498,209 498,217" fill="#374151"/>
+      <rect class="bx2" x="510" y="180" width="200" height="66" rx="4"/>
+      <text class="t" x="610" y="208" text-anchor="middle">API 网关</text>
+      <text class="ts" x="610" y="228" text-anchor="middle">（鉴权 / 限流 / 路由）</text>
+
+      <!-- 服务网格 -->
+      <rect class="lnd" x="40" y="286" width="820" height="140" rx="6"/>
+      <text class="ts" x="52" y="306">服务网格（istio Sidecar 自动注入、mTLS 双向认证）</text>
+      <rect class="bx" x="72" y="322" width="228" height="86" rx="4"/>
+      <text class="t" x="186" y="352" text-anchor="middle">订单服务 Pod</text>
+      <text class="ts" x="186" y="374" text-anchor="middle">业务容器 + Envoy</text>
+      <text class="ts" x="186" y="392" text-anchor="middle">（Sidecar）</text>
+      <rect class="bx" x="330" y="322" width="228" height="86" rx="4"/>
+      <text class="t" x="444" y="352" text-anchor="middle">库存服务 Pod</text>
+      <text class="ts" x="444" y="374" text-anchor="middle">业务容器 + Envoy</text>
+      <text class="ts" x="444" y="392" text-anchor="middle">（Sidecar）</text>
+      <rect class="bx" x="588" y="322" width="228" height="86" rx="4"/>
+      <text class="t" x="702" y="352" text-anchor="middle">支付服务 Pod</text>
+      <text class="ts" x="702" y="374" text-anchor="middle">业务容器 + Envoy</text>
+      <text class="ts" x="702" y="392" text-anchor="middle">（Sidecar）</text>
+      <line class="lnd" x1="610" y1="246" x2="610" y2="282"/>
+      <polygon points="610,284 606,275 614,275" fill="#6B7280"/>
+      <line class="ln" x1="300" y1="365" x2="328" y2="365"/>
+      <polygon points="328,365 319,361 319,369" fill="#374151"/>
+      <line class="ln" x1="558" y1="365" x2="586" y2="365"/>
+      <polygon points="586,365 577,361 577,369" fill="#374151"/>
+
+      <!-- 中间件 -->
+      <line class="lnd" x1="186" y1="408" x2="186" y2="444"/>
+      <polygon points="186,446 182,437 190,437" fill="#6B7280"/>
+      <line class="lnd" x1="444" y1="408" x2="444" y2="444"/>
+      <polygon points="444,446 440,437 448,437" fill="#6B7280"/>
+      <line class="lnd" x1="702" y1="408" x2="702" y2="444"/>
+      <polygon points="702,446 698,437 706,437" fill="#6B7280"/>
+      <rect class="bx" x="72" y="448" width="228" height="60" rx="4"/>
+      <text class="t" x="186" y="474" text-anchor="middle">配置与注册中心</text>
+      <text class="ts" x="186" y="494" text-anchor="middle">Nacos</text>
+      <rect class="bx" x="330" y="448" width="228" height="60" rx="4"/>
+      <text class="t" x="444" y="474" text-anchor="middle">消息队列</text>
+      <text class="ts" x="444" y="494" text-anchor="middle">Kafka</text>
+      <rect class="bx" x="588" y="448" width="228" height="60" rx="4"/>
+      <text class="t" x="702" y="474" text-anchor="middle">分布式缓存</text>
+      <text class="ts" x="702" y="494" text-anchor="middle">Redis Cluster</text>
+
+      <!-- 底部 -->
+      <rect class="bx" x="72" y="524" width="228" height="26" rx="4"/>
+      <text class="ts" x="186" y="542" text-anchor="middle">虚拟机 M6 / L5 主从</text>
+      <rect class="bx" x="330" y="524" width="228" height="26" rx="4"/>
+      <text class="ts" x="444" y="542" text-anchor="middle">对象存储 MinIO / OOS</text>
+      <rect class="bx" x="588" y="524" width="228" height="26" rx="4"/>
+      <text class="ts" x="702" y="542" text-anchor="middle">分析库 ClickHouse</text>
+    </svg>
+  </div>
+  <div class="figcap">图 1-1　平台部署架构示意图</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）指出 Kubernetes 控制面中 API Server、etcd、Scheduler、Controller Manager 四个组件的职责。（4 分）</p>
+      <p class="noind">（2）说明 Deployment、Service、Ingress 三类资源对象的作用，以及三者之间的关系。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="a1">0 字</span></div>
+      <textarea id="a1" data-qid="a1" placeholder="（1）API Server：…　etcd：…　Scheduler：…　Controller Manager：…&#10;（2）Deployment：…　Service：…　Ingress：…&#10;　　 关系：…"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="a1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="a1"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p>平台采用服务网格（Service Mesh）的 Sidecar 模式实现服务间通信治理。</p>
+      <p class="noind">（1）说明 Sidecar 模式的工作原理，即数据面与控制面各自承担的职责。（4 分）</p>
+      <p class="noind">（2）与传统的"微服务框架 SDK 直连"方式相比，说明服务网格的优点与代价（各至少两点）。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="a2">0 字</span></div>
+      <textarea id="a2" data-qid="a2" placeholder="（1）数据面：…　控制面：…&#10;（2）优点：① …　② …　代价：① …　② …"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="a2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="a2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）请从资源开销、发布风险、回滚速度、用户体验四个方面，比较滚动发布、蓝绿发布、金丝雀发布三种策略的差异。（5 分）</p>
+      <p class="noind">（2）结合本平台"大促峰值 8 倍、发布无感、5 分钟内回滚"的要求，说明宜采用哪种发布策略并说明理由；并指出 HPA（水平 Pod 自动伸缩）在实施弹性伸缩时可依据哪些指标。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="a3">0 字</span></div>
+      <textarea id="a3" data-qid="a3" placeholder="（1）滚动：资源…／风险…／回滚…／体验…&#10;　　 蓝绿：…　金丝雀：…&#10;（2）宜采用…，理由：…；HPA 指标：…"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="a3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="a3"> / 9</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref1">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref1">
+    <h4>【问题 1】参考答案（8 分）</h4>
+    <p>（1）四个组件职责（每个 1 分，共 4 分）：</p>
+    <ul>
+      <li><b>API Server</b>：集群统一的访问入口，提供 REST API，负责请求的认证、鉴权与准入控制；所有组件（含 kubectl）都通过它读写集群状态，是控制面的通信枢纽。</li>
+      <li><b>etcd</b>：分布式键值存储，保存集群的全部状态与配置数据，是集群的"唯一事实来源"，需以奇数节点部署保障一致性并定期备份。</li>
+      <li><b>Scheduler</b>：监听尚未绑定节点的 Pod，依据资源请求、亲和/反亲和、污点容忍等策略为其挑选最合适的节点并完成绑定。</li>
+      <li><b>Controller Manager</b>：运行各类控制器（Deployment、ReplicaSet、Node、Endpoint 等），通过"期望状态与实际状态对比、不断调谐"的控制循环使集群收敛到期望状态。</li>
+    </ul>
+    <p>（2）作用与关系（共 4 分）：</p>
+    <ul>
+      <li><b>Deployment</b>：声明式管理无状态应用的 Pod 副本（期望副本数、Pod 模板），支持滚动升级与版本回滚，其下层通过 ReplicaSet 管理一组 Pod。（1.5 分）</li>
+      <li><b>Service</b>：为一组 Pod（按标签选择器圈定）提供稳定的虚拟 IP 与 DNS 名，实现服务发现与四层负载均衡，屏蔽 Pod 的创建销毁与 IP 变化。（1.5 分）</li>
+      <li><b>Ingress</b>：集群七层入口，按域名、路径规则将外部 HTTP/HTTPS 请求路由到不同 Service，并可完成 TLS 终止。（1 分）</li>
+      <li><b>关系</b>：外部流量经 Ingress 规则路由到 Service，再由 Service 转发到后端 Pod；Pod 由 Deployment 创建与保持。即 Ingress → Service → Pod（Deployment 管理）。（1 分）</li>
+    </ul>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）工作原理（4 分）：</p>
+    <ul>
+      <li><b>数据面</b>：向每个业务 Pod 注入一个 Sidecar 代理（如 Envoy），通过流量劫持接管该 Pod 的所有出入流量，在代理中执行服务发现、负载均衡、超时重试、熔断、限流、mTLS 加密与遥测采集；业务容器不感知治理逻辑。</li>
+      <li><b>控制面</b>：负责服务发现、路由与策略配置（如 VirtualService / DestinationRule）的下发、证书签发与安全策略管理，通过 xDS 等协议统一配置所有 Sidecar。</li>
+      <li>即"治理逻辑从业务进程中剥离、下沉到 Sidecar，控制面集中管控、数据面分布执行"。</li>
+    </ul>
+    <p>（2）优点与代价（各至少两点，共 4 分）：</p>
+    <ul>
+      <li>优点：① 语言与框架无关，多语言异构微服务获得一致的治理能力；② 治理策略与业务代码解耦，策略可热更新、网格可独立升级、无需改造或重新发布业务；③ 统一实施 mTLS 身份认证与流量加密，便于零信任落地；④ 统一采集日志、指标与调用链，可观测性好。（2 分）</li>
+      <li>代价：① 每个 Pod 多一个 Sidecar，带来额外的 CPU/内存开销与一跳网络转发时延；② 引入控制面与 Sidecar 生命周期管理、版本兼容等运维复杂度；③ 调用与排障链路变长，问题定位难度增加。（2 分）</li>
+    </ul>
+
+    <h4>【问题 3】参考答案（9 分）</h4>
+    <p>（1）三种发布策略比较（5 分，滚动、蓝绿、金丝雀每项维度答对给分）：</p>
+    <ul>
+      <li><b>滚动发布</b>：逐批用新版本替换旧副本，资源开销小；新旧版本共存期风险中等；回滚需反向滚动，速度一般；用户基本无感知，但共存期可能出现行为不一致。</li>
+      <li><b>蓝绿发布</b>：新旧两套环境同时在线，资源开销大（接近双倍）；发布前可在绿环境充分验证，风险低；回滚只需把流量切回蓝环境，速度最快；切换瞬间完成、体验好，但可能影响长连接与会话。</li>
+      <li><b>金丝雀发布</b>：先引入少量新版本实例按小比例接流量，资源开销小；按比例逐步放量并观察指标，风险最低且可控；异常时灰度权重调回即可回滚，速度快；仅少量用户受影响，体验可控。</li>
+    </ul>
+    <p>（2）策略选择与弹性指标（4 分）：</p>
+    <p>宜采用<b>金丝雀发布</b>（可辅以蓝绿做大版本切换）。理由：大促峰值流量大且业务核心，按小比例灰度放量可观察错误率、P95 时延、下单成功率等核心指标，风险可控；异常时将灰度权重调整为 0 即可在分钟级完成回滚，满足"5 分钟内回滚"要求；无需长期维持双倍资源，成本可控。（2.5 分）</p>
+    <p>HPA 可依据的指标：CPU/内存等资源利用率；应用自定义指标（QPS、并发连接数、请求排队长度、消息积压量等，经自定义 Metrics API 接入）；外部业务指标（如下单 TPS）。同时应设置副本数上下限与缩容冷却窗口，配合 PodDisruptionBudget 保证缩容期间的服务能力。（1.5 分）</p>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题二
+     ================================================== -->
+<section class="qblock" id="q2">
+  <div class="qhead"><span class="tag opt">选答</span>试题二（25分）零信任安全架构的重构</div>
+  <div class="qintro">阅读以下关于零信任安全架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某省级能源集团有员工 <b>1.2 万人</b>，其中大量人员远程或移动办公，另有第三方运维人员需远程接入；业务系统分布在自建机房与两个公有云上，存在大量跨云调用。原有安全体系以"边界防护"为主：互联网出口部署防火墙，远程接入统一采用 VPN，VPN 内网互联。近年发生两起安全事件：一是某第三方运维人员使用合法 VPN 账号登录后直接<b>横向移动</b>，访问了其无权访问的财务数据库；二是员工终端感染木马后，攻击者复用其<b>已建立的 VPN 隧道</b>进入内网。集团决定按"零信任"理念重构访问控制体系，并满足网络安全等级保护三级的要求。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明传统边界安全模型的三个基本假设，并结合本案例分析这些假设在远程办公与多云环境下失效的原因。（4 分）</p>
+      <p class="noind">（2）说明零信任架构的核心思想，以及 SDP（软件定义边界）与微隔离分别用于解决什么问题。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="b1">0 字</span></div>
+      <textarea id="b1" data-qid="b1" placeholder="（1）假设① …　假设② …　假设③ …&#10;　　 失效原因：…&#10;（2）核心思想：…　SDP：…　微隔离：…"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="b1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="b1"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p>请从身份可信、设备可信、权限最小化、持续监测与响应四个方面，说明零信任架构应具备的关键能力，并结合本案例为每个方面各给出至少两项具体落地措施。</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="b2">0 字</span></div>
+      <textarea id="b2" data-qid="b2" placeholder="① 身份可信：能力…；措施 1…，措施 2…&#10;② 设备可信：…&#10;③ 权限最小化：…&#10;④ 持续监测与响应：…"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="b2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="b2"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p>集团拟建设统一身份认证与授权平台（IAM）。</p>
+      <p class="noind">（1）说明 OAuth 2.0 四种授权模式及其各自适用的场景。（4 分）</p>
+      <p class="noind">（2）说明 OIDC 与 OAuth 2.0 的关系、JWT 的三段式结构，并指出使用 JWT 时应注意的两个安全问题。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="b3">0 字</span></div>
+      <textarea id="b3" data-qid="b3" placeholder="（1）授权码：…　隐式：…　密码：…　客户端：…&#10;（2）关系：…　结构：…　安全注意：① … ② …"></textarea>
+      <div class="answer-foot">建议 280—380 字<span class="saved" data-for="b3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="b3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref2">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref2">
+    <h4>【问题 1】参考答案（8 分）</h4>
+    <p>（1）三个基本假设及失效原因（4 分，假设每个 1 分，结合案例 1 分）：</p>
+    <ul>
+      <li><b>假设</b>：① 内网是可信的，只有外网不可信（"城堡与护城河"）；② 用户/终端一经认证即可长期信任（一次认证、长期授权）；③ 终端与业务系统属于企业物理边界内，位置固定、设备可控。</li>
+      <li><b>失效原因</b>：远程办公与移动办公使访问点不再位于边界内，"内网"边界消失；多云与跨云调用使业务资源与流量路径都在企业边界之外；第三方人员与 BYOD 终端不可控。案例中两起事件正是上述假设失效的体现——合法账号（一次认证）获得隧道后即可被无信任横向移动、失控终端复用既有隧道进入内网。</li>
+    </ul>
+    <p>（2）核心思想与两项技术（4 分）：</p>
+    <ul>
+      <li><b>零信任核心思想</b>："永不信任、始终验证"——不以网络位置作为信任依据，每次访问都基于身份、设备与环境的组合进行认证与授权，遵循最小权限并持续评估、动态调整；默认假设网络已被攻破。（2 分）</li>
+      <li><b>SDP</b>：以"先认证、后连接"的方式对外隐藏业务资源（默认拒绝、单包授权），使未授权者看不到也连不上资源，解决资源暴露面问题。（1 分）</li>
+      <li><b>微隔离</b>：在数据中心/云内部按工作负载划分安全域并实施东西向最小权限访问控制，阻断入侵后的横向移动。（1 分）</li>
+    </ul>
+
+    <h4>【问题 2】参考答案（9 分）</h4>
+    <p>四个方面各 2—3 分（能力 1 分 + 措施每项 0.5—1 分）：</p>
+    <ul>
+      <li><b>身份可信</b>：建设统一身份目录与 SSO，单点登录（OIDC/SAML）；全面启用多因素认证 MFA；特权账号集中托管（堡垒机）与双人复核；凭证短期化并定期轮换。（约 2.5 分）</li>
+      <li><b>设备可信</b>：终端准入控制（NAC/802.1X），未注册设备禁止接入；EDR 检测 + 补丁与基线安全核查，设备健康状态不达标则降权或引导至修复区；设备指纹绑定，防账号盗用。（约 2 分）</li>
+      <li><b>权限最小化</b>：按"应用 + 操作"而非按网段授权；RBAC 叠加 ABAC（依据部门、时间、地理位置、设备状态动态计算权限）；敏感操作 JIT 临时授权并审批；默认拒绝一切未显式授权的访问。（约 2.5 分）</li>
+      <li><b>持续监测与响应</b>：集中采集访问日志与全流量日志（满足等保三级审计要求）；UEBA 建立基线，发现异地登录、非工作时间批量查询等异常即提升风险等级；自适应策略——风险升高时要求二次认证、缩权或阻断，并对高危会话全程录制回溯。（约 2.5 分）</li>
+    </ul>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）OAuth 2.0 四种授权模式（每种 1 分，共 4 分）：</p>
+    <ul>
+      <li><b>授权码模式</b>（Authorization Code，可配合 PKCE）：最完整安全，适用于有后端的 Web 应用与移动 App，令牌由后端以授权码换取。</li>
+      <li><b>隐式模式</b>（Implicit）：令牌直接经前端返回，历史上用于纯前端单页应用，现已不推荐。</li>
+      <li><b>密码模式</b>（Resource Owner Password Credentials）：用户直接把账号密码交给客户端，仅适用于高度信任的自有客户端或遗留系统迁移。</li>
+      <li><b>客户端模式</b>（Client Credentials）：无用户参与，适用于服务之间的机器对机器（M2M）调用，如本案例跨云服务间调用。</li>
+    </ul>
+    <p>（2）OIDC、JWT 与安全注意（4 分）：</p>
+    <ul>
+      <li><b>关系</b>：OIDC 是构建在 OAuth 2.0 之上的身份认证层——OAuth 2.0 只解决"授权"，OIDC 引入 ID Token（JWT 格式）、UserInfo 端点与标准 scope，解决"认证用户是谁"的问题。（1.5 分）</li>
+      <li><b>结构</b>：JWT 由头部（签名算法与类型：alg、typ）、Payload（声明 claims）、Signature（对前两段的签名）三段组成，分别 Base64URL 编码后以"."连接。（1 分）</li>
+      <li><b>注意事项</b>（答出两个即可，每个 0.75 分）：① Payload 仅编码而非加密，不得放置敏感信息；② 必须校验签名并固定允许的算法，防"alg=none"与算法混淆攻击，同时校验 iss/aud/exp；③ JWT 签发后难以主动吊销，应设置较短有效期并配合 Refresh Token 与黑名单/网关拦截；④ 避免令牌出现在 URL 中造成日志泄露。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题三
+     ================================================== -->
+<section class="qblock" id="q3">
+  <div class="qhead"><span class="tag opt">选答</span>试题三（25分）大模型应用架构：检索增强生成</div>
+  <div class="qintro">阅读以下关于大模型应用架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某大型装备制造企业拟建设"设备运维知识助手"，为 <b>3000 余名</b>现场工程师提供故障诊断、备件查询与维修工艺指导。知识来源包括 <b>2 万余份</b> PDF 手册（含扫描件与图纸）、<b>40 万条</b>历史工单、设备台账与备件目录，每日新增工单约 500 条。企业要求：回答必须给出可追溯的原文出处（页码）；专业术语与参数不得臆造；涉密图纸与工艺参数仅对授权人员可见；高峰并发 <b>200</b>，生成首字时间不超过 <b>3 秒</b>。</p>
+    <p>架构师提出基于"<b>检索增强生成（RAG）</b>"的应用架构，知识索引离线构建，在线服务自建 GPU 推理集群承载。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明 RAG 架构的主要处理环节，按离线索引与在线检索分成两部分作答。（5 分）</p>
+      <p class="noind">（2）说明文档切分（Chunking）策略的选择依据，以及采用"向量检索 + 关键词检索（BM25）"混合检索的作用。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="c1">0 字</span></div>
+      <textarea id="c1" data-qid="c1" placeholder="（1）离线索引：① …　② …　③ …　④ …&#10;　　 在线检索：⑤ …　⑥ …　⑦ …　⑧ …　⑨ …&#10;（2）切分依据：…　混合检索作用：…"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="c1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="c1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p>推理服务需在有限 GPU 资源下满足高峰 200 并发、首字 3 秒的要求。</p>
+      <p class="noind">（1）说明动态批处理（Continuous Batching）、KV Cache、模型量化三项技术各自解决什么问题。（6 分）</p>
+      <p class="noind">（2）说明"大小模型路由"与"语义缓存"如何降低推理成本与时延。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="c2">0 字</span></div>
+      <textarea id="c2" data-qid="c2" placeholder="（1）动态批处理：…　KV Cache：…　模型量化：…&#10;（2）大小模型路由：…　语义缓存：…"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="c2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="c2"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（7 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）指出该应用面临提示注入、越权检索、模型幻觉、敏感信息泄露四类风险的原因，并各给出一项针对性措施。（4 分）</p>
+      <p class="noind">（2）说明评估该助手回答质量可采用哪些指标（至少三项）。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="c3">0 字</span></div>
+      <textarea id="c3" data-qid="c3" placeholder="（1）提示注入：原因… 措施…&#10;　　 越权检索：…　模型幻觉：…　敏感泄露：…&#10;（2）指标：① … ② … ③ …"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="c3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="7" step="0.5" data-score="c3"> / 7</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref3">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref3">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）主要处理环节（5 分；离线 2.5 分，在线 2.5 分，每答一条给 1 分）：</p>
+    <ul>
+      <li><b>离线索引</b>：① 文档解析（PDF/OCR 识别扫描件，还原表格、图纸与版面）；② 清洗与切分，并保留页码、章节、设备型号等元数据；③ 向量化（Embedding）编码；④ 构建向量索引（HNSW/IVF）+ 元数据倒排索引 + 原文存储。</li>
+      <li><b>在线检索生成</b>：⑤ 查询理解与改写（拆句、同义词、多轮指代消解、术语归一）；⑥ 混合召回（向量 + BM25、Top-K）；⑦ 重排序（Rerank）；⑧ 上下文拼接与提示词构造（携带出处元数据）；⑨ LLM 生成并标注引用；⑩ 后处理（引用校验、敏感信息过滤、格式化输出）。</li>
+    </ul>
+    <p>（2）切分依据与混合检索作用（4 分）：</p>
+    <p><b>切分依据</b>：文档结构与语义完整性（按章节/条款切分，避免跨主题截断）；块大小与重叠率（一般数百字，10%—20% 重叠，过大稀释语义，过小丢失上下文）；内容类型（表格、图纸单独处理并保留说明文字）；元数据完整（用于权限过滤与溯源到页）。（2.5 分）</p>
+    <p><b>混合检索</b>：向量检索擅长语义相近但字面不同的表述，BM25 擅长精确匹配型号、备件编码等专业术语，二者互补提升召回率；再以 RRF 融合或加权融合并经 Reranker 精排，兼顾查全与查准，减少漏检与误检。（1.5 分）</p>
+
+    <h4>【问题 2】参考答案（9 分）</h4>
+    <p>（1）三项技术（每项 2 分，共 6 分）：</p>
+    <ul>
+      <li><b>动态批处理</b>：请求级调度，已完成的序列立即退出 batch、新请求随即插入，避免静态批处理"等待最长序列"造成的 GPU 空转，显著提升吞吐、降低排队时延。</li>
+      <li><b>KV Cache</b>：缓存已生成 token 的 Key/Value，避免自回归解码时对历史 token 的重复计算，大幅降低首字时延与算力消耗；配合系统提示前缀复用（Prefix Cache）效果更佳。</li>
+      <li><b>模型量化</b>：将权重/激活由 FP16 降至 INT8/INT4（如 GPTQ/AWQ），降低显存占用与访存带宽，在同等 GPU 上可部署更大模型或承载更高并发；代价是精度略降，需评测验证。</li>
+    </ul>
+    <p>（2）大小模型路由与语义缓存（3 分）：</p>
+    <ul>
+      <li><b>大小模型路由</b>：按问题复杂度与置信度分流——术语解释、备件参数查询等简单问题走小模型或"检索直出"，复杂故障诊断走大模型，从整体上降低平均成本与时延。（1.5 分）</li>
+      <li><b>语义缓存</b>：对语义相同或高度相似的问题（向量相似度超过阈值）直接返回缓存答案（附带原出处），命中即免去推理调用；需设置相似度阈值、TTL 与失效机制（手册或工单更新后失效），防止过期答案误导。（1.5 分）</li>
+    </ul>
+
+    <h4>【问题 3】参考答案（7 分）</h4>
+    <p>（1）四类风险及措施（每类 1 分，共 4 分）：</p>
+    <ul>
+      <li><b>提示注入</b>：检索到的文档与用户输入可能携带恶意指令。措施：系统指令与数据分区隔离，检索内容只作为参考资料而非指令执行，对输入做过滤与约束，输出做格式与内容校验。</li>
+      <li><b>越权检索</b>：用户可能通过检索问答看到无权查看的内容。措施：将权限（ACL）下推到检索阶段，先按用户权限过滤元数据再召回，生成前再做二次相似校验。</li>
+      <li><b>模型幻觉</b>：LLM 可能编造参数与术语。措施：强制"仅依据检索片段作答"，要求逐条标注出处，检索依据不足时明确回答"未找到"，并对关键参数做引用一致性校验。</li>
+      <li><b>敏感信息泄露</b>：涉密图纸、工艺参数可能被输出。措施：入库分级与脱敏、输出侧 DLP 检测与遮挡、按密级控制上下文注入，全程审计留痕。</li>
+    </ul>
+    <p>（2）质量评估指标（3 分，答出三项即可）：</p>
+    <p><b>忠实度</b>（答案是否被检索内容支持）、<b>答案相关性</b>；<b>上下文召回率/精确率</b>（该找的资料有没有找到、找得准不准）；<b>引用准确率</b>（出处页码是否对得上）；<b>拒答正确率</b>（无依据时是否正确拒答）；<b>专家人工评分</b>（准确性/完整性/可用性）；<b>线上指标</b>（采纳率、追问率、首字与整体时延）。</p>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题四
+     ================================================== -->
+<section class="qblock" id="q4">
+  <div class="qhead"><span class="tag opt">选答</span>试题四（25分）嵌入式实时系统架构：三取二表决与双机热备</div>
+  <div class="qintro">阅读以下关于嵌入式实时系统架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某工业机器人厂商研发新一代六轴协作机器人控制器。控制器运行于嵌入式实时操作系统（RTOS），需周期性地完成安全监控、伺服控制、轨迹插值等任务，控制周期为 <b>1 ms</b>，任务超时可能导致机械臂抖动甚至伤人。系统需满足功能安全要求（参考 IEC 61508 / ISO 13849），在单点故障时应使机器人进入安全状态。系统采用三路传感器采集与主备双机热备架构，如图 4-1 所示。三个周期任务的参数如表 4-1 所示（时间单位：ms）。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 330" role="img" aria-label="三取二表决与主备双机热备架构图">
+      <!-- 传感器 -->
+      <rect class="bx" x="20" y="25" width="120" height="46" rx="4"/>
+      <text class="t" x="80" y="54" text-anchor="middle">传感器 S1</text>
+      <rect class="bx" x="20" y="115" width="120" height="46" rx="4"/>
+      <text class="t" x="80" y="144" text-anchor="middle">传感器 S2</text>
+      <rect class="bx" x="20" y="205" width="120" height="46" rx="4"/>
+      <text class="t" x="80" y="234" text-anchor="middle">传感器 S3</text>
+
+      <!-- S1 直连主控 -->
+      <line class="lnd" x1="140" y1="35" x2="398" y2="35"/>
+      <polygon points="398,35 389,31 389,39" fill="#6B7280"/>
+      <text class="ts" x="250" y="28">直连（不经表决）</text>
+
+      <!-- 2oo3 表决 -->
+      <rect class="bx2" x="190" y="90" width="120" height="130" rx="4"/>
+      <text class="t" x="250" y="145" text-anchor="middle">2oo3</text>
+      <text class="t" x="250" y="168" text-anchor="middle">表决器</text>
+      <line class="ln" x1="140" y1="58" x2="165" y2="58"/>
+      <line class="ln" x1="165" y1="58" x2="165" y2="120"/>
+      <line class="ln" x1="165" y1="120" x2="188" y2="120"/>
+      <polygon points="188,120 179,116 179,124" fill="#374151"/>
+      <line class="ln" x1="140" y1="138" x2="188" y2="138"/>
+      <polygon points="188,138 179,134 179,142" fill="#374151"/>
+      <line class="ln" x1="140" y1="228" x2="165" y2="228"/>
+      <line class="ln" x1="165" y1="228" x2="165" y2="190"/>
+      <line class="ln" x1="165" y1="190" x2="188" y2="190"/>
+      <polygon points="188,190 179,186 179,194" fill="#374151"/>
+
+      <!-- 主备控制器 -->
+      <rect class="bx" x="400" y="20" width="200" height="70" rx="4"/>
+      <text class="t" x="500" y="50" text-anchor="middle">主控制器 A</text>
+      <text class="ts" x="500" y="72" text-anchor="middle">（运行控制律）</text>
+      <rect class="bx" x="400" y="150" width="200" height="70" rx="4"/>
+      <text class="t" x="500" y="180" text-anchor="middle">备用控制器 B</text>
+      <text class="ts" x="500" y="202" text-anchor="middle">（周期状态同步）</text>
+      <line class="ln" x1="310" y1="120" x2="350" y2="120"/>
+      <line class="ln" x1="350" y1="55" x2="350" y2="185"/>
+      <line class="ln" x1="350" y1="55" x2="398" y2="55"/>
+      <polygon points="398,55 389,51 389,59" fill="#374151"/>
+      <line class="ln" x1="350" y1="185" x2="398" y2="185"/>
+      <polygon points="398,185 389,181 389,189" fill="#374151"/>
+
+      <!-- 心跳 -->
+      <line class="lnd" x1="540" y1="90" x2="540" y2="150"/>
+      <polygon points="540,92 536,101 544,101" fill="#6B7280"/>
+      <polygon points="540,148 536,139 544,139" fill="#6B7280"/>
+      <text class="ts" x="548" y="124">心跳 / 状态同步</text>
+
+      <!-- 执行机构 -->
+      <rect class="bx" x="680" y="20" width="150" height="70" rx="4"/>
+      <text class="t" x="755" y="60" text-anchor="middle">执行机构</text>
+      <line class="ln" x1="600" y1="55" x2="678" y2="55"/>
+      <polygon points="678,55 669,51 669,59" fill="#374151"/>
+      <line class="lnd" x1="600" y1="185" x2="755" y2="185"/>
+      <line class="lnd" x1="755" y1="185" x2="755" y2="92"/>
+      <polygon points="755,92 751,101 759,101" fill="#6B7280"/>
+      <text class="ts" x="640" y="205">备控接管输出</text>
+    </svg>
+  </div>
+  <div class="figcap">图 4-1　三取二表决与主备双机热备架构</div>
+
+  <div class="note">表 4-1　周期任务参数</div>
+  <table>
+    <tr><th style="width:14%">任务</th><th style="width:36%">功能</th><th style="width:25%">执行时间 C</th><th style="width:25%">周期 T</th></tr>
+    <tr><td>J1</td><td>安全监控</td><td>1</td><td>4</td></tr>
+    <tr><td>J2</td><td>伺服控制</td><td>2</td><td>8</td></tr>
+    <tr><td>J3</td><td>轨迹插值</td><td>2</td><td>16</td></tr>
+  </table>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明硬实时、软实时与固实时（firm real-time）系统的区别，并判断本系统属于哪一类。（3 分）</p>
+      <p class="noind">（2）若采用单调速率调度（RMS），给出三个任务的优先级分配规则与优先级顺序，并计算 CPU 利用率 U。（3 分）</p>
+      <p class="noind">（3）利用 Liu &amp; Layland 利用率界限（n=3 时约为 0.780）判断该任务集在 RMS 下是否可调度，并说明该界限是充分条件还是必要条件。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="d1">0 字</span></div>
+      <textarea id="d1" data-qid="d1" placeholder="（1）硬实时：…　软实时：…　固实时：…　本系统属…&#10;（2）分配规则：…　优先级：…　U = … = …&#10;（3）U_bound = … ≈ …；结论：…　充分/必要：…"></textarea>
+      <div class="answer-foot">建议 250—350 字（含算式）<span class="saved" data-for="d1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="d1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明 WCET（最坏情况执行时间）分析的意义，以及为什么不能用"平均执行时间"判定硬实时任务的可调度性。（3 分）</p>
+      <p class="noind">（2）说明实时系统"时间隔离"与"空间隔离"的含义及各自的实现手段。（3 分）</p>
+      <p class="noind">（3）说明看门狗（Watchdog）在控制器中的作用，以及窗口看门狗与普通看门狗的区别。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="d2">0 字</span></div>
+      <textarea id="d2" data-qid="d2" placeholder="（1）WCET 意义：…　平均时间不可用：…&#10;（2）时间隔离：…　空间隔离：…&#10;（3）看门狗：…　区别：…"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="d2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="d2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明三取二（2oo3）表决的原理及其相对于单通道与双通道方案的优势；并指出 2oo3 表决对哪一类失效无效，应如何防范。（4 分）</p>
+      <p class="noind">（2）说明双机热备中"心跳 + 周期状态同步"的作用；指出热备切换时对本系统的影响，并说明为什么安全相关系统通常还要设计独立于控制器的"安全状态"输出通道。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="d3">0 字</span></div>
+      <textarea id="d3" data-qid="d3" placeholder="（1）原理：…　优势：…　无效失效类型：…　防范：…&#10;（2）心跳/同步作用：…　切换影响：…　独立安全通道：…"></textarea>
+      <div class="answer-foot">建议 280—380 字<span class="saved" data-for="d3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="d3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref4">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref4">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）三类实时系统（2 分）与判断（1 分）：</p>
+    <ul>
+      <li><b>硬实时</b>：必须在截止期内完成，超时结果无效并可能造成严重后果（人身伤害、重大损失）；</li>
+      <li><b>软实时</b>：偶尔超时仅降低服务质量，结果仍有价值（如视频播放）；</li>
+      <li><b>固实时</b>：超时的结果失效而被丢弃，但不造成灾难性后果。</li>
+      <li>本系统控制周期 1 ms，超时可能导致机械臂伤人，属<b>硬实时系统</b>。</li>
+    </ul>
+    <p>（2）优先级与利用率（3 分）：</p>
+    <ul>
+      <li><b>RMS 规则</b>：周期越短，优先级越高，故优先级 <b>J1 &gt; J2 &gt; J3</b>。（1 分）</li>
+    </ul>
+    <div class="cal">U = C1/T1 + C2/T2 + C3/T3 = 1/4 + 2/8 + 2/16 = 0.25 + 0.25 + 0.125 = <b>0.625</b>　（2 分）</div>
+    <p>（3）可调度性判断（3 分）：</p>
+    <div class="cal">U_bound = n(2^(1/n) − 1) = 3 × (2^(1/3) − 1) ≈ <b>0.780</b>　→　U = 0.625 &lt; 0.780，满足充分条件，任务集在 RMS 下可调度。</div>
+    <ul>
+      <li>该界限是<b>充分非必要条件</b>：U 低于界限一定可调度；U 高于界限不一定不可调度（可用响应时间分析进一步精确判定）。（1 分）</li>
+      <li>（补充验证：R1 = 1 ≤ 4；R2 = 2 + ⌈3/4⌉×1 = 3 ≤ 8；R3 迭代收敛得 6 ≤ 16，最坏响应时间均满足，与界限法结论一致。）</li>
+    </ul>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）WCET 意义（2 分）与平均时间不可用的原因（1 分）：</p>
+    <ul>
+      <li><b>WCET</b> 是任务在最坏执行路径与最坏运行条件（缓存、流水线、总线竞争）下的执行时间上界，是调度性分析与保证截止期的依据；安全相关系统必须按最坏情况设计并预留余量。</li>
+      <li>平均执行时间只反映统计均值，实际运行可能超出均值数倍，一旦超出即造成任务超期；硬实时系统的每次超时都不可接受，故不能以平均值判定可调度性。</li>
+    </ul>
+    <p>（2）时间隔离与空间隔离（各 1.5 分）：</p>
+    <ul>
+      <li><b>时间隔离</b>：为各任务/分区分配确定的执行时间窗口，由分区调度器保证某分区超时或故障时不侵占其他分区的 CPU 时间（如 ARINC 653 的时间分区调度），使故障影响被限制在分区内。</li>
+      <li><b>空间隔离</b>：通过 MPU/MMU 为各分区划定私有内存与只读代码段，限制其可访问地址空间，防止越界读写破坏其他分区数据，实现故障的内存级隔离。</li>
+    </ul>
+    <p>（3）看门狗（2 分）：</p>
+    <ul>
+      <li><b>作用</b>：独立于主程序的定时器，程序须周期性"喂狗"；程序死循环、跑飞而未按时喂狗时触发超时复位，使系统从软件故障中自动恢复到已知状态（fail-safe）。</li>
+      <li><b>区别</b>：普通看门狗只检测"到期未喂狗"；窗口看门狗要求喂狗落在设定的时间窗口内，喂狗过早（程序异常、跳步）或过晚都会触发复位，可检测程序执行时序的异常。</li>
+    </ul>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）2oo3 表决（4 分）：</p>
+    <ul>
+      <li><b>原理</b>：三路独立通道采集同一物理量，表决器取"多数一致"的值作为输出；任意一路故障时仍有另两路正确值，系统继续正常运行并定位故障通道。（2 分）</li>
+      <li><b>优势</b>：相对单通道无容错能力，任一故障即出错；相对双通道，当两路结果不一致时无法判别哪一路错误、只能停机，2oo3 在容忍单路故障的同时保证系统不停机，可靠性高、可用性优于双通道。（1 分）</li>
+      <li><b>局限与防范</b>：对<b>共因故障</b>无效（三路若共用电源、时钟、安装位置或同一软件版本，同一原因会导致多路同时失效），故应采用技术多样性（不同原理/厂商的传感器）、物理与电气隔离、独立供电与独立软件版本等防范措施。（1 分）</li>
+    </ul>
+    <p>（2）心跳、切换时间与安全通道（4 分）：</p>
+    <ul>
+      <li><b>心跳</b>用于主备机互相探测存活；<b>周期状态同步</b>将主机的控制状态（当前轨迹、积分项、I/O 状态等）同步到备机，使备机始终处于"热"态，切换后无需从零重建控制。（1.5 分）</li>
+      <li>若切换瞬间（心跳检测超时 + 状态恢复 + 输出接管）超过 1 ms 控制周期，将造成控制周期输出缺失，引起机械臂抖动甚至失稳；因此须缩短心跳周期、采用输出比对/并行输出等机制缩短接管时间。（1.5 分）</li>
+      <li>主备可能同时失效或因共因失效一起失效，控制系统不能既当"运动员"又当"裁判员"；独立的安全状态输出通道（安全继电器、STO 安全转矩关断）在检测到危险时直接切断动力输出，保证系统进入确定的机械安全状态，构成"控制 + 保护"相互独立的双通道。（1 分）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================================================
+     试题五
+     ================================================== -->
+<section class="qblock" id="q5">
+  <div class="qhead"><span class="tag opt">选答</span>试题五（25分）多租户 SaaS 架构设计</div>
+  <div class="qintro">阅读以下关于多租户 SaaS 架构设计的叙述，在答题纸上回答问题 1 至问题 3。</div>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某软件企业将原有单机版"物业资产管理系统"改造为 <b>SaaS 平台</b>，服务 <b>500 余家</b>物业管理企业（租户），单个租户的用户数从 20 到 3000 不等。平台需支持：租户自助开通、按租户配置业务流程与表单字段、按套餐限缩功能与用量、按租户隔离数据（其中 <b>8 家大客户</b>明确要求数据独立存储并支持定制报表）。系统部署在公有云，需应对月底集中出账带来的负载高峰。三种常见的数据隔离模式如图 5-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <svg viewBox="0 0 900 330" role="img" aria-label="多租户三种数据隔离模式对比图">
+      <!-- 模式一 -->
+      <rect class="lnd" x="20" y="18" width="276" height="286" rx="6"/>
+      <text class="t" x="158" y="42" text-anchor="middle">模式一 · 独立数据库</text>
+      <rect class="bx" x="88" y="56" width="140" height="40" rx="4"/>
+      <text class="t" x="158" y="82" text-anchor="middle">应用实例</text>
+      <line class="ln" x1="158" y1="96" x2="158" y2="126"/>
+      <line class="ln" x1="92" y1="126" x2="224" y2="126"/>
+      <line class="ln" x1="92" y1="126" x2="92" y2="146"/>
+      <polygon points="92,146 88,137 96,137" fill="#374151"/>
+      <line class="ln" x1="224" y1="126" x2="224" y2="146"/>
+      <polygon points="224,146 220,137 228,137" fill="#374151"/>
+      <rect class="bx" x="44" y="148" width="96" height="46" rx="4"/>
+      <text class="ts" x="92" y="176" text-anchor="middle">租户 A 库</text>
+      <rect class="bx" x="176" y="148" width="96" height="46" rx="4"/>
+      <text class="ts" x="224" y="176" text-anchor="middle">租户 B 库</text>
+      <text class="ts" x="158" y="228" text-anchor="middle">隔离性最强、成本最高</text>
+      <text class="ts" x="158" y="250" text-anchor="middle">适合大客户 / 合规要求</text>
+
+      <!-- 模式二 -->
+      <rect class="lnd" x="312" y="18" width="276" height="286" rx="6"/>
+      <text class="t" x="450" y="42" text-anchor="middle">模式二 · 共享库 + 独立 Schema</text>
+      <rect class="bx" x="380" y="56" width="140" height="40" rx="4"/>
+      <text class="t" x="450" y="82" text-anchor="middle">应用实例</text>
+      <line class="ln" x1="450" y1="96" x2="450" y2="116"/>
+      <polygon points="450,116 446,107 454,107" fill="#374151"/>
+      <rect class="bx" x="352" y="118" width="196" height="118" rx="4"/>
+      <text class="t" x="450" y="140" text-anchor="middle">共享数据库</text>
+      <rect class="bx2" x="368" y="152" width="164" height="34" rx="3"/>
+      <text class="ts" x="450" y="174" text-anchor="middle">Schema_A</text>
+      <rect class="bx2" x="368" y="192" width="164" height="34" rx="3"/>
+      <text class="ts" x="450" y="214" text-anchor="middle">Schema_B</text>
+      <text class="ts" x="450" y="258" text-anchor="middle">隔离与成本折中</text>
+
+      <!-- 模式三 -->
+      <rect class="lnd" x="604" y="18" width="276" height="286" rx="6"/>
+      <text class="t" x="742" y="42" text-anchor="middle">模式三 · 共享表 + 租户标识</text>
+      <rect class="bx" x="672" y="56" width="140" height="40" rx="4"/>
+      <text class="t" x="742" y="82" text-anchor="middle">应用实例</text>
+      <line class="ln" x1="742" y1="96" x2="742" y2="116"/>
+      <polygon points="742,116 738,107 746,107" fill="#374151"/>
+      <rect class="bx" x="644" y="118" width="196" height="118" rx="4"/>
+      <text class="t" x="742" y="140" text-anchor="middle">共享数据库</text>
+      <line class="ln" x1="660" y1="154" x2="824" y2="154"/>
+      <text class="ts" x="742" y="176" text-anchor="middle">统一表结构</text>
+      <text class="ts" x="742" y="200" text-anchor="middle">每行带 Tenant_ID</text>
+      <text class="ts" x="742" y="258" text-anchor="middle">成本最低、依赖应用过滤</text>
+    </svg>
+  </div>
+  <div class="figcap">图 5-1　多租户三种数据隔离模式</div>
+
+  <div class="q">
+    <div class="q-title">【问题 1】<span class="score">（9 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）请从隔离性、成本、扩展性、运维复杂度四个方面，比较独立数据库、共享数据库独立 Schema、共享数据库共享表 + 租户标识三种多租户数据隔离模式的差异。（6 分）</p>
+      <p class="noind">（2）结合本案例，说明宜采用何种分层混合方案并说明理由。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 1<span class="cnt" data-for="e1">0 字</span></div>
+      <textarea id="e1" data-qid="e1" placeholder="（1）独立库：隔离…／成本…／扩展…／运维…&#10;　　 共享库独立 Schema：…&#10;　　 共享表 + Tenant_ID：…&#10;（2）方案：…　理由：…"></textarea>
+      <div class="answer-foot">建议 300—400 字<span class="saved" data-for="e1">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="9" step="0.5" data-score="e1"> / 9</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 2】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明共享表模式下"租户上下文"的传递方式与实现要点。（3 分）</p>
+      <p class="noind">（2）说明如何通过"元数据驱动"实现按租户定制，同时保证平台代码的可维护性。（3 分）</p>
+      <p class="noind">（3）说明如何实现按租户的限流与配额，避免大租户突发流量影响其他租户。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 2<span class="cnt" data-for="e2">0 字</span></div>
+      <textarea id="e2" data-qid="e2" placeholder="（1）传递方式：…　实现要点：…&#10;（2）元数据驱动：…&#10;（3）限流与配额：…"></textarea>
+      <div class="answer-foot">建议 280—380 字<span class="saved" data-for="e2">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="e2"> / 8</span></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题 3】<span class="score">（8 分）</span></div>
+    <div class="q-body">
+      <p class="noind">（1）说明共享表模式下防止租户越权访问数据的技术措施（至少三项）。（4 分）</p>
+      <p class="noind">（2）说明租户注销（退租）时的数据处理要求，以及"吵闹邻居（Noisy Neighbor）"问题的治理思路。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题 3<span class="cnt" data-for="e3">0 字</span></div>
+      <textarea id="e3" data-qid="e3" placeholder="（1）措施 ① …　② …　③ …&#10;（2）退租处置：…　吵闹邻居治理：…"></textarea>
+      <div class="answer-foot">建议 250—350 字<span class="saved" data-for="e3">✓ 已保存</span>
+        <span class="selfscore">自评 <input type="number" min="0" max="8" step="0.5" data-score="e3"> / 8</span></div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="ref5">展开本题参考答案 ▾</button>
+  <div class="ref" id="ref5">
+    <h4>【问题 1】参考答案（9 分）</h4>
+    <p>（1）三种模式比较（6 分，每种模式每答对一个维度给分）：</p>
+    <ul>
+      <li><b>独立数据库</b>：隔离性最强（数据、备份、加密、故障域完全独立，易满足合规）；成本最高（每租户一套实例，资源利用率低）；可按租户独立扩容与迁移；运维复杂（备份、升级、监控随租户数线性增长）。</li>
+      <li><b>共享库独立 Schema</b>：隔离性较高（同库不同 Schema，权限可分离，但共享实例资源）；成本居中；单库 Schema 数量与跨 Schema 统计限制了扩展性；运维较简单，可统一升级。</li>
+      <li><b>共享表 + 租户标识（Tenant_ID）</b>：隔离性最低，完全依赖应用层过滤与旁路；成本最低、资源利用率最高；最利于水平分库分表扩展；运维最简单，但单表数据量大、热点集中。</li>
+    </ul>
+    <p>（2）分层方案（3 分）：</p>
+    <p>采用<b>分层混合</b>：8 家大客户用独立数据库（满足数据独立存储、定制报表与合规要求）；中等规模租户用共享库独立 Schema；大量小微租户用共享表 + Tenant_ID（成本最优）。</p>
+    <p>通过统一的"数据访问路由层（按租户 ID 查询路由配置）"屏蔽底层差异，使上层业务代码对隔离模式无感知；租户规模变化时可在模式间迁移。</p>
+
+    <h4>【问题 2】参考答案（8 分）</h4>
+    <p>（1）租户上下文（3 分）：</p>
+    <ul>
+      <li><b>传递方式</b>：网关/认证层解析令牌取得 tenant_id，注入请求上下文（ThreadLocal / Reactor Context），经 HTTP 头（如 X-Tenant-Id）、消息头向下游透传；定时任务、异步与批处理需显式绑定租户。</li>
+      <li><b>要点</b>：入口统一注入、业务代码禁止手工拼装租户条件；线程池复用时防止上下文串租户（及时清理）；缓存 Key、对象存储路径以租户为前缀；日志与链路追踪携带租户标识；缺少租户上下文的请求默认拒绝。</li>
+    </ul>
+    <p>（2）元数据驱动定制（3 分）：</p>
+    <ul>
+      <li>将流程、表单、字段、权限、套餐等差异抽象为租户配置数据（元数据），由统一的表单渲染器、流程引擎、权限引擎与规则引擎解释执行；平台代码只保留通用逻辑。</li>
+      <li>差异较大处用扩展点/插件（策略模式 + SPI）承载，避免 if(tenant=="A") 式硬编码分支；配置纳入版本管理与灰度发布，可回滚。</li>
+    </ul>
+    <p>（3）限流与配额（2 分）：</p>
+    <ul>
+      <li>网关按租户维度实施令牌桶/漏桶限流，不同套餐对应不同阈值；业务层按天/月对 API 调用数、存储量、并发数做配额计数（Redis 原子计数），超限返回明确错误码；</li>
+      <li>对大租户资源隔离（独立线程池/队列、独立数据库实例或分片），并按租户监控告警，防止单租户占满共享资源。</li>
+    </ul>
+
+    <h4>【问题 3】参考答案（8 分）</h4>
+    <p>（1）防越权措施（每项约 1.5 分，答出三项及以上给满分 4 分）：</p>
+    <ul>
+      <li>ORM/数据访问层全局拦截器自动注入 tenant_id 过滤条件，禁止手写 SQL 绕过；数据库启用行级安全（RLS）或按租户视图 + 最小权限账号；</li>
+      <li>主键与 tenant_id 联合唯一约束，防止跨租户覆盖写入；对象存储与缓存按租户前缀隔离并校验归属；</li>
+      <li>接口层对资源做归属二次校验（防 IDOR 越权访问）；所有访问记录含租户标识的审计日志。</li>
+    </ul>
+    <p>（2）退租处置与吵闹邻居（4 分）：</p>
+    <ul>
+      <li><b>退租处置</b>：提供标准格式的数据导出；按合同约定保留期届满后彻底删除（共享表按 tenant_id 批量物理删除，并覆盖备份介质中的残留）；销毁该租户密钥；出具数据删除证明，满足《个人信息保护法》《数据安全法》的删除权与安全要求。（2 分）</li>
+      <li><b>吵闹邻居治理</b>：按租户限流与配额（见问题 2）；大租户独立实例/独立分片或独立线程池与队列隔离；连接池、资源组按租户隔离；慢查询与长事务治理，按租户监控告警，必要时将热点租户平滑迁移到独立资源。（2 分）</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 附录 ============ -->
+<section class="appendix" id="appendix">
+  <h2>附：考点与采分点索引</h2>
+  <table>
+    <tr><th style="width:12%">试题</th><th style="width:38%">核心考点</th><th style="width:34%">采分结构</th><th style="width:16%">命题定位</th></tr>
+    <tr><td><b>试题一</b></td><td>K8s 控制面四组件、Deployment/Service/Ingress、Sidecar 数据面与控制面、滚动/蓝绿/金丝雀对比、HPA 指标</td><td>8 + 8 + 9 = 25</td><td>云原生：近年高频</td></tr>
+    <tr><td><b>试题二</b></td><td>边界模型三假设、零信任核心思想、SDP、微隔离、四方面能力、OAuth 2.0 四模式、OIDC/JWT</td><td>8 + 9 + 8 = 25</td><td>信息安全：必考</td></tr>
+    <tr><td><b>试题三</b></td><td>RAG 离线/在线环节、Chunking 依据、向量+BM25 混合检索、Continuous Batching / KV Cache / 量化、大小模型路由与语义缓存、四类风险、评估指标</td><td>9 + 9 + 7 = 25</td><td>大模型应用：新增热点</td></tr>
+    <tr><td><b>试题四</b></td><td>硬/软/固实时、RMS 与 U 计算、Liu &amp; Layland 界限、WCET、时间/空间隔离、看门狗、2oo3 表决与共因失效、双机热备与独立安全通道</td><td>9 + 8 + 8 = 25</td><td>嵌入式实时：中高频</td></tr>
+    <tr><td><b>试题五</b></td><td>三种数据隔离模式对比、分层混合、租户上下文传递、元数据驱动、限流配额、防越权、退租处置与吵闹邻居</td><td>9 + 8 + 8 = 25</td><td>SaaS 多租户：高频</td></tr>
+  </table>
+  <p style="font-size:13px;color:#6B7280;margin-top:10px">
+    作答建议：90 分钟做 3 道题，单题约 30 分钟；先写"结论 + 分条要点"，再补细节，每条要点对齐题目给分点数量（如"四个方面"就写四条、"至少两项"就写两到三项），避免大段叙述导致采分点被淹没。试题四涉及计算，务必写出 U 的计算式与界限值，判断结论要单独成句。
+  </p>
+</section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  var PREFIX = 'zk2026-5-';
+  var TOTAL_MIN = 90;
+
+  /* ---------- 倒计时 ---------- */
+  var timerEl = document.getElementById('timer');
+  var btnTimer = document.getElementById('btnTimer');
+  var btnReset = document.getElementById('btnResetTimer');
+  var left = TOTAL_MIN * 60, tick = null, running = false;
+
+  function fmt(s){
+    var m = Math.floor(s/60), sec = s%60;
+    return (m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+  }
+  function paint(){
+    timerEl.textContent = fmt(left);
+    timerEl.classList.toggle('warn', left <= 600);
+  }
+  btnTimer.addEventListener('click', function(){
+    if(running){
+      clearInterval(tick); running=false; btnTimer.textContent='继续计时'; return;
+    }
+    running = true; btnTimer.textContent='暂停';
+    tick = setInterval(function(){
+      if(left>0){ left--; paint(); }
+      else { clearInterval(tick); running=false; btnTimer.textContent='时间到'; toast('考试时间结束'); }
+    },1000);
+  });
+  btnReset.addEventListener('click', function(){
+    clearInterval(tick); running=false; left = TOTAL_MIN*60; paint(); btnTimer.textContent='开始计时';
+  });
+  paint();
+
+  /* ---------- 作答保存 ---------- */
+  var areas = Array.prototype.slice.call(document.querySelectorAll('.answer textarea'));
+  var scores = Array.prototype.slice.call(document.querySelectorAll('.selfscore input'));
+
+  function save(key, val){ try{ localStorage.setItem(PREFIX+key, val); }catch(e){} }
+  function load(key){ try{ return localStorage.getItem(PREFIX+key)||''; }catch(e){ return ''; } }
+
+  function refreshProgress(){
+    var done = 0, got = 0;
+    areas.forEach(function(t){ if(t.value.trim().length>0) done++; });
+    scores.forEach(function(i){
+      var v = parseFloat(i.value);
+      if(!isNaN(v)) got += v;
+    });
+    document.getElementById('progress').textContent =
+      '已作答 ' + done + '/' + areas.length + '　｜　自评 ' + got.toFixed(1) + '/75';
+  }
+
+  areas.forEach(function(t){
+    var id = t.dataset.qid;
+    var cnt = document.querySelector('.cnt[data-for="'+id+'"]');
+    var flag = document.querySelector('.saved[data-for="'+id+'"]');
+    t.value = load(id);
+    function upd(){
+      cnt.textContent = t.value.trim().length + ' 字';
+      refreshProgress();
+    }
+    upd();
+    var timerSave = null;
+    t.addEventListener('input', function(){
+      upd();
+      clearTimeout(timerSave);
+      timerSave = setTimeout(function(){
+        save(id, t.value);
+        flag.classList.add('show');
+        setTimeout(function(){ flag.classList.remove('show'); }, 1200);
+      }, 500);
+    });
+  });
+
+  scores.forEach(function(i){
+    var id = i.dataset.score;
+    i.value = load('score-'+id);
+    i.addEventListener('input', function(){ save('score-'+id, i.value); refreshProgress(); });
+  });
+
+  /* ---------- 参考答案 ---------- */
+  document.querySelectorAll('.ref-toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var box = document.getElementById(btn.dataset.ref);
+      var open = box.classList.toggle('open');
+      btn.textContent = (open ? '收起参考答案 ▴' : '展开本题参考答案 ▾');
+    });
+  });
+  var allOpen = false;
+  var btnAll = document.getElementById('btnToggleAll');
+  btnAll.addEventListener('click', function(){
+    allOpen = !allOpen;
+    document.querySelectorAll('.ref').forEach(function(b){ b.classList.toggle('open', allOpen); });
+    document.querySelectorAll('.ref-toggle').forEach(function(b){
+      b.textContent = allOpen ? '收起参考答案 ▴' : '展开本题参考答案 ▾';
+    });
+    btnAll.textContent = allOpen ? '收起全部参考答案' : '显示全部参考答案';
+  });
+
+  /* ---------- 清空 / 打印 ---------- */
+  var toastEl = document.getElementById('toast');
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800);
+  }
+  window.toast = toast;
+
+  document.getElementById('btnClear').addEventListener('click', function(){
+    if(!confirm('确定清空全部作答与自评分数？此操作不可撤销。')) return;
+    areas.forEach(function(t){
+      t.value=''; save(t.dataset.qid,'');
+      var c = document.querySelector('.cnt[data-for="'+t.dataset.qid+'"]');
+      if(c) c.textContent='0 字';
+    });
+    scores.forEach(function(i){ i.value=''; save('score-'+i.dataset.score,''); });
+    refreshProgress(); toast('答卷已清空');
+  });
+
+  document.getElementById('btnPrint').addEventListener('click', function(){ window.print(); });
+
+  refreshProgress();
+})();
+</script>
+</body>
+</html>

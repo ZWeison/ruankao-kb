@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统架构设计师 · 案例分析压轴预测卷（二）· 2026 下半年</title>
+<style>
+:root{
+  --page-w: 1080px;
+  --fs-body: 16px;
+  --lh: 1.85;
+  --ff-head: "PingFang SC","Microsoft YaHei","黑体",SimHei,sans-serif;
+  --ff-body: "Songti SC","Microsoft YaHei",SimSun,serif;
+  --ff-mono: "JetBrains Mono",Consolas,monospace;
+  --c-primary:#2563EB;
+  --c-text:#111827;
+  --c-muted:#6B7280;
+  --c-border:#E5E7EB;
+  --c-bg:#FFFFFF;
+  --c-soft:#EEF2FF;
+  --c-code:#F9FAFB;
+  --c-warn:#B45309;
+  --c-warn-bg:#FFFBEB;
+  --c-ok:#047857;
+  --c-ok-bg:#ECFDF5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--ff-body);font-size:var(--fs-body);line-height:var(--lh);
+  color:var(--c-text);background:#F3F4F6;
+  padding:26px 20px 80px;
+}
+.wrap{width:100%;max-width:var(--page-w);margin:0 auto;background:var(--c-bg);
+  padding:46px 54px 64px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 32px rgba(0,0,0,.06)}
+h1,h2,h3,h4{font-family:var(--ff-head);line-height:1.35;font-weight:700;color:var(--c-text)}
+h1{font-size:23px;text-align:center;margin-bottom:6px}
+h2{font-size:18px;margin:40px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--c-primary)}
+h3{font-size:15.5px;margin:22px 0 8px}
+h4{font-size:14.5px;margin:16px 0 6px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 1.6em}
+li{margin:4px 0}
+a{color:var(--c-primary)}
+
+/* ---------- 封面 ---------- */
+.cover{text-align:center;padding:16px 0 26px;border-bottom:1px solid var(--c-border);margin-bottom:22px}
+.cover-eyebrow{font-family:var(--ff-head);font-size:12px;letter-spacing:.18em;color:var(--c-primary);margin-bottom:16px}
+.cover-title{font-size:26px;font-weight:700;font-family:var(--ff-head);line-height:1.34;margin-bottom:10px}
+.cover-sub{font-size:13.5px;color:var(--c-muted);margin-bottom:20px}
+.cover-info{font-size:13px;color:var(--c-text);line-height:2}
+.cover-info b{color:var(--c-primary)}
+.cover-date{font-size:12px;color:var(--c-muted);margin-top:16px}
+
+/* ---------- 注意事项 ---------- */
+.rules{border:1px solid var(--c-border);border-radius:8px;background:var(--c-code);padding:14px 20px;margin:0 0 22px}
+.rules-t{font-family:var(--ff-head);font-size:13px;font-weight:700;letter-spacing:.3em;text-align:center;margin-bottom:8px;color:var(--c-text)}
+.rules ol{margin-left:1.4em;font-size:13.5px;line-height:1.9}
+
+/* ---------- 工具条 ---------- */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(6px);
+  border:1px solid var(--c-border);border-radius:8px;padding:10px 12px;margin-bottom:22px}
+.btn{font-family:var(--ff-head);font-size:12.5px;padding:6px 13px;border-radius:6px;border:1px solid var(--c-border);
+  background:#fff;color:var(--c-text);cursor:pointer;transition:.15s;white-space:nowrap}
+.btn:hover{border-color:var(--c-primary);color:var(--c-primary)}
+.btn.primary{background:var(--c-primary);border-color:var(--c-primary);color:#fff}
+.btn.primary:hover{opacity:.9;color:#fff}
+.btn.danger:hover{border-color:#DC2626;color:#DC2626}
+select.btn{padding:6px 8px}
+.spacer{flex:1}
+.timer{font-family:var(--ff-mono);font-size:14px;font-weight:600;padding:5px 11px;border-radius:6px;
+  background:var(--c-soft);color:var(--c-primary);min-width:82px;text-align:center}
+.timer.warn{background:#FEF2F2;color:#DC2626}
+.progress-txt{font-size:12.5px;color:var(--c-muted);font-family:var(--ff-head)}
+
+/* ---------- 目录 ---------- */
+.toc{background:var(--c-code);border:1px solid var(--c-border);border-radius:8px;padding:16px 20px;margin-bottom:8px}
+.toc-title{font-family:var(--ff-head);font-size:13px;font-weight:700;color:var(--c-muted);margin-bottom:8px;letter-spacing:.08em}
+.toc ol{margin-left:1.4em;font-size:13.5px}
+.toc li{margin:3px 0}
+.toc a{text-decoration:none}
+.toc a:hover{text-decoration:underline}
+
+/* ---------- 题块 ---------- */
+.qblock{margin:34px 0}
+.qhead{font-family:var(--ff-head);font-size:17px;font-weight:700;color:var(--c-text);
+  background:var(--c-soft);border-left:4px solid var(--c-primary);padding:9px 14px;border-radius:0 6px 6px 0;margin-bottom:6px}
+.qintro{font-size:13.5px;color:var(--c-muted);margin:6px 0 14px}
+.tag{display:inline-block;font-family:var(--ff-head);font-size:11px;padding:2px 8px;border-radius:4px;
+  background:var(--c-soft);color:var(--c-primary);margin-right:6px;vertical-align:middle}
+.tag.gray{background:#F3F4F6;color:var(--c-muted)}
+
+.note{background:var(--c-code);border-left:3px solid var(--c-border);padding:8px 14px;margin:12px 0;font-size:14px;
+  font-family:var(--ff-head);font-weight:600;color:var(--c-text)}
+.scene{background:#FCFCFD;border:1px solid var(--c-border);border-radius:6px;padding:14px 16px;margin:12px 0}
+.scene ol,.scene ul{margin-left:1.5em}
+.scene li{margin:6px 0}
+
+/* 问题 */
+.q{margin:24px 0 0;padding-top:6px}
+.q-title{font-family:var(--ff-head);font-size:14.5px;font-weight:700;margin-bottom:4px}
+.q-title .score{color:var(--c-primary);font-weight:600}
+.q-body{font-size:14.5px}
+.q-body p{margin:8px 0}
+.q-body ol,.q-body ul{margin-left:1.5em}
+
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+th,td{border:1px solid var(--c-border);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:var(--c-code);font-family:var(--ff-head);font-weight:600}
+caption{caption-side:top;font-size:12.5px;color:var(--c-muted);text-align:left;padding-bottom:6px}
+td.fill{background:#FFFBEB;font-family:var(--ff-mono);text-align:center;color:var(--c-warn)}
+
+pre{font-family:var(--ff-mono);font-size:12.5px;line-height:1.7;background:var(--c-code);
+  border:1px solid var(--c-border);border-radius:6px;padding:12px 14px;overflow-x:auto;margin:12px 0}
+code{font-family:var(--ff-mono);font-size:12.5px;background:#F3F4F6;padding:1px 5px;border-radius:3px;color:var(--c-warn)}
+
+/* ---------- 图 ---------- */
+.fig{margin:16px 0;padding:18px 14px 14px;border:1px solid var(--c-border);border-radius:8px;background:#FCFCFD}
+.fig-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.fig-col{display:flex;flex-direction:column;align-items:center;gap:6px}
+.box{border:1.5px solid #374151;border-radius:4px;background:#fff;padding:7px 12px;
+  font-size:12.5px;line-height:1.65;font-family:var(--ff-mono);text-align:center;color:#111827}
+.box .box-name{display:block;font-family:var(--ff-head);font-weight:700;font-size:13px;margin-bottom:2px}
+.box.iface{border-style:dashed}
+.box.grp{border:1px dashed #9CA3AF;background:#F9FAFB;padding:8px 10px}
+.arrow{font-family:var(--ff-mono);font-size:11.5px;color:#6B7280;text-align:center;white-space:nowrap;padding:0 2px}
+.arrow-v{font-family:var(--ff-mono);font-size:15px;color:#6B7280;line-height:1}
+.init-dot{display:inline-block;width:13px;height:13px;border-radius:50%;background:#111827}
+.final-dot{display:inline-block;width:19px;height:19px;border-radius:50%;border:3px solid #111827;background:#111827;box-shadow:inset 0 0 0 2px #fff}
+.line{display:inline-block;height:0;border-top:1.5px solid #6B7280;min-width:40px;flex:0 0 auto}
+.state{display:inline-block;border:1.5px solid #374151;border-radius:16px;padding:4px 14px;background:#fff;
+  font-size:12.5px;font-family:var(--ff-head);color:#111827;white-space:nowrap}
+.state.end{border-width:3px}
+.rel-label{font-size:11px;color:var(--c-muted);font-family:var(--ff-head)}
+.fig-cap{text-align:center;font-size:12.5px;color:var(--c-muted);margin-top:14px;font-family:var(--ff-head)}
+.legend{font-size:11.5px;color:var(--c-muted);margin-top:10px;text-align:center;line-height:1.8}
+
+/* ---------- 答题框 ---------- */
+.answer{margin:14px 0 4px;border:1px solid #C7D2FE;border-radius:8px;overflow:hidden;background:#fff}
+.answer-head{display:flex;align-items:center;gap:10px;background:var(--c-soft);
+  padding:7px 12px;font-family:var(--ff-head);font-size:12.5px;color:var(--c-primary);font-weight:600}
+.answer-head .cnt{margin-left:auto;font-weight:400;color:var(--c-muted);font-family:var(--ff-mono);font-size:11.5px}
+.answer textarea{display:block;width:100%;min-height:140px;border:0;outline:0;resize:vertical;
+  padding:13px 16px;font-family:var(--ff-body);font-size:15px;line-height:1.8;color:var(--c-text);background:#fff}
+.answer textarea:focus{background:#FBFDFF}
+.answer-foot{display:flex;align-items:center;gap:10px;padding:6px 12px;border-top:1px solid var(--c-border);
+  background:#FCFCFD;font-size:11.5px;color:var(--c-muted);font-family:var(--ff-head)}
+.selfscore{margin-left:auto;display:flex;align-items:center;gap:5px}
+.selfscore input{width:46px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;
+  font-family:var(--ff-mono);font-size:12px;text-align:center}
+.saved{color:var(--c-ok);opacity:0;transition:.4s}
+.saved.show{opacity:1}
+
+/* ---------- 参考答案 ---------- */
+.refwrap{margin-top:44px;padding-top:8px}
+.ref{display:none;background:var(--c-ok-bg);border:1px solid #A7F3D0;border-radius:8px;padding:16px 18px;margin:14px 0;font-size:14px}
+.ref.open{display:block}
+.ref h4{margin-top:14px;color:var(--c-ok)}
+.ref h4:first-child{margin-top:0}
+.ref ul,.ref ol{margin-left:1.5em}
+.ref li{margin:5px 0}
+.ref p{margin:7px 0}
+.ref table{background:#fff}
+.ref .kk{background:#D1FAE5;padding:1px 5px;border-radius:3px;font-family:var(--ff-head);font-size:12px;color:#065F46}
+.ref-toggle{display:inline-block;font-family:var(--ff-head);font-size:12.5px;color:var(--c-ok);
+  border:1px solid #A7F3D0;background:var(--c-ok-bg);padding:5px 12px;border-radius:6px;cursor:pointer;margin:6px 0}
+
+/* ---------- 附注 ---------- */
+.cover-note{margin-top:36px;border:1px dashed var(--c-border);border-radius:8px;padding:16px 18px;font-size:13.5px}
+.cover-note h3{margin-top:0}
+
+/* 提示条 */
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:#111827;color:#fff;
+  font-family:var(--ff-head);font-size:13px;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:999}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 打印 */
+@media print{
+  body{background:#fff;padding:0}
+  .wrap{box-shadow:none;padding:0;max-width:none}
+  .toolbar,.ref-toggle,.toast{display:none!important}
+  .answer{break-inside:avoid}
+  .answer textarea{min-height:auto;height:auto;field-sizing:content}
+  .ref{display:block!important;break-inside:avoid}
+  .qblock{break-inside:auto}
+  h2{break-after:avoid}
+  .fig{break-inside:avoid}
+}
+@media (max-width:1160px){
+  .wrap{padding:40px 34px 56px}
+}
+@media (max-width:860px){
+  .wrap{padding:32px 22px 48px;border-radius:6px}
+  .toolbar{gap:6px}
+  .btn{padding:5px 10px;font-size:12px}
+}
+@media (max-width:720px){
+  body{padding:12px 8px 60px}
+  .wrap{padding:22px 15px 36px}
+  .cover-title{font-size:21px}
+  h2{font-size:16px}
+  .answer textarea{font-size:15px}
+  .box{font-size:11.5px;padding:6px 8px}
+  .state{font-size:11.5px;padding:3px 9px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ================= 封面 ================= -->
+<header class="cover">
+  <div class="cover-eyebrow">软考 · 系统架构设计师 · 案例分析 · 压轴预测卷（二）</div>
+  <div class="cover-title">2026 下半年系统架构设计师<br>案例分析压轴预测卷（二）</div>
+  <div class="cover-sub">设计模式与 UML · 数据分片与全局 ID · 遗留系统演化与转换 · 软件产品线与 DSSA · Serverless</div>
+  <div class="cover-info">
+    试卷满分：<b>75 分</b>（5 大题 × 25 分，试题一必答 + 其余 4 题任选 2 题）　｜　小题：<b>15 道</b><br>
+    考试时间：<b>90 分钟</b>　｜　本页为全 5 题全卷版，便于把考点练全<br>
+    <span style="color:#6B7280;font-size:12.5px">实战规则：试题一必答，试题二～五任选 2 题，多答按前两题计分</span>
+  </div>
+  <div class="cover-date">2026 年 10 月　·　据图片版《压轴预测卷（二）》13 页完整转录　·　附全部参考答案与采分点</div>
+</header>
+
+<!-- ================= 注意事项 ================= -->
+<div class="rules">
+  <div class="rules-t">注 意 事 项</div>
+  <ol>
+    <li>本试卷共 <b>5 道试题</b>，满分 <b>75 分</b>。试题一为<b>必答题</b>；试题二、试题三、试题四、试题五为<b>选答题</b>，任选其中 <b>2 道</b>作答。若选答多题，按所答的<b>前两题</b>计分。</li>
+    <li>每道试题 <b>25 分</b>。应结合案例背景按题目要求作答，观点明确、分条叙述、书写清晰。</li>
+    <li>考试时间 <b>90 分钟</b>。</li>
+  </ol>
+</div>
+
+<!-- ================= 工具条 ================= -->
+<div class="toolbar">
+  <span class="timer" id="timer">90:00</span>
+  <button class="btn primary" id="btnTimer">开始计时</button>
+  <button class="btn" id="btnResetTimer">重置</button>
+  <select class="btn" id="selTime" title="选择时长">
+    <option value="90">90 分钟（实战 3 题）</option>
+    <option value="150">150 分钟（全卷 5 题）</option>
+  </select>
+  <button class="btn" id="btnToggleAll">显示全部参考答案</button>
+  <span class="spacer"></span>
+  <span class="progress-txt" id="progress">已作答 0/15　｜　自评 0/125</span>
+  <button class="btn danger" id="btnClear">清空答卷</button>
+  <button class="btn" id="btnPrint">打印 / 导出 PDF</button>
+</div>
+
+<!-- ================= 目录 ================= -->
+<nav class="toc">
+  <div class="toc-title">目 录</div>
+  <ol>
+    <li><a href="#q1">试题一（25分 · 必答）订单计价模块重构 —— 策略模式 · 状态图 · UML 视图</a></li>
+    <li><a href="#q2">试题二（25分 · 选答）订单库分库分表改造 —— 垂直/水平拆分 · 雪花算法 · 深分页</a></li>
+    <li><a href="#q3">试题三（25分 · 选答）公积金核心系统换代 —— 遗留系统演化 · 系统转换 · 数据迁移</a></li>
+    <li><a href="#q4">试题四（25分 · 选答）配电自动化终端产品线 —— DSSA · 特征模型 · CBSD 与 COTS</a></li>
+    <li><a href="#q5">试题五（25分 · 选答）货运单证数字化平台 —— Serverless · FaaS/BaaS · 冷启动</a></li>
+    <li><a href="#ref">参考答案与采分点</a></li>
+    <li><a href="#scope">附：考点分布与使用说明</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================
+     试题一
+     ============================================================ -->
+<section class="qblock" id="q1">
+  <div class="qhead">试题一（必答题，25分）订单计价模块重构</div>
+  <div class="qintro">
+    考点：策略模式（Strategy）· 开闭原则 · 状态图要素 · 状态模式与策略模式对比 · 用例图关系 · 4+1 视图
+    <span class="tag">必答</span><span class="tag gray">面向对象建模</span>
+    　共 3 个小题（9 + 8 + 8）
+  </div>
+
+  <p style="font-size:14.5px">阅读以下关于面向对象建模与设计模式应用的叙述，在答题纸上回答问题 1 至问题 3。</p>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某电商平台对其<b>订单计价模块</b>进行重构。原有代码在 <b>OrderService</b> 中以大量 if-else 分支硬编码折扣逻辑（按比例打折、固定金额减免、会员专享等），每新增一种营销方式都需要修改并回归整个服务。重构后，计价上下文 <b>OrderContext</b> 依赖折扣计算抽象接口 <b>DiscountStrategy</b>，各折扣算法实现为独立类，运行时注入；订单生命周期由订单状态机统一管理。架构师给出了计价模块的类图（图 1-1）与订单状态图（图 1-2）。</p>
+  </div>
+
+  <div class="fig">
+    <div class="fig-row" style="align-items:flex-start">
+      <div class="fig-col" style="margin-top:24px">
+        <div class="box" style="min-width:210px;text-align:left">
+          <span class="box-name" style="text-align:center">OrderContext</span>
+          - strategy: DiscountStrategy<br>
+          + setStrategy(s: DiscountStrategy)<br>
+          + calcTotal(amt: double): double
+        </div>
+      </div>
+      <div class="fig-col" style="margin-top:42px">
+        <div class="arrow">── strategy ──▸</div>
+      </div>
+      <div class="fig-col">
+        <div class="box iface" style="min-width:200px">
+          <span class="box-name">&laquo;interface&raquo;<br>DiscountStrategy</span>
+          + discount(amount: double): double
+        </div>
+        <div class="arrow">△ 实现</div>
+        <div class="fig-row">
+          <div class="box" style="min-width:150px">
+            <span class="box-name">PercentagDiscount</span>
+            + discount(amount): double
+          </div>
+          <div class="box" style="min-width:150px">
+            <span class="box-name">FixedDiscount</span>
+            + discount(amount): double
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fig-cap">图 1-1　计价模块类图</div>
+  </div>
+
+  <div class="fig">
+    <div class="fig-row" style="gap:6px">
+      <span class="init-dot"></span>
+      <span class="line" style="min-width:30px"></span>
+      <span class="state">待支付</span>
+      <span class="arrow">──支付成功──▸</span>
+      <span class="state">已支付</span>
+      <span class="arrow">──发货──▸</span>
+      <span class="state">已发货</span>
+      <span class="arrow">──确认收货──▸</span>
+      <span class="state">已完成</span>
+      <span class="line" style="min-width:24px"></span>
+      <span class="final-dot"></span>
+    </div>
+    <div class="fig-row" style="margin-top:12px;gap:6px">
+      <span class="state">待支付</span>
+      <span class="arrow">──取消订单 / 超时未支付──▸</span>
+      <span class="state">已取消</span>
+    </div>
+    <div class="fig-row" style="margin-top:10px;gap:6px">
+      <span class="state">已支付</span>
+      <span class="arrow">──申请退款──▸</span>
+      <span class="state">退款中</span>
+      <span class="arrow">──退款完成──▸</span>
+      <span class="state">已退款</span>
+    </div>
+    <div class="fig-cap">图 1-2　订单状态图</div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（9 分）</span>设计模式识别与开闭原则</div>
+    <div class="q-body">
+      <p>（1）指出图 1-1 所采用的设计模式，说明该模式的意图，并指出图中各类分别扮演该模式的什么角色。（5 分）</p>
+      <p>（2）若要求新增"满减优惠""会员折扣"两种算法且不得修改 OrderContext 与已有算法类，应如何实现？说明该实现如何体现开闭原则。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a1">0 字</span></div>
+      <textarea id="a1" data-qid="a1" placeholder="1) 模式：……&#10;   意图：……&#10;   角色：…… / …… / ……&#10;2) 实现方式：……&#10;   开闭原则体现：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a1">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a1"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（8 分）</span>状态图要素与状态模式辨析</div>
+    <div class="q-body">
+      <p>（1）根据图 1-2，说明状态图的基本组成要素；若在"已发货"状态下收到"申请退款"事件，应如何处理？（3 分）</p>
+      <p>（2）状态模式（State）与图 1-1 中的策略模式在类结构上十分相似，请从<b>意图</b>、<b>状态转换的驱动方式</b>、<b>客户端感知</b>三个方面说明两者的区别。（5 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a2">0 字</span></div>
+      <textarea id="a2" data-qid="a2" placeholder="1) 要素：……&#10;   "已发货"收到"申请退款"：……&#10;2) 意图：……&#10;   驱动方式：……&#10;   客户端感知：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a2">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a2"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>用例图关系与 4+1 视图</div>
+    <div class="q-body">
+      <p>（1）说明用例图中参与者的含义，以及用例之间<b>包含（include）</b>、<b>扩展（extend）</b>、<b>泛化</b>三种关系的语义，并结合订餐系统各举一例。（4 分）</p>
+      <p>（2）说明"4+1"视图模型由哪五个视图组成，并分别指出各视图的关注点。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a3">0 字</span></div>
+      <textarea id="a3" data-qid="a3" placeholder="1) 参与者：……&#10;   include：…… 例：……&#10;   extend：…… 例：……&#10;   泛化：…… 例：……&#10;2) 五个视图及关注点：①…… ②…… ③…… ④…… ⑤……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a3">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a3"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r1">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r1">
+    <h4>问题1 参考答案（9 分）</h4>
+    <p><b>（1）设计模式识别（5 分）</b></p>
+    <ul>
+      <li>采用<b>策略模式（Strategy）</b>。（1 分）</li>
+      <li><b>意图：</b>定义一系列算法，把它们一个个封装起来，并且使它们可以互相替换；使得算法的变化独立于使用算法的客户。结合本案例：折扣算法可独立于计价上下文变化与扩展。（2 分）</li>
+      <li><b>角色：</b><span class="kk">DiscountStrategy</span> 为策略接口（Strategy）；<span class="kk">PercentagDiscount</span>、<span class="kk">FixedDiscount</span> 为具体策略（ConcreteStrategy）；<span class="kk">OrderContext</span> 为环境类（Context），持有策略引用并把计算委托给策略对象。（2 分）</li>
+    </ul>
+    <p><b>（2）新增算法与开闭原则（4 分）</b></p>
+    <ul>
+      <li><b>实现：</b>分别为"满减优惠""会员折扣"新建类实现 DiscountStrategy 接口，在运行时通过 setStrategy 注入或经配置/工厂选择即可，OrderContext 与既有算法类均不改动。（2.5 分）</li>
+      <li><b>开闭原则体现：</b>对扩展开放——新增算法只需增加新的具体策略类；对修改关闭——无需修改环境类与既有策略类源码，避免了 if-else 分支的持续膨胀，降低回归风险。（1.5 分）</li>
+    </ul>
+
+    <h4>问题2 参考答案（8 分）</h4>
+    <p><b>（1）状态图要素与未定义事件处理（3 分）</b></p>
+    <ul>
+      <li><b>要素：</b>状态（含初始态、终态）、事件（触发转换的激励）、转换（状态间因事件发生的迁移），以及可附在状态上的活动/动作。图 1-2 中"待支付、已支付、已发货、已完成、已取消、退款中、已退款"为状态，"支付成功、发货、确认收货、取消订单、申请退款、退款完成"等为触发事件。（2 分）</li>
+      <li><b>"已发货"下收到"申请退款"事件：</b>状态图中未定义该转换，对象应按统一约定处理——<b>拒绝该事件</b>（返回业务错误，如"已发货订单不支持在线退款"），不应落入未定义行为；这说明建模时须保证每个状态对可处理事件有明确定义，非法事件需有统一的异常出口。（1 分）</li>
+    </ul>
+    <p><b>（2）状态模式与策略模式的区别（5 分）</b></p>
+    <ul>
+      <li><b>类结构相同：</b>都是"上下文持有抽象接口引用、把行为委托给多态实现"。（1 分）</li>
+      <li><b>意图不同：</b>状态模式让对象的行为随其内部状态改变而改变，对象看起来像修改了自己的类；策略模式让客户端选择一组可互换的算法，重点是算法的可替换与复用。（2 分）</li>
+      <li><b>驱动方式不同：</b>状态模式中的迁移通常由状态自身或业务事件驱动，状态之间有确定的转换关系（对应图 1-2 状态机）；策略模式中算法由客户端显式指定或配置注入，各策略之间相互独立、无转换关系。（1 分）</li>
+      <li><b>客户端感知不同：</b>状态模式下客户端通常不感知具体状态，状态切换对客户端透明；策略模式下客户端（或配置）需要知道并选择具体策略。（1 分）</li>
+    </ul>
+
+    <h4>问题3 参考答案（8 分）</h4>
+    <p><b>（1）用例图要素与关系（4 分）</b></p>
+    <ul>
+      <li><b>参与者（Actor）：</b>位于系统边界之外、与系统交互的人员、外部系统或设备，是系统服务的用户或触发器。（1 分）</li>
+      <li><b>包含（include）：</b>基用例必然执行被包含用例的行为，用于抽取公共流程——例：订餐系统中"下单"必然包含"登录校验"。（1 分）</li>
+      <li><b>扩展（extend）：</b>扩展用例在满足条件时才可选择地扩展基用例——例："下单"可被"使用优惠券"扩展，仅当有券时发生。（1 分）</li>
+      <li><b>泛化：</b>子用例继承父用例的行为并可特化——例："扫码支付""余额支付"是"支付"的特化。（1 分）</li>
+    </ul>
+    <p><b>（2）4+1 视图（4 分，每视图 1 分）</b></p>
+    <ul>
+      <li><b>逻辑视图：</b>面向功能，描述系统的功能组织与对象模型（类、关系）；</li>
+      <li><b>开发视图（实现视图）：</b>面向程序员，描述代码模块、包/子系统的静态组织与层次；</li>
+      <li><b>进程视图（过程视图）：</b>关注并发、同步、性能，描述运行时的进程/线程及交互；</li>
+      <li><b>物理视图（部署视图）：</b>关注部署拓扑，描述软件构件到硬件节点/网络的映射；</li>
+      <li><b>场景视图（用例视图）：</b>以关键用例把上述四个视图联系起来并做验证，即"4+1"。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题二
+     ============================================================ -->
+<section class="qblock" id="q2">
+  <div class="qhead">试题二（选答题，25分）订单库分库分表改造</div>
+  <div class="qintro">
+    考点：垂直/水平拆分 · 分片键选择 · 三类分片算法 · 跨分片聚合 · 雪花算法 · 深分页 · 数据倾斜治理
+    <span class="tag">选答</span><span class="tag gray">数据库架构</span>
+    　共 3 个小题（9 + 8 + 8）
+  </div>
+
+  <p style="font-size:14.5px">阅读以下关于数据库分库分表架构设计的叙述，在答题纸上回答问题 1 至问题 3。</p>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某电商平台的订单库为单实例 MySQL，订单表约 <b>8 亿行</b>，数据文件超过 <b>2 TB</b>。近一年出现明显瓶颈：高峰写入 TPS 达 <b>3 万</b>，磁盘 IO 频繁饱和，大表加索引需要锁表数小时；历史数据归档后单表仍有数亿行，复杂查询性能急剧下降。DBA 与架构师决定实施分库分表改造：按业务先行<b>垂直拆分</b>，再对订单表按<b>水平分片</b>拆到 4 个分片库，每个分片库承载 2 亿行以内，并引入分片中间件统一路由，如图 2-1 所示。平台对"我的订单"查询频率远高于其他查询，且必须保证改造期间业务连续。</p>
+  </div>
+
+  <div class="fig">
+    <div class="fig-row">
+      <div class="box">订单服务</div>
+      <div class="box">报表服务</div>
+    </div>
+    <div class="fig-row" style="margin-top:8px"><span class="arrow">↓　　　　　　　↓</span></div>
+    <div class="fig-row" style="margin-top:6px">
+      <div class="box" style="min-width:260px">
+        <span class="box-name">分片中间件</span>
+        SQL 路由 / 改写 / 结果归并
+      </div>
+      <span class="arrow">── 取号 ──▷</span>
+      <div class="box" style="min-width:150px">
+        <span class="box-name">全局 ID 生成器</span>
+        发号服务
+      </div>
+    </div>
+    <div class="fig-row" style="margin-top:8px"><span class="arrow">↓</span></div>
+    <div class="fig-row" style="margin-top:6px">
+      <div class="box" style="min-width:120px"><span class="box-name">分片 0</span>user_id % 4 = 0</div>
+      <div class="box" style="min-width:120px"><span class="box-name">分片 1</span>user_id % 4 = 1</div>
+      <div class="box" style="min-width:120px"><span class="box-name">分片 2</span>user_id % 4 = 2</div>
+      <div class="box" style="min-width:120px"><span class="box-name">分片 3</span>user_id % 4 = 3</div>
+    </div>
+    <div class="fig-cap">图 2-1　订单库分片架构</div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（9 分）</span>拆分方式与分片键</div>
+    <div class="q-body">
+      <p>（1）说明垂直拆分与水平拆分各自解决什么问题及适用场景。（3 分）</p>
+      <p>（2）结合本案例说明水平分片键的选择原则，并分析订单表分片键选 <b>user_id</b> 而非 <b>order_id</b> 的理由。（3 分）</p>
+      <p>（3）比较范围分片、哈希取模分片、一致性哈希分片在<b>数据分布均匀性</b>、<b>扩容代价</b>、<b>热点风险</b>三方面的差异。（3 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a4">0 字</span></div>
+      <textarea id="a4" data-qid="a4" placeholder="1) 垂直拆分：……&#10;   水平拆分：……&#10;2) 选择原则：……&#10;   选 user_id 的理由：……&#10;3) 范围分片：……&#10;   哈希取模：……&#10;   一致性哈希：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a4">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a4"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（8 分）</span>跨分片聚合 · 雪花算法 · 扩容迁移</div>
+    <div class="q-body">
+      <p>（1）分片后，"按商品维度统计近 30 天销量"这类跨分片聚合查询的执行存在什么困难？给出至少两种解决思路。（3 分）</p>
+      <p>（2）说明雪花（Snowflake）算法生成全局唯一订单号的原理，并指出其两个注意点。（3 分）</p>
+      <p>（3）说明从 4 个分片扩容到 8 个分片时，可采取的数据迁移方案要点。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a5">0 字</span></div>
+      <textarea id="a5" data-qid="a5" placeholder="1) 困难：……&#10;   思路：①…… ②……&#10;2) 原理：……&#10;   注意点：①…… ②……&#10;3) 迁移方案：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a5">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a5"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>深分页优化与数据倾斜</div>
+    <div class="q-body">
+      <p>（1）说明跨分片"深分页"查询（如 <code>ORDER BY create_time LIMIT 1000000, 20</code>）性能差的原因，并给出两种优化方案。（4 分）</p>
+      <p>（2）平台存在少量年销售额上亿的"大商户"，按 user_id 哈希后其数据集中落于单一分片，形成数据倾斜与热点。请给出治理思路（至少两条）。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a6">0 字</span></div>
+      <textarea id="a6" data-qid="a6" placeholder="1) 原因：……&#10;   方案：①…… ②……&#10;2) 治理：①…… ②……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a6">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a6"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r2">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r2">
+    <h4>问题1 参考答案（9 分）</h4>
+    <p><b>（1）垂直拆分与水平拆分（3 分）</b></p>
+    <ul>
+      <li><b>垂直拆分：</b>按业务边界把不同表拆到不同库（库级垂直），或按访问频度把宽表字段冷热分离（表级垂直）。解决单库表多、单表过宽、业务耦合的问题；适用于业务边界清晰、表间耦合低的场景。（1.5 分）</li>
+      <li><b>水平拆分：</b>按行依据分片键把一张表的数据分散到多个库表。解决单表数据量与并发量过大、索引与锁开销高的问题；适用于单表数据量巨大的场景（本案例 8 亿行）。（1.5 分）</li>
+    </ul>
+    <p><b>（2）分片键选择与 user_id 的理由（3 分）</b></p>
+    <ul>
+      <li><b>分片键选择原则：</b>基数高、数据分布均匀、绝大多数高频查询都携带该字段、业务上取值稳定不改。（1.5 分）</li>
+      <li><b>本案例理由：</b>"我的订单"（按 user_id 查询）频率最高；用 user_id 分片可使同一用户的全部订单落在同一分片内，路由为单分片查询，避免跨分片扫描与归并。若按 order_id 分片，"我的订单"需广播到全部分片，代价高。order_id 详情查询可通过"order_id 中编码分片位"或引入映射表解决。（1.5 分）</li>
+    </ul>
+    <p><b>（3）三种分片算法比较（3 分）</b></p>
+    <table>
+      <tr><th style="width:110px">算法</th><th>数据分布均匀性</th><th>扩容代价</th><th>热点风险</th></tr>
+      <tr><td>范围分片</td><td>按分片键区间划分，可能不均</td><td>低：只需追加新区间、迁移少</td><td>高：访问若随时间递增会形成写入热点</td></tr>
+      <tr><td>哈希取模</td><td>均匀</td><td>高：取模数变化需大规模数据迁移，期间路由复杂</td><td>低（但倾斜字段仍会热点）</td></tr>
+      <tr><td>一致性哈希</td><td>较均匀</td><td>小：节点增减仅影响相邻区间</td><td>中：实现复杂，虚拟节点配置不当时仍可能倾斜</td></tr>
+    </table>
+
+    <h4>问题2 参考答案（8 分）</h4>
+    <p><b>（1）跨分片聚合的困难与思路（3 分）</b></p>
+    <ul>
+      <li><b>困难：</b>满足条件的数据分散在 4 个分片，需各分片局部聚合后再归并，网络与内存开销大，且分页、排序语义难以正确实现。（1 分）</li>
+      <li><b>思路（答出两条即可，2 分）：</b>①索引/宽表——经 binlog 同步构建 ES 或汇总表，统计类查询走检索层；②预聚合——按天/按商品汇总到结果表；③字段冗余——把常用维度（商品、类目）冗余进订单表，减少跨库关联。</li>
+    </ul>
+    <p><b>（2）雪花算法（3 分）</b></p>
+    <ul>
+      <li><b>原理：</b>64 位整数 = 1 位符号位 + 41 位时间戳（毫秒）+ 10 位机器标识 + 12 位序列号，单机每毫秒可生成 4096 个趋势递增的全局唯一 ID。（2 分）</li>
+      <li><b>注意点（答出两点，1 分）：</b>①依赖机器时钟，时钟回拨会导致重复 ID，需回拨检测与等待/备用位处理；②机器标识需分配机制保证全局唯一；③强依赖时间意味着 ID 泄漏业务量信息（可按需评估）。</li>
+    </ul>
+    <p><b>（3）扩容迁移要点（2 分）</b></p>
+    <p>方案：双写/增量同步（CDC、binlog 监听）先建新分片 → 存量数据按新规则批量迁移 → 一致性比对（总量、抽样、校验和）→ 灰度读（灰度比例放量）→ 观察稳定后切写并下线旧路由；迁移期间以旧路由为回滚，保证业务连续。</p>
+
+    <h4>问题3 参考答案（8 分）</h4>
+    <p><b>（1）深分页原因与优化（4 分）</b></p>
+    <ul>
+      <li><b>原因：</b>全局有序需各分片都返回前 offset+limit 条记录到中间件，在内存中归并排序后再丢弃前 100 万条——各分片传输与排序的数据量巨大，页越深代价越高，且可能拖垮中间件内存。（2 分）</li>
+      <li><b>方案（答出两种，2 分）：</b>①游标（seek）分页——以 <code>WHERE create_time &gt; 上次末尾值 ORDER BY create_time LIMIT 20</code> 替代 offset；②限制最大翻页深度并引导走检索层（ES）；③"二次查询"折中法（先取区间再重排，减少归并量）。</li>
+    </ul>
+    <p><b>（2）热点与大商户治理（4 分，答出两条、每条 2 分）</b></p>
+    <ul>
+      <li><b>复合分片键：</b>分片键由 user_id 叠加二维维度（如月份、店铺子账号），把大商户数据打散；</li>
+      <li><b>热点单列路由：</b>对识别出的热点商户建立映射表落到独立分片/独立实例，与其用户隔离；</li>
+      <li><b>写缓冲：</b>热写入先入消息队列/内存缓冲再异步落库，削峰填谷；</li>
+      <li><b>业务手段：</b>把大商户迁移为独立租户库，或对其报表类需求走离线/异库索引，减少在线分片压力。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题三
+     ============================================================ -->
+<section class="qblock" id="q3">
+  <div class="qhead">试题三（选答题，25分）公积金核心系统换代</div>
+  <div class="qintro">
+    考点：遗留系统四种演化策略 · 三种系统转换方式 · 绞杀者模式 · 防腐层 · 数据迁移与双写比对 · 逆向工程/重构/再工程
+    <span class="tag">选答</span><span class="tag gray">系统演化与重构</span>
+    　共 3 个小题（9 + 8 + 8）
+  </div>
+
+  <p style="font-size:14.5px">阅读以下关于遗留系统演化与系统转换的叙述，在答题纸上回答问题 1 至问题 3。</p>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某市住房公积金管理中心的<b>核心业务系统</b>于 2008 年建成，采用 JSP + Oracle 开发，单体架构，累计代码约 <b>90 万行</b>。系统仍支撑归集、提取、贷款等核心业务，业务规则持续有效；但技术栈陈旧，原开发商已停止支持，仅两名熟悉该系统的工程师临近退休，安全漏洞修补困难。管理中心立项"新一代系统建设"：核心业务规则经梳理后复用，外围应用（App、小程序、自助终端）全部新建，并要求<b>老系统平稳下线</b>、<b>历史数据完整迁移</b>、<b>任何时点业务不中断</b>。</p>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（9 分）</span>演化策略与转换方式</div>
+    <div class="q-body">
+      <p>（1）从"业务价值"与"技术条件"两个维度，说明遗留系统的四种演化策略（<b>淘汰、继承、改造、集成</b>）及其适用情形，并指出本案例老系统应采取哪种策略及理由。（5 分）</p>
+      <p>（2）比较系统<b>直接转换、并行转换、分段转换</b>三种方式的风险与成本，并为本案例选择合适转换方式。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a7">0 字</span></div>
+      <textarea id="a7" data-qid="a7" placeholder="1) 淘汰：……&#10;   继承：……&#10;   改造：……&#10;   集成：……&#10;   本案例应采取……，理由：……&#10;2) 直接转换：……&#10;   并行转换：……&#10;   分段转换：……&#10;   选择：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a7">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a7"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（8 分）</span>绞杀者模式与防腐层</div>
+    <div class="q-body">
+      <p>（1）说明<b>绞杀者模式（Strangler Fig）</b>的基本原理与实施步骤，说明它为何适合本案例。（4 分）</p>
+      <p>（2）新建系统在读取老系统数据时，直接使用老系统的表结构会造成新系统模型被遗留模型"污染"。说明<b>防腐层（Anti-Corruption Layer）</b>如何解决该问题。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a8">0 字</span></div>
+      <textarea id="a8" data-qid="a8" placeholder="1) 原理：……&#10;   步骤：①…… ②…… ③…… ④……&#10;   适合原因：……&#10;2) 做法：……&#10;   作用：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a8">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a8"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>数据迁移与再工程</div>
+    <div class="q-body">
+      <p>（1）给出本案例历史数据迁移的完整步骤，并说明"<b>双写 + 比对 + 灰度切换</b>"方案中每一步的作用。（4 分）</p>
+      <p>（2）说明<b>逆向工程、重构、再工程</b>三者的含义与关系。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a9">0 字</span></div>
+      <textarea id="a9" data-qid="a9" placeholder="1) 步骤：①…… ②…… ③…… ④…… ⑤…… ⑥…… ⑦……&#10;   双写作用：……&#10;   比对作用：……&#10;   灰度切换作用：……&#10;2) 逆向工程：……&#10;   重构：……&#10;   再工程：……&#10;   关系：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a9">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a9"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r3">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r3">
+    <h4>问题1 参考答案（9 分）</h4>
+    <p><b>（1）四种演化策略与选择（5 分）</b></p>
+    <table>
+      <tr><th style="width:80px">策略</th><th>适用情形（业务价值 / 技术条件）</th></tr>
+      <tr><td>淘汰</td><td>业务价值低、技术条件差，且其功能可被其他系统替代——直接废弃</td></tr>
+      <tr><td>继承</td><td>业务价值高、技术条件稳定，只需少量维护——作为资产保留并封装接口供其他系统调用</td></tr>
+      <tr><td>改造</td><td>业务价值高、技术条件落后——通过重构、再工程提升其架构与技术水平</td></tr>
+      <tr><td>集成</td><td>自身价值有限但需与其他系统协同——通过接口/总线把它纳入整体环境</td></tr>
+    </table>
+    <p>（每点 0.5 分，共 2 分）</p>
+    <ul>
+      <li><b>本案例应采取"改造"策略</b>（1 分）：核心业务规则仍有效、业务价值高，但技术栈陈旧、供应商失联、安全难保障，属"技术条件差"，须提升技术水平而非简单淘汰或仅做集成。（2 分）</li>
+    </ul>
+    <p><b>（2）三种转换方式与选择（4 分）</b></p>
+    <ul>
+      <li><b>直接转换：</b>某时点旧停新启，成本低、周期短，但风险最高，适合小规模/非关键系统；</li>
+      <li><b>并行转换：</b>新旧系统并行运行一段时间、结果互校，风险最低，但人力与资源成本翻倍；</li>
+      <li><b>分段转换：</b>按子系统/分支机构分批切换，风险与成本居中，便于逐步验证与回退；（每点 1 分，共 3 分）</li>
+      <li><b>本案例选择分段转换</b>（1 分）：公积金核心业务中断不可接受，且功能模块（归集、提取、贷款、渠道）边界清晰，宜按模块分批切换，关键模块辅以短时并行核对。</li>
+    </ul>
+
+    <h4>问题2 参考答案（8 分）</h4>
+    <p><b>（1）绞杀者模式（4 分）</b></p>
+    <ul>
+      <li><b>原理：</b>在遗留系统外围新建门面/路由层，新功能以新服务实现并逐步接管旧功能流量，旧系统被"缠绕"并逐渐萎缩，最终安全下线；而非一次性重写替换。（2 分）</li>
+      <li><b>步骤：</b>①新建统一入口/门面层并接管流量；②识别高价值功能优先新建为服务并路由切流；③按功能逐步迁移、灰度放量并保留回退能力；④旧系统功能清空后下线。（1 分）</li>
+      <li><b>适合本案例的原因：</b>核心业务不能中断、老系统规模巨大（90 万行）难以一次性重写，绞杀者允许按模块渐进替换、随时回退，历史数据可在迁移完成后下线。（1 分）</li>
+    </ul>
+    <p><b>（2）防腐层（4 分）</b></p>
+    <ul>
+      <li><b>做法：</b>在新旧系统交界处建立独立的适配层，对新系统屏蔽老系统的表结构、协议与领域模型，把遗留模型转换为新系统的领域模型后再进入新系统。（2 分）</li>
+      <li><b>作用：</b>防止遗留模型的概念、脏数据与历史包袱渗入新设计，保证新系统模型的干净与可演化；同时集中管理对老系统的访问，为老系统下线时替换适配（数据源切到新库）提供唯一改动点。（2 分）</li>
+    </ul>
+
+    <h4>问题3 参考答案（8 分）</h4>
+    <p><b>（1）数据迁移步骤与双写方案（4 分）</b></p>
+    <ul>
+      <li><b>步骤（2 分）：</b>①数据范围评估与清洗（去除冗余、修复异常）；②字段映射与转换规则设计；③存量全量迁移（先演练再正式）；④增量同步（双写或 CDC 捕获增量）；⑤一致性比对（总量、金额汇总、抽样、校验和）；⑥灰度切换与观察；⑦保留回滚窗口后下线老库。</li>
+      <li><b>各步作用（2 分）：</b><b>双写</b>保证迁移窗口内旧库增量不丢；<b>比对</b>证明迁移正确、可量化验收；<b>灰度切换</b>按比例把读写流量切到新库，异常时立即切回，<b>回滚窗口</b>兜底。</li>
+    </ul>
+    <p><b>（2）逆向工程、重构、再工程（4 分）</b></p>
+    <ul>
+      <li><b>逆向工程：</b>分析已有系统以识别其构件及其相互关系，恢复设计信息与架构，在更高抽象层次上建立系统表示；不改变系统本身。（1.5 分）</li>
+      <li><b>重构：</b>在不改变软件外部行为的前提下，调整其内部结构以改善可理解性与可修改性。（1 分）</li>
+      <li><b>再工程：</b>在逆向工程获取设计信息的基础上，对系统进行重构并按新需求重建（改变功能的形式或实现方式），提升质量。（1.5 分）</li>
+      <li><b>关系：</b>逆向工程"由代码到设计"，前向工程"由设计到代码"，再工程 = 逆向工程 + 重构 + 前向工程；本案例梳理老系统业务规则即逆向工程的应用。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题四
+     ============================================================ -->
+<section class="qblock" id="q4">
+  <div class="qhead">试题四（选答题，25分）配电自动化终端产品线</div>
+  <div class="qintro">
+    考点：DSSA 及其三要素 · 产品线三个基本活动 · 特征模型四种关系 · 可变性实现途径 · CBSD 构件获取与适配 · COTS 选型
+    <span class="tag">选答</span><span class="tag gray">软件产品线</span>
+    　共 3 个小题（9 + 8 + 8）
+  </div>
+
+  <p style="font-size:14.5px">阅读以下关于软件产品线与特定领域软件架构的叙述，在答题纸上回答问题 1 至问题 3。</p>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某电力设备企业的<b>配电自动化终端</b>产品包括馈线终端、站所终端等多种型号，功能高度相似但配置各异：部分型号无就地决策功能，通信方式有光纤、4G、5G 等。过去每个产品型号由项目组独立开发，同类功能在不同型号间重复实现且不一致，缺陷需要在多个型号上分别修复，新产品交付周期长达 <b>10 个月</b>。企业决定引入<b>软件产品线</b>方法，建立核心资产库，以"公共架构 + 可变构件 + 特性配置"的方式派生新产品，图 4-1 给出了终端产品的特征模型。</p>
+  </div>
+
+  <div class="fig">
+    <div class="fig-row">
+      <div class="box" style="min-width:200px"><span class="box-name">配电自动化终端</span></div>
+    </div>
+    <div class="fig-row" style="margin-top:8px"><span class="arrow">↓</span></div>
+    <div class="fig-row" style="margin-top:6px">
+      <div class="box" style="min-width:110px">数据采集<br><span class="rel-label">必选</span></div>
+      <div class="box" style="min-width:110px">通信方式<br><span class="rel-label">择一</span></div>
+      <div class="box" style="min-width:110px">就地决策<br><span class="rel-label">可选</span></div>
+      <div class="box" style="min-width:110px">人机交互<br><span class="rel-label">必选</span></div>
+    </div>
+    <div class="fig-row" style="margin-top:8px"><span class="arrow">（通信方式展开）↓</span></div>
+    <div class="fig-row" style="margin-top:6px">
+      <div class="box" style="min-width:120px">光纤以太网</div>
+      <div class="box" style="min-width:120px">4G 无线</div>
+      <div class="box" style="min-width:120px">5G 无线</div>
+    </div>
+    <div class="legend">图例：<b>必选</b>＝产品线内每个产品必须具备；<b>可选</b>＝可选择一个，也可不选；<b>择一</b>＝至少且只能选择一个。</div>
+    <div class="fig-cap">图 4-1　配电自动化终端特征模型</div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（9 分）</span>DSSA 与产品线活动</div>
+    <div class="q-body">
+      <p>（1）说明<b>特定领域软件架构（DSSA）</b>的含义及其三个基本组成（领域模型、参考架构、支持环境）。（4 分）</p>
+      <p>（2）说明软件产品线的三个基本活动及它们之间的关系。（3 分）</p>
+      <p>（3）指出本案例引入产品线方法后期望获得的至少两项收益。（2 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a10">0 字</span></div>
+      <textarea id="a10" data-qid="a10" placeholder="1) DSSA 含义：……&#10;   领域模型：……&#10;   参考架构：……&#10;   支持环境：……&#10;2) 三个活动：……；关系：……&#10;3) 收益：①…… ②……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a10">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a10"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（8 分）</span>特征关系与可变性实现</div>
+    <div class="q-body">
+      <p>（1）说明特征模型中"<b>必选、可选、择一（alternative）、多选（or）</b>"四种关系的含义，并结合图 4-1 说明"数据采集"与"通信方式"分别属于哪种关系。（4 分）</p>
+      <p>（2）说明实现产品线可变性的两种主要途径（<b>配置化</b>与<b>扩展点</b>）及其常用机制。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a11">0 字</span></div>
+      <textarea id="a11" data-qid="a11" placeholder="1) 必选：……&#10;   可选：……&#10;   择一：……&#10;   多选：……&#10;   数据采集属……，通信方式属……&#10;2) 配置化：…… 机制：……&#10;   扩展点：…… 机制：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a11">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a11"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>CBSD 构件与 COTS 选型</div>
+    <div class="q-body">
+      <p>（1）说明基于构件的开发（CBSD）中构件获取的来源，以及构件适配的原因与常用手段。（4 分）</p>
+      <p>（2）企业还考虑采购商用现货构件（COTS）。请给出 COTS 选型评估应考虑的主要维度（至少四项）。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a12">0 字</span></div>
+      <textarea id="a12" data-qid="a12" placeholder="1) 获取来源：①…… ②…… ③…… ④……&#10;   适配原因：……&#10;   适配手段：……&#10;2) 维度：①…… ②…… ③…… ④……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a12">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a12"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r4">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r4">
+    <h4>问题1 参考答案（9 分）</h4>
+    <p><b>（1）DSSA 及三要素（4 分）</b></p>
+    <ul>
+      <li><b>含义：</b>在一个特定应用领域中，为一组应用提供组织结构参考的标准软件体系结构，以领域内公共需求为基础、支持领域内系统的复用与派生。（1 分）</li>
+      <li><b>领域模型：</b>描述领域内系统共有的概念、需求与知识；<b>参考架构：</b>由参考需求导出的领域标准体系结构，规定构件及组织方式；<b>支持环境：</b>支撑基于参考架构开发的工具、构件库与开发方法。（3 分）</li>
+    </ul>
+    <p><b>（2）产品线三个基本活动（3 分）</b></p>
+    <p><b>核心资产开发</b>（建立产品线共用的架构、可复用构件与文档资产）、<b>产品开发</b>（利用核心资产按产品需求派生具体产品）、<b>产品线组织管理</b>（协调投资、计划、资产演化与开发秩序）。三者循环迭代：核心资产的成果被产品开发复用，产品开发反馈又驱动核心资产演化。</p>
+    <p><b>（3）收益（2 分，答出两项即可）</b></p>
+    <ul>
+      <li>消除重复实现，缺陷一次修复全线受益；</li>
+      <li>新产品以配置/组装方式派生，交付周期显著缩短（本案例 10 个月可大幅压缩）；</li>
+      <li>质量一致、架构统一；</li>
+      <li>降低多型号维护成本。</li>
+    </ul>
+
+    <h4>问题2 参考答案（8 分）</h4>
+    <p><b>（1）特征关系（4 分）</b></p>
+    <ul>
+      <li><b>必选：</b>产品线内每个产品都必须具备的特征；<b>可选：</b>可依据产品裁剪的特征；<b>择一（alternative）：</b>一组互斥特征中至少且只能选其一；<b>多选（or）：</b>一组特征中可选任意多个（含全选）；此外特征间还可有依赖与互斥约束。（2.5 分）</li>
+      <li><b>图 4-1：</b>数据采集为<b>必选</b>；通信方式下的光纤/4G/5G 为<b>择一</b>关系（每个产品至少且只能选一种通信方式）。（1.5 分）</li>
+    </ul>
+    <p><b>（2）可变性实现途径（4 分）</b></p>
+    <ul>
+      <li><b>配置化：</b>把产品差异建模为特性/参数，通过配置文件、特性开关、数据库配置在组装或运行时选择，不修改代码；</li>
+      <li><b>扩展点：</b>在核心架构的稳定点上预留接口（SPI、插件、回调、继承/模板方法、构件替换），由产品以新构件实现差异能力；</li>
+      <li>两者常结合使用——配置选择已有构件，扩展点承载新增能力。</li>
+    </ul>
+
+    <h4>问题3 参考答案（8 分）</h4>
+    <p><b>（1）构件获取与适配（4 分）</b></p>
+    <ul>
+      <li><b>来源（2 分）：</b>①自行开发（新开发构件）；②复用既有资产（历史项目构件、产品线核心资产）；③商业现货 COTS；④开源构件；⑤委托第三方定制。</li>
+      <li><b>适配原因（1 分）：</b>构件与目标架构在接口、数据格式、行为约定、质量属性上不完全匹配，不能直接组装。</li>
+      <li><b>常用手段（1 分）：</b>适配器/包装模式封装接口转换、参数化配置、白盒修改（源码级，慎用）、胶水代码与桥接层。</li>
+    </ul>
+    <p><b>（2）COTS 选型维度（4 分，每项 1 分）</b></p>
+    <ul>
+      <li><b>功能符合度与定制能力：</b>能否满足领域需求、是否可配置扩展；</li>
+      <li><b>质量属性：</b>性能、可靠性、安全性是否达标；</li>
+      <li><b>标准符合性与互操作性：</b>协议、接口、数据格式；</li>
+      <li><b>供应商能力与生命周期：</b>市场地位、持续维护、技术支持、许可与总拥有成本 TCO；</li>
+      <li><b>集成与升级风险：</b>与现有架构兼容性、锁定风险。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     试题五
+     ============================================================ -->
+<section class="qblock" id="q5">
+  <div class="qhead">试题五（选答题，25分）货运单证数字化平台</div>
+  <div class="qintro">
+    考点：Serverless 原理 · FaaS 与 BaaS · 与容器化常驻服务对比 · 冷启动 · 无状态约束 · 四类事件触发 · 迁移取舍
+    <span class="tag">选答</span><span class="tag gray">云原生 / Serverless</span>
+    　共 3 个小题（9 + 8 + 8）
+  </div>
+
+  <p style="font-size:14.5px">阅读以下关于 Serverless 架构设计的叙述，在答题纸上回答问题 1 至问题 3。</p>
+
+  <div class="note">【说明】</div>
+  <div class="scene">
+    <p>某物流企业运营"<b>货运单证数字化</b>"平台：司机上传运单照片后经 OCR 识别、运费试算与消息推送，业务呈明显波峰波谷——<b>白天高峰约为夜间的 20 倍</b>，月底结算日可能出现突发峰值。原系统为固定规模虚拟机常驻服务，低负载时段资源利用率不足 <b>10%</b>，且大促前需人工扩容。企业计划将其中<b>事件驱动、短时、无状态</b>的处理环节改造为 Serverless 架构，函数由 API 网关、消息队列、对象存储事件与定时器触发，存储与消息等能力直接使用云服务（BaaS），如图 5-1 所示。</p>
+  </div>
+
+  <div class="fig">
+    <div class="fig-row">
+      <div class="box">客户端</div>
+      <span class="arrow">→</span>
+      <div class="box">API 网关</div>
+      <span class="arrow">→</span>
+      <div class="box grp">
+        <span class="box-name">函数计算（FaaS）</span>
+        <div class="fig-row" style="margin-top:6px">
+          <div class="box" style="font-size:11.5px;padding:5px 8px">单据识别函数</div>
+          <div class="box" style="font-size:11.5px;padding:5px 8px">计费函数</div>
+          <div class="box" style="font-size:11.5px;padding:5px 8px">通知函数</div>
+        </div>
+      </div>
+    </div>
+    <div class="fig-row" style="margin-top:10px"><span class="arrow">↓</span></div>
+    <div class="fig-row" style="margin-top:6px">
+      <div class="box" style="min-width:130px">对象存储<br><span class="rel-label">BaaS</span></div>
+      <div class="box" style="min-width:130px">云数据库<br><span class="rel-label">BaaS</span></div>
+      <div class="box" style="min-width:130px">消息队列<br><span class="rel-label">BaaS</span></div>
+      <div class="box" style="min-width:130px">事件源<br><span class="rel-label">定时 / 对象事件</span></div>
+    </div>
+    <div class="fig-cap">图 5-1　Serverless 应用架构</div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题1】<span class="score">（9 分）</span>FaaS / BaaS 与常驻服务对比</div>
+    <div class="q-body">
+      <p>（1）说明 FaaS 与 BaaS 的含义，以及两者共同构成 Serverless 架构的原理。（4 分）</p>
+      <p>（2）从<b>资源管理</b>、<b>计费方式</b>、<b>伸缩方式</b>、<b>运行时长限制</b>四个方面，比较 Serverless（FaaS）与容器化常驻服务的差异。（5 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题1 <span class="cnt" data-for="a13">0 字</span></div>
+      <textarea id="a13" data-qid="a13" placeholder="1) FaaS：……&#10;   BaaS：……&#10;   组合原理：……&#10;2) 资源管理：……&#10;   计费方式：……&#10;   伸缩方式：……&#10;   运行时长限制：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a13">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="9" step="0.5" data-score="a13"> / 9</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题2】<span class="score">（8 分）</span>冷启动与无状态约束</div>
+    <div class="q-body">
+      <p>（1）说明函数<b>冷启动</b>的成因，并给出至少三种缓解冷启动时延的措施。（4 分）</p>
+      <p>（2）FaaS 要求函数<b>无状态</b>，而运费试算需要维护会话上下文、复用数据库连接。说明无状态约束带来的问题及对应的解决办法。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题2 <span class="cnt" data-for="a14">0 字</span></div>
+      <textarea id="a14" data-qid="a14" placeholder="1) 成因：……&#10;   措施：①…… ②…… ③……&#10;2) 问题：……&#10;   解决：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a14">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a14"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="q">
+    <div class="q-title">【问题3】<span class="score">（8 分）</span>四类触发方式与迁移取舍</div>
+    <div class="q-body">
+      <p>（1）说明<b>API 网关触发、消息队列触发、对象存储事件触发、定时触发</b>四种函数接入方式各自的适用场景，并结合本案例各举一例。（4 分）</p>
+      <p>（2）指出<b>不适合</b>迁移到 Serverless 的业务特征（至少三类），并说明本案例中哪些环节适合迁移、哪些应保留常驻服务。（4 分）</p>
+    </div>
+    <div class="answer">
+      <div class="answer-head">答题区 · 问题3 <span class="cnt" data-for="a15">0 字</span></div>
+      <textarea id="a15" data-qid="a15" placeholder="1) API 网关：…… 例：……&#10;   消息队列：…… 例：……&#10;   对象存储事件：…… 例：……&#10;   定时触发：…… 例：……&#10;2) 不适合：①…… ②…… ③……&#10;   适合迁移：……&#10;   保留常驻：……"></textarea>
+      <div class="answer-foot"><span class="saved" data-for="a15">已自动保存</span>
+        <span class="selfscore">自评得分 <input type="number" min="0" max="8" step="0.5" data-score="a15"> / 8</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="ref-toggle" data-ref="r5">▸ 显示本大题参考答案</button>
+  <div class="ref" id="r5">
+    <h4>问题1 参考答案（9 分）</h4>
+    <p><b>（1）FaaS 与 BaaS（4 分）</b></p>
+    <ul>
+      <li><b>FaaS（函数即服务）：</b>开发者以函数为单位部署业务逻辑，平台负责函数的运行环境、弹性实例调度与执行计费，事件触发执行、执行完即释放；开发者不管理服务器。（2 分）</li>
+      <li><b>BaaS（后端即服务）：</b>数据库、对象存储、消息、认证等后端能力以云服务形式提供，由云厂商承担，应用以 API/SDK 直接使用。（1 分）</li>
+      <li><b>组合原理：</b>计算交给 FaaS、状态与通用能力交给 BaaS，开发者只写业务函数，实现"无服务器"——服务器存在但对开发者透明。（1 分）</li>
+    </ul>
+    <p><b>（2）与容器化常驻服务比较（5 分，每方面约 1 分）</b></p>
+    <table>
+      <tr><th style="width:96px">方面</th><th>容器化常驻服务</th><th>Serverless（FaaS）</th></tr>
+      <tr><td>资源管理</td><td>需规划并维护实例规格与副本数</td><td>无须管理实例，平台按请求自动分配与回收运行环境</td></tr>
+      <tr><td>计费方式</td><td>按资源占用时长计费，闲置也付费</td><td>按请求次数与执行时长（GB·秒）计费，闲置零成本</td></tr>
+      <tr><td>伸缩方式</td><td>需配置 HPA/事件驱动伸缩，有一定滞后，须预留余量</td><td>平台秒级至实例级并发伸缩，可应对突发流量</td></tr>
+      <tr><td>运行时长限制</td><td>可长期运行</td><td>单次执行有最大时长与内存/临时磁盘限制，超时需拆分或改用异步/工作流</td></tr>
+    </table>
+
+    <h4>问题2 参考答案（8 分）</h4>
+    <p><b>（1）冷启动及缓解（4 分）</b></p>
+    <ul>
+      <li><b>成因（1.5 分）：</b>函数被调用时才拉起运行环境——申请资源、拉容器/微虚拟机、加载运行时与函数代码、初始化依赖（连接、SDK、模型），首请求时延显著高于热请求。</li>
+      <li><b>缓解措施（2.5 分，答出三种）：</b>①预热——定时触发空跑、预留实例/预置并发，保持最小热实例池；②精简依赖与包体、延迟初始化（首次调用再建连接）、复用执行上下文与全局连接；③选择轻量运行时或更快的恢复技术；④对时延敏感链路改用常驻容器与 FaaS 混合部署。</li>
+    </ul>
+    <p><b>（2）无状态约束的问题与解决（4 分）</b></p>
+    <ul>
+      <li><b>问题（2 分）：</b>实例随时创建销毁，本地内存/磁盘不保存跨请求状态——会话上下文丢失、本地缓存失效、数据库连接不能跨请求复用、并发实例无法共享状态。</li>
+      <li><b>解决（2 分）：</b>把状态外置到 BaaS——会话存数据库/Redis、临时文件用对象存储；连接改为每次执行新建并配合连接池代理/连接池服务（避免实例过多击穿数据库）；需要共享缓存时使用 Redis 等外部缓存；跨函数长流程用工作流服务编排并持久化中间状态。</li>
+    </ul>
+
+    <h4>问题3 参考答案（8 分）</h4>
+    <p><b>（1）四种触发方式（4 分，每种 0.5 分 + 举例 0.5 分）</b></p>
+    <table>
+      <tr><th style="width:130px">触发方式</th><th style="width:200px">适用场景</th><th>本案例举例</th></tr>
+      <tr><td>API 网关触发</td><td>同步在线 API 请求</td><td>App 上传运单并同步返回受理结果</td></tr>
+      <tr><td>消息队列触发</td><td>削峰与异步处理，按批拉取消息执行</td><td>运费结算结果发送后触发计费函数异步落库</td></tr>
+      <tr><td>对象存储事件触发</td><td>文件创建/删除驱动的处理流水线</td><td>运单照片写入对象存储后自动触发 OCR 识别函数</td></tr>
+      <tr><td>定时触发</td><td>周期性任务</td><td>每日凌晨定时汇总单据量与费用账单</td></tr>
+    </table>
+    <p><b>（2）不适合迁移的特征与本案例取舍（4 分）</b></p>
+    <ul>
+      <li><b>不适合（2 分，答出三类）：</b>长时运行任务（超过单次执行时长上限，如长连接网关、流式计算）；负载平稳且高（FaaS 按量计费反而更贵，且频繁冷启动）；强依赖本地状态/专用硬件（GPU、大内存、文件句柄）或亚毫秒级时延的链路；对启动时延极敏感的核心交易；需强一致复杂事务的长流程。</li>
+      <li><b>本案例（2 分）：</b>OCR 识别、计费试算、消息通知、定时报表等短时、事件驱动、波峰波谷明显的环节适合迁移；而面向司机端的高频查询服务（时延敏感、负载平稳）与需要长连接/复杂事务的核心结算服务应保留常驻容器/虚拟机部署，两者经 API 网关/消息队列协同。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 参考答案总区 ================= -->
+<section id="ref" class="refwrap">
+  <h2 style="border:0;margin-bottom:4px">参考答案与采分点</h2>
+  <p style="font-size:13.5px;color:#6B7280">
+    参考答案已<b>分别放在每道大题下方</b>（点击各题下方的「显示本大题参考答案」展开），
+    也可点工具栏的「显示全部参考答案」一次性展开全部 5 题。全卷 15 小题、满分 125 分。
+  </p>
+</section>
+
+<!-- ================= 附录 ================= -->
+<section class="cover-note" id="scope">
+  <h3>附一：五大题考点与分值分布</h3>
+  <table>
+    <tr><th style="width:64px">大题</th><th style="width:150px">案例场景</th><th>核心考点</th><th style="width:96px">小题分值</th></tr>
+    <tr><td>试题一</td><td>订单计价模块重构（必答）</td><td>策略模式识别与角色、开闭原则落地；状态图要素与未定义事件、状态模式 vs 策略模式；用例图 include/extend/泛化、4+1 视图</td><td>9 + 8 + 8</td></tr>
+    <tr><td>试题二</td><td>订单库分库分表改造</td><td>垂直/水平拆分、分片键选择原则、范围/哈希/一致性哈希对比；跨分片聚合、雪花算法、扩容迁移；深分页、数据倾斜与热点治理</td><td>9 + 8 + 8</td></tr>
+    <tr><td>试题三</td><td>公积金核心系统换代</td><td>淘汰/继承/改造/集成四策略、直接/并行/分段转换；绞杀者模式、防腐层；数据迁移七步与双写比对灰度、逆向工程/重构/再工程</td><td>9 + 8 + 8</td></tr>
+    <tr><td>试题四</td><td>配电自动化终端产品线</td><td>DSSA 三要素、产品线三活动；特征模型四种关系、可变性两途径；CBSD 构件来源与适配、COTS 选型维度</td><td>9 + 8 + 8</td></tr>
+    <tr><td>试题五</td><td>货运单证数字化平台</td><td>FaaS/BaaS 与 Serverless 原理、与容器四维对比；冷启动成因与缓解、无状态约束；四类触发方式、迁移取舍</td><td>9 + 8 + 8</td></tr>
+  </table>
+
+  <h3 style="margin-top:22px">附二：使用方法</h3>
+  <ol>
+    <li><b>限定时间</b>：工具栏可选 90 分钟（实战 3 题）或 150 分钟（全卷 5 题），点「开始计时」计时，剩余 10 分钟变红。</li>
+    <li><b>按实战作答</b>：真实考场只做 3 题——试题一必答 + 试题二～五任选 2 题，多答按前两题计分，务必先在草稿纸上圈定选题。</li>
+    <li><b>先答后看</b>：参考答案默认隐藏，答完再展开，避免边看边抄。</li>
+    <li><b>自评打分</b>：每个答题框右下角填「自评得分」，工具栏实时汇总（满分 125），对照参考答案的采分点逐条给分。</li>
+    <li><b>自动保存</b>：输入实时写入浏览器 localStorage，关页面不丢；<code>Ctrl+S</code> 可手动存，换设备或清缓存会丢失。</li>
+    <li><b>打印</b>：「打印 / 导出 PDF」会自动展开全部参考答案一并打印。</li>
+  </ol>
+
+  <h3 style="margin-top:22px">附三：答题建议</h3>
+  <ol>
+    <li><b>按分值配字数</b>：25 分大题分 3 问（9/8/8），9 分题约需 8~12 条要点，8 分题约 6~10 条；宁可多写要点，不写大段论述。</li>
+    <li><b>概念题先给定义再落地</b>：凡"说明……的含义""说明……的原理"，先一句话定义，再结合案例补一句"本案例中……"，两点各占一半分。</li>
+    <li><b>对比题写"两面"</b>：要求比较两种方案时，必须写清各自的收益与代价，只写一方只得一半分。</li>
+    <li><b>设计模式题写全"模式名 + 意图 + 角色映射"</b>，只写模式名通常拿不到 2 分以上。</li>
+    <li><b>数据类题写过程</b>：分片键选择、迁移步骤、扩容方案都要写出"为什么"，只写结论会扣分。</li>
+    <li><b>时间分配</b>：90 分钟做 3 题，每题约 28 分钟（读题 5 + 作答 20 + 检查 3）。</li>
+  </ol>
+
+  <h3 style="margin-top:22px">⚠️ 声明</h3>
+  <p style="font-size:13px;color:#6B7280">
+    本卷由<b>用户提供的图片版《2026 下半年系统架构设计师案例分析压轴预测卷（二）》13 页</b>完整转录整理而成（前 6 页为试题与插图，后 7 页为参考答案与解析），
+    题干、图、分值、参考答案均按原卷录入，仅作排版与结构化整理，<b>不是本库自主命制，也不是官方真题</b>。
+    参考答案为原卷编写者依据教材与考点整理的要点，<b>非官方评分标准</b>；如与原卷印刷内容有出入，以原卷为准。
+  </p>
+</section>
+
+
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORE = "ruankao_mock_case3_2026";
+  var TOTAL_Q = 15, TOTAL_SCORE = 125;
+
+  var state = { answers:{}, scores:{}, seconds:90*60, running:false, base:90 };
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORE);
+      if(raw){ var o = JSON.parse(raw); state.answers = o.answers||{}; state.scores = o.scores||{}; }
+    }catch(e){}
+  }
+  function save(){
+    try{ localStorage.setItem(STORE, JSON.stringify({answers:state.answers, scores:state.scores})); }catch(e){}
+  }
+
+  var tas = [].slice.call(document.querySelectorAll("textarea[data-qid]"));
+  var scoreIns = [].slice.call(document.querySelectorAll("input[data-score]"));
+  var timerEl = document.getElementById("timer");
+  var progressEl = document.getElementById("progress");
+
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  tas.forEach(function(ta){
+    var id = ta.dataset.qid;
+    if(state.answers[id]) ta.value = state.answers[id];
+    updateCount(id);
+    var savedEl = document.querySelector('.saved[data-for="'+id+'"]');
+    var t = null;
+    ta.addEventListener("input", function(){
+      state.answers[id] = ta.value;
+      updateCount(id);
+      save();
+      if(savedEl){ savedEl.classList.add("show"); clearTimeout(t);
+        t = setTimeout(function(){ savedEl.classList.remove("show"); }, 1200); }
+      updateProgress();
+    });
+  });
+  scoreIns.forEach(function(inp){
+    var id = inp.dataset.score;
+    if(state.scores[id] != null) inp.value = state.scores[id];
+    inp.addEventListener("input", function(){
+      var v = parseFloat(inp.value);
+      state.scores[id] = isNaN(v) ? null : v;
+      save(); updateProgress();
+    });
+  });
+
+  function updateCount(id){
+    var ta = document.getElementById(id);
+    var el = document.querySelector('.cnt[data-for="'+id+'"]');
+    if(!ta || !el) return;
+    var n = ta.value.replace(/\s/g,"").length;
+    el.textContent = n + " 字";
+  }
+  function updateProgress(){
+    var done = tas.filter(function(t){ return t.value.replace(/\s/g,"").length >= 20; }).length;
+    var sum = scoreIns.reduce(function(a,i){ var v=parseFloat(i.value); return a + (isNaN(v)?0:v); }, 0);
+    sum = Math.round(sum*10)/10;
+    progressEl.textContent = "已作答 " + done + "/" + TOTAL_Q + "　｜　自评 " + sum + "/" + TOTAL_SCORE;
+  }
+
+  function fmt(s){
+    s = Math.max(0,s);
+    var m = Math.floor(s/60), ss = s%60;
+    return (m<10?"0":"")+m + ":" + (ss<10?"0":"")+ss;
+  }
+  function renderTimer(){
+    timerEl.textContent = fmt(state.seconds);
+    timerEl.classList.toggle("warn", state.seconds <= 600);
+  }
+  var tick = null;
+  var btnTimer = document.getElementById("btnTimer");
+  btnTimer.addEventListener("click", function(){
+    state.running = !state.running;
+    if(state.running){
+      btnTimer.textContent = "暂停计时";
+      tick = setInterval(function(){
+        state.seconds--;
+        renderTimer();
+        if(state.seconds <= 0){ clearInterval(tick); state.running=false; btnTimer.textContent="开始计时"; toast("时间到！"); }
+      }, 1000);
+      toast("计时开始");
+    }else{
+      clearInterval(tick); btnTimer.textContent = "继续计时";
+    }
+  });
+  document.getElementById("btnResetTimer").addEventListener("click", function(){
+    clearInterval(tick); state.running=false; state.seconds = state.base*60;
+    btnTimer.textContent = "开始计时"; renderTimer();
+  });
+  document.getElementById("selTime").addEventListener("change", function(){
+    state.base = parseInt(this.value,10) || 90;
+    state.seconds = state.base*60; renderTimer(); toast("时长已设为 " + state.base + " 分钟");
+  });
+  renderTimer();
+
+  var refBtns = [].slice.call(document.querySelectorAll(".ref-toggle"));
+  refBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      var el = document.getElementById(b.dataset.ref);
+      var open = el.classList.toggle("open");
+      b.textContent = (open ? "▾ 隐藏本大题参考答案" : "▸ 显示本大题参考答案");
+    });
+  });
+  var allOpen = false;
+  document.getElementById("btnToggleAll").addEventListener("click", function(){
+    allOpen = !allOpen;
+    document.querySelectorAll(".ref").forEach(function(el){ el.classList.toggle("open", allOpen); });
+    refBtns.forEach(function(b){
+      b.textContent = (allOpen ? "▾ 隐藏本大题参考答案" : "▸ 显示本大题参考答案");
+    });
+    this.textContent = allOpen ? "隐藏全部参考答案" : "显示全部参考答案";
+  });
+
+  document.getElementById("btnClear").addEventListener("click", function(){
+    if(!confirm("确定清空全部作答与自评？此操作不可撤销。")) return;
+    state.answers = {}; state.scores = {};
+    tas.forEach(function(t){ t.value=""; updateCount(t.dataset.qid); });
+    scoreIns.forEach(function(i){ i.value=""; });
+    save(); updateProgress(); toast("已清空答卷");
+  });
+  document.getElementById("btnPrint").addEventListener("click", function(){
+    document.querySelectorAll(".ref").forEach(function(el){ el.classList.add("open"); });
+    setTimeout(function(){ window.print(); }, 120);
+  });
+
+  load();
+  tas.forEach(function(t){
+    var id = t.dataset.qid;
+    if(state.answers[id]) t.value = state.answers[id];
+    updateCount(id);
+  });
+  scoreIns.forEach(function(inp){
+    var id = inp.dataset.score;
+    if(state.scores[id] != null) inp.value = state.scores[id];
+  });
+  updateProgress();
+
+  document.addEventListener("keydown", function(e){
+    if((e.ctrlKey||e.metaKey) && e.key === "s"){ e.preventDefault(); save(); toast("已保存到本地"); }
+  });
+})();
+</script>
+</body>
+</html>
